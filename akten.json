@@ -1,64 +1,2281 @@
 [
   {
-    "id": "verstauchung",
-    "titel": "Verstauchung",
-    "kategorie": "Behandlungen",
-    "favorit": false,
-    "abschnitte": [
+    "id": "Vitalwerte",
+    "cat": "v",
+    "title": "Vitalwerte",
+    "kw": "puls blutdruck atmung temperatur spo2 sauerstoff zucker",
+    "sections": [],
+    "me": [],
+    "table": {
+      "h": [
+        "Wert",
+        "Normbereich"
+      ],
+      "r": [
+        [
+          "Puls (Ruhe)",
+          "60–80 Schläge/min"
+        ],
+        [
+          "Blutdruck",
+          "optimal 120/80 mmHg, normal unter 130/85, hoch-normal max. 139/89"
+        ],
+        [
+          "Atmung (Ruhe)",
+          "14–16 Atemzüge/min"
+        ],
+        [
+          "Körpertemperatur",
+          "36,5–37,4 °C"
+        ],
+        [
+          "Sauerstoffsättigung (SpO₂)",
+          "95–100 %"
+        ],
+        [
+          "Blutzucker (nüchtern)",
+          "70–100 mg/dL"
+        ],
+        [
+          "Kapillarfüllzeit (Recap)",
+          "unter 2 Sekunden"
+        ]
+      ]
+    }
+  },
+  {
+    "id": "Amnestika Stufe A–E",
+    "cat": "v",
+    "title": "Amnestika Stufe A–E",
+    "kw": "amnesie vergessen löschen injektion spritze",
+    "sections": [
       {
-        "titel": "PECH-Schema & Versorgung",
-        "zeilen": [
-          "/me untersucht das betroffene Gelenk und prüft die Beweglichkeit",
-          "/me kühlt die betroffene Stelle mit einem Kühlpack",
-          "Notiz: Auf Schwellungen und Blutergüsse achten"
+        "h": "Injektion (intramuskulär, Stufe A/B ab Rang ER)",
+        "items": [
+          "Hände waschen, Handschuhe; bereitlegen: Desinfektionsspray, sterile Einwegspritze, Tupfer, Pflaster, Amnestikum",
+          "Oberarm desinfizieren, trocknen lassen",
+          "Nadel zügig in den Muskel, Mittel langsam spritzen",
+          "Nadel raus, Pflaster kleben"
         ]
       }
     ],
-    "meBoxen": [
+    "me": [],
+    "table": {
+      "h": [
+        "Stufe",
+        "Wirkung",
+        "Nebenwirkungen",
+        "Freigabe"
+      ],
+      "r": [
+        [
+          "A",
+          "Löscht 6 Stunden",
+          "Benommenheit, Kopfschmerzen, Übelkeit",
+          "Arzt+"
+        ],
+        [
+          "B",
+          "Löscht 24 Stunden",
+          "Verlängerte Benommenheit, Parästhesie, Migräne, verschwommene Sicht",
+          "Arzt+"
+        ],
+        [
+          "C",
+          "Löscht 7 Tage",
+          "Verlängerte Benommenheit, leichtere Lähmung",
+          "GA+"
+        ],
+        [
+          "D",
+          "Löscht 4 Wochen",
+          "Verlängerte Benommenheit, Lähmung, leichte Hirnschäden",
+          "GA+"
+        ],
+        [
+          "E",
+          "Löscht alle Erinnerungen",
+          "Stark verlängerte Benommenheit, Langzeitlähmung, Hirnschäden, Katatonie",
+          "GA+"
+        ]
+      ]
+    }
+  },
+  {
+    "id": "Blutgruppen und Spender",
+    "cat": "v",
+    "title": "Blutgruppen und Spender",
+    "kw": "blut transfusion rhesus universalspender empfänger",
+    "sections": [
       {
-        "titel": "Material-Entnahme",
-        "eintraege": [
-          "/me holt elastische Binden und Kühlpacks aus dem Schrank"
+        "h": "Grundlagen",
+        "items": [
+          "A, B, AB, 0 zeigen die Antigene auf den roten Blutkörperchen (0 = keine)",
+          "Rhesusfaktor: Rh+ hat das D-Antigen, Rh- nicht"
         ]
       }
+    ],
+    "me": [],
+    "widget": true
+  },
+  {
+    "id": "Blutspenden",
+    "cat": "v",
+    "title": "Blutspenden",
+    "kw": "spender kanüle beutel",
+    "sections": [
+      {
+        "h": "1. Vorgespräch, keine Spende bei",
+        "items": [
+          "starkem Unter-/Übergewicht",
+          "Puls oder Blutdruck außerhalb der Norm",
+          "Krankheit in den letzten 2 Wochen",
+          "Durchfall, Erbrechen oder Fieber in den letzten 4 Wochen",
+          "Vorerkrankungen, zu wenig gegessen oder getrunken"
+        ]
+      },
+      {
+        "h": "2. Blutprobe",
+        "items": [
+          "Blut abnehmen, vom Blut-Tester prüfen lassen"
+        ]
+      },
+      {
+        "h": "3. Spende",
+        "items": [
+          "Arm abbinden und desinfizieren, Kanüle fixieren, Beutel (500 ml) anhängen",
+          "Stauschlauch und Kanüle entfernen, Tupfer und Pflaster",
+          "Beutel beschriften und kühl lagern"
+        ]
+      }
+    ],
+    "me": []
+  },
+  {
+    "id": "Verstauchung",
+    "cat": "b",
+    "title": "Verstauchung",
+    "kw": "gelenk band pech",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Gelenk schwillt schnell an und schmerzt bei Bewegung",
+          "Blutergüsse, das Gelenk wirkt instabil"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Ruhigstellen, kühlen und komprimieren (PECH-Regel)",
+          "Schmerzmittel bei Bedarf",
+          "Bei starker Schwellung siehe [[Gelenkpunktion]]"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Röntgen zum Ausschluss eines Bruchs, danach Ultraschall",
+          "Pause, Eis und Kompressionsverband anlegen",
+          "Gelenk hochlagern",
+          "Bei starker Schwellung weiter nach [[Gelenkpunktion]]"
+        ]
+      }
+    ],
+    "me": [
+      "/me desinfiziert die Hände und legt einen Kühlakku auf die betroffene Stelle",
+      "/me wickelt einen elastischen Verband um das verletzte Gelenk",
+      "/me lagert den Fuß oder Arm vorsichtig hoch",
+      "/me prüft Durchblutung und Gefühl unterhalb der Verletzung",
+      "Notiz: Bei Taubheit, Blässe oder kalter Haut sofort ärztlich abklären lassen"
     ]
   },
   {
-    "id": "herzinfarkt",
-    "titel": "Herzinfarkt",
-    "kategorie": "Behandlungen",
-    "favorit": true,
-    "abschnitte": [
+    "id": "Gelenkpunktion",
+    "cat": "b",
+    "title": "Gelenkpunktion",
+    "sections": [
       {
-        "titel": "Erkennung & Diagnostik",
-        "zeilen": [
-          "/me schließt den Patienten an das EKG an",
-          "Notiz: Auf thorakale Schmerzen achten"
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Sehr stark angeschwollenes Gelenk, z. B. nach einer Verstauchung (siehe [[Verstauchung]])",
+          "Gelenkerguss, der die Bewegung einschränkt"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Flüssigkeit wird steril mit einer Hohlnadel aus dem Gelenk abgesaugt",
+          "Nach dem Eingriff Ruhigstellung und Kühlung"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Sterile Umgebung vorbereiten",
+          "Gelenk desinfizieren und mit Lochtuch abdecken",
+          "Hohlnadel ins Gelenk einführen und Flüssigkeit absaugen",
+          "Einstichstelle mit Tupfer und Pflaster versorgen"
         ]
       }
     ],
-    "meBoxen": [
-      {
-        "titel": "Schrank-Aktionen",
-        "eintraege": [
-          "/me holt Notfall-Medikamente"
-        ]
-      }
+    "me": [
+      "/me bereitet sterile Materialien vor und desinfiziert die Einstichstelle",
+      "/me deckt das Gelenk mit einem Lochtuch ab",
+      "/me führt die Hohlnadel vorsichtig ins Gelenk ein und saugt Flüssigkeit ab",
+      "/me versorgt die Einstichstelle mit Tupfer und Pflaster",
+      "Notiz: Abgesaugte Flüssigkeit zur Untersuchung sichern"
     ]
   },
   {
-    "id": "narkose-einleiten",
-    "titel": "Narkose einleiten",
-    "kategorie": "Narkose",
-    "favorit": false,
-    "abschnitte": [
+    "id": "Glatter Bruch",
+    "cat": "b",
+    "title": "Glatter Bruch",
+    "kw": "knochen fraktur schiene gips",
+    "sections": [
       {
-        "titel": "Vorbereitung",
-        "zeilen": [
-          "/me prüft die Vitalwerte und legt den Zugang"
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Starke Schmerzen, Schwellung und Druckempfindlichkeit",
+          "Fehlstellung des Gliedes"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Ruhigstellung mit Schiene oder Gips",
+          "Kühlung und Schmerzmittel bei Bedarf"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Ruhigstellen mit Schiene oder Gipsverband",
+          "Kühlpack auflegen und Glied hochlagern",
+          "Schmerzmittel geben",
+          "Kontrolle per Röntgen",
+          "Später Physiotherapie"
         ]
       }
     ],
-    "meBoxen": []
+    "me": [
+      "/me legt vorsichtig eine Schiene oder einen Gipsverband an",
+      "/me platziert ein Kühlpack auf der verletzten Stelle",
+      "/me hebt die Extremität leicht an und stützt sie",
+      "Notiz: Gesplitterter oder verschobener Bruch: siehe [[Gesplitterter Bruch]]",
+      "/me prüft Durchblutung und Gefühl unterhalb der Bruchstelle"
+    ]
+  },
+  {
+    "id": "Steckschuss",
+    "cat": "b",
+    "title": "Steckschuss",
+    "kw": "schuss kugel schusswunde blutung",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Starke Blutung, die sofort gestoppt werden muss",
+          "Kugel im Körper: Lage per Röntgen oder CT bestimmen",
+          "Ultraschall bei Verdacht auf Organschäden, Bluttest auf Infektion"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Blutung stoppen, Kugel entfernen, Wunde verschließen",
+          "Schmerzmittel und Antibiotikum (z. B. Amoxicillin/Clavulansäure)"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Druckverband anlegen",
+          "Lokale Betäubung mit Lidocain",
+          "Wunde mit Kanüle ausspülen und Kugel mit steriler Pinzette entfernen",
+          "Blut absaugen und erneut desinfizieren",
+          "Wunde verschließen (Klammern, Nähen oder Kleben)",
+          "Schmerzmittel und Antibiotikum geben"
+        ]
+      }
+    ],
+    "me": [
+      "/me stillt die Blutung mit einem sterilen Druckverband",
+      "/me injiziert Lidocain zur lokalen Betäubung",
+      "/me spült die Wunde mit einer Knopfkanüle aus",
+      "/me entfernt die Kugel vorsichtig mit sterilen Pinzetten",
+      "/me verschließt die Wunde durch Klammern, Nähen oder Kleben",
+      "Notiz: Auf Blutungen und Anzeichen einer Infektion überwachen"
+    ]
+  },
+  {
+    "id": "Platzwunde",
+    "cat": "b",
+    "title": "Platzwunde",
+    "kw": "wunde nähen blutung",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "items": [
+          "Offene Wunde mit klaffenden Wundrändern",
+          "Blutung je nach Gefäßbeteiligung, meist gut kontrollierbar",
+          "Verschmutzung und Fremdkörper prüfen"
+        ],
+        "mode": "bullet"
+      },
+      {
+        "h": "Behandlung",
+        "items": [
+          "Blutung mit Druckverband stillen",
+          "Wunde gründlich spülen, Fremdkörper und abgestorbenes Gewebe entfernen",
+          "Lokale Betäubung mit Lidocain, anschließend Naht mit Einzelknopfnähten"
+        ],
+        "mode": "bullet"
+      },
+      {
+        "h": "Ablauf",
+        "items": [
+          "Vitalwerte prüfen und Blutung kontrollieren",
+          "Wunde spülen und großzügig desinfizieren",
+          "Wundrand mit Lidocain betäuben",
+          "Wunde mit Einzelknopfnähten verschließen",
+          "Steriler Verband, Nachsorge erklären"
+        ],
+        "mode": "number"
+      }
+    ],
+    "me": [
+      "/me spült die Wunde gründlich mit steriler Lösung",
+      "/me desinfiziert die Wunde und die umliegende Haut",
+      "/me betäubt den Wundrand mit Lidocain",
+      "/me verschließt die Wunde mit Einzelknopfnähten",
+      "/me legt einen sterilen Wundverband an",
+      "Notiz: Lidocain nach Körpergewicht dosieren, Höchstmenge beachten",
+      "Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen"
+    ]
+  },
+  {
+    "id": "Verbrennung 1. Grades",
+    "cat": "b",
+    "title": "Verbrennung 1. Grades",
+    "kw": "brandwunde hitze bepanthen",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Haut gerötet und warm",
+          "Schmerzt bei Berührung, keine Blasen"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Kühlen unter fließendem Wasser",
+          "Wundpflege mit Bepanthen-Schaumspray",
+          "Abdeckung mit Brandwunden-Pflaster",
+          "Schmerzmittel bei Bedarf"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Sofort unter fließendem Wasser kühlen",
+          "Bepanthen-Schaumspray auftragen",
+          "Mit Brandwunden-Pflaster abdecken",
+          "Schmerzmittel bei Bedarf geben"
+        ]
+      }
+    ],
+    "me": [
+      "/me kühlt die verbrannte Stelle unter fließendem Wasser",
+      "/me trägt Bepanthen-Schaumspray auf",
+      "/me legt Pflaster auf die Brandstelle",
+      "/me gibt Schmerzmittel",
+      "Notiz: Bei großflächiger Verbrennung unverzüglich ärztlich abklären lassen"
+    ]
+  },
+  {
+    "id": "Prellung",
+    "cat": "b",
+    "title": "Prellung",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Leichte Verletzung nach Sturz oder Stoß: Schmerz, Schwellung, Bluterguss",
+          "Brustbereich: auf Atembeschwerden, Kurzatmigkeit und Brustschmerzen achten und sofort untersuchen"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Kühlen mit Kühlpack und Schmerzmittel bei Bedarf",
+          "Alternativ PECH-Regel (siehe [[Verstauchung]])",
+          "Brustprellung: Brustkorsett oder fester Verband zur Stütze"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Verletzte Stelle prüfen, bei Brustprellung die Atmung kontrollieren",
+          "Kühlpack auflegen",
+          "Schmerzmittel geben",
+          "Bei Brustprellung Verband oder Brustkorsett anlegen"
+        ]
+      }
+    ],
+    "me": [
+      "/me untersucht die verletzte Stelle auf Schwellung und Druckschmerz",
+      "/me legt ein Kühlpack auf die Prellung",
+      "/me kontrolliert bei Brustprellung Atmung und Atemgeräusche",
+      "/me legt einen festen Verband oder ein Brustkorsett an",
+      "Notiz: Bei Atemnot oder anhaltenden Brustschmerzen sofort weiter abklären"
+    ]
+  },
+  {
+    "id": "Explosionstrauma",
+    "cat": "b",
+    "title": "Explosionstrauma",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Laute Explosion (z. B. SCP-066 über 140 dB, Granaten) schädigt das Gehör",
+          "Blut im Ohr, Hörverlust und starke Ohrenschmerzen",
+          "Untersuchung: Otoskop (Trommelfell), Audiometrie (Gehör), CT oder Ultraschall bei tiefen Verletzungen, Bluttest auf Entzündung"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Cortison-Infusion gegen Entzündung",
+          "Schmerzlindernde und antibakterielle Ohrentropfen (z. B. Colistin)",
+          "Schwerer Trommelfellriss: operative Reparatur (siehe [[Trommelfellriss]])"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Blutung im Ohr stoppen und Schmerzen lindern",
+          "Ohr mit Otoskop untersuchen",
+          "Blut und Fremdkörper schonend entfernen",
+          "Cortison-Infusion verabreichen",
+          "Ohrentropfen geben",
+          "Auf Hörschäden, Blutungen und Infektionen überwachen"
+        ]
+      }
+    ],
+    "me": [
+      "/me untersucht das Ohr mit einem Otoskop",
+      "/me reinigt vorsichtig Blut und Fremdkörper aus dem Ohr",
+      "/me verabreicht eine Cortison-Infusion",
+      "/me gibt schmerzlindernde und antibakterielle Ohrentropfen",
+      "/me überwacht den Patienten auf Hörschäden und Blutungen",
+      "Notiz: Bei schwerem Trommelfellriss Operation einplanen"
+    ]
+  },
+  {
+    "id": "Streifschuss, Stichwunde, Bisswunde",
+    "cat": "b",
+    "title": "Streifschuss, Stichwunde, Bisswunde",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Streifschuss: oberflächlich, oft starker Blutverlust",
+          "Stichwunde: kleine Öffnung, die tief reichen kann",
+          "Biss (z. B. SCP-939, SCP-682, Hunde): verschmutzt, hohes Infektionsrisiko",
+          "Zeichen: Rötung, Schwellung, Eiter, Schmerzen"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Reinigen, desinfizieren, Fremdkörper und totes Gewebe entfernen, vernähen oder Drainage legen",
+          "Antibiotikum (z. B. Amoxicillin/Clavulansäure)",
+          "Bei Tierbiss Tollwut-Impfung, Tetanus auffrischen, wenn die letzte Auffrischung über 10 Jahre her ist"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Blutung mit Druckverband stillen",
+          "Wunde gründlich reinigen und desinfizieren",
+          "Infizierte Wunde unter lokaler Betäubung chirurgisch reinigen, ggf. Eiter entfernen",
+          "Fremdkörper und abgestorbenes Gewebe entfernen",
+          "Wunde vernähen oder Drainage legen",
+          "Antibiotikum geben, Impfstatus prüfen und impfen"
+        ]
+      }
+    ],
+    "me": [
+      "/me stillt die Blutung mit einem Druckverband",
+      "/me reinigt die Wunde gründlich und desinfiziert sie",
+      "/me injiziert ein Lokalanästhetikum vor der chirurgischen Reinigung",
+      "/me entfernt Fremdkörper und abgestorbenes Gewebe",
+      "/me vernäht die Wunde oder legt eine Drainage",
+      "/me verabreicht Antibiotika und prüft den Impfstatus",
+      "Notiz: Impfstatus vor der Entlassung dokumentieren"
+    ]
+  },
+  {
+    "id": "Unterkühlung",
+    "cat": "b",
+    "title": "Unterkühlung",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Körpertemperatur unter 35 °C (z. B. Kühlkammer): Gefahr von Bewusstlosigkeit sowie Atem- und Kreislaufversagen",
+          "Zeichen: Schüttelfrost, blasse oder kalte Haut, langsamer Puls",
+          "Untersuchung: Thermometer, Puls, Atmung und Kreislauf, optional Bluttest"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Aktive innere Erwärmung mit erwärmten Infusionen (ca. 43 °C)",
+          "Rettungsdecke gegen weiteren Wärmeverlust",
+          "Atmung und Kreislauf laufend überwachen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Puls, Atmung und Kreislauf prüfen",
+          "Infusionszugang legen",
+          "Erwärmte Infusion (ca. 43 °C) verabreichen",
+          "In Rettungsdecke einwickeln",
+          "Körpertemperatur laufend messen",
+          "Ab über 35 °C und stabilem Kreislauf weiter die Vitalwerte kontrollieren"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft Puls, Atmung und Kreislauf des Patienten",
+      "/me legt einen Zugang für eine erwärmte Infusion",
+      "/me verabreicht die erwärmte Infusion",
+      "/me wickelt den Patienten in eine Rettungsdecke",
+      "/me überwacht die Körpertemperatur kontinuierlich",
+      "Notiz: Bei Bewusstlosigkeit sofort die Atemwege sichern"
+    ]
+  },
+  {
+    "id": "Kontakt mit Gasen und Chemikalien",
+    "cat": "b",
+    "title": "Kontakt mit Gasen und Chemikalien",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Einatmen giftiger Gase oder Chemikalien: Sauerstoffmangel, Lungenschäden, Husten und Atemnot",
+          "Zeichen: Atemnot, Husten, bläuliche Lippen, Unruhe",
+          "Untersuchung: Pulsoximeter, Bluttest (Entzündungswerte), Röntgen oder CT der Lunge"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Sauerstoff, Bronchodilatatoren und Prednisolon gegen Lungenentzündung",
+          "Infusion und Antibiotika bei Infektionsgefahr",
+          "Schwere Atemnot: künstliche Beatmung"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Puls, Atmung und Kreislauf prüfen",
+          "Sauerstoffsättigung messen",
+          "Sauerstoff über Maske oder Nasensonde geben",
+          "Bronchodilatatoren und Prednisolon geben",
+          "Infusionszugang legen und Flüssigkeit geben",
+          "Antibiotika bei Infektionsrisiko geben und den Patienten dauerhaft überwachen"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft Puls, Atmung und Kreislauf",
+      "/me misst die Sauerstoffsättigung mit dem Pulsoximeter",
+      "/me verabreicht Sauerstoff über Maske oder Nasensonde",
+      "/me gibt Bronchodilatatoren und Prednisolon",
+      "/me legt einen Infusionszugang und gibt Flüssigkeit",
+      "Notiz: Verlauf der Sauerstoffsättigung dokumentieren"
+    ]
+  },
+  {
+    "id": "Strahlenkrankheit",
+    "cat": "b",
+    "title": "Strahlenkrankheit",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Akute Bestrahlung mit ionisierender Strahlung (Röntgen, Gamma, Kernwaffen): Blutbildstörungen, Organprobleme und Schwäche",
+          "Zeichen: Übelkeit, Erbrechen, Müdigkeit, Hautrötungen oder Verbrennungen",
+          "Untersuchung: EKG, Vitalzeichen, Bluttest (Blutbild, Organwerte)"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Abduschen zur Dekontamination",
+          "Kaliumiodid schützt die Schilddrüse",
+          "Infusionen, Bluttransfusionen und Vitamine"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Patienten sofort abduschen und radioaktive Partikel entfernen",
+          "Vitalwerte regelmäßig messen, EKG anschließen",
+          "Kaliumiodid-Tabletten geben",
+          "Kochsalz-Infusion zur Flüssigkeitszufuhr anlegen",
+          "Bluttransfusion und Vitaminpräparate geben",
+          "Vitalfunktionen laufend überwachen"
+        ]
+      }
+    ],
+    "me": [
+      "/me duscht den Patienten gründlich ab",
+      "/me misst Puls, Blutdruck und Atmung regelmäßig",
+      "/me schließt den Patienten ans EKG an",
+      "/me verabreicht Kaliumiodid-Tabletten",
+      "/me legt Infusionen zur Flüssigkeitszufuhr an",
+      "Notiz: Strahlenschutz für das Personal beachten"
+    ]
+  },
+  {
+    "id": "Verbrennung 2. Grades",
+    "cat": "b",
+    "title": "Verbrennung 2. Grades",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Tieferer Hautschaden mit sichtbaren Blasen, Rötung, Schmerz und Schwellung",
+          "2a: geschlossene Blasen, heilt meist spontan",
+          "2b: offene Blasen, tiefer Schaden, lokal behandelbar"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "2a: lokale Betäubung, antiseptisch spülen, Brandsalbe und Mullbinde",
+          "2b: zusätzlich totes Gewebe entfernen, Hauttransplantat, Silbersulfadiazin-Creme"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Wunde lokal betäuben",
+          "Wunde antiseptisch spülen, bei 2b gründlich desinfizieren",
+          "Bei 2b abgestorbenes Gewebe entfernen, Haut transplantieren und einnähen",
+          "Brandsalbe auftragen, bei 2b zusätzlich Silbersulfadiazin",
+          "Mit Mullbinden verbinden und Schmerzmittel geben"
+        ]
+      }
+    ],
+    "me": [
+      "/me betäubt die Wunde lokal",
+      "/me spült die Wunde antiseptisch aus",
+      "/me trägt Brandsalbe auf",
+      "/me verbindet die Wunde mit Mullbinden",
+      "/me desinfiziert die Brandwunde gründlich",
+      "Notiz: Bei 2b Gewebe entfernen und Haut transplantieren (Operation)"
+    ]
+  },
+  {
+    "id": "SCP-527 und Kopfverletzungen",
+    "cat": "b",
+    "title": "SCP-527 und Kopfverletzungen",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Sichtbare Wunden oder Blutungen am Kopf",
+          "Schmerzen oder Schwellung im Kopfbereich",
+          "Untersuchung: Vitalwerte, Röntgen, Bluttest"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Desinfizieren und mit Lidocain betäuben",
+          "Schuppen entfernen, nähen und verbinden"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Wundbereich gründlich desinfizieren",
+          "Lokal mit Lidocain betäuben",
+          "Schuppen um die Wunde vorsichtig mit Pinzette entfernen",
+          "Abgestorbenes Gewebe ausschneiden und die Wunde präzise nähen",
+          "Sterile Wundkompresse auflegen und mit elastischer Mullbinde fixieren",
+          "Vitalwerte kontrollieren"
+        ]
+      }
+    ],
+    "me": [
+      "/me desinfiziert die Wunde am Kopf",
+      "/me betäubt den Bereich lokal mit Lidocain",
+      "/me entfernt vorsichtig Schuppen mit der Pinzette",
+      "/me schneidet abgestorbenes Gewebe aus",
+      "/me näht die Wunde präzise",
+      "/me legt eine sterile Wundkompresse auf und fixiert sie mit Mullbinde",
+      "Notiz: Fäden nach 10–14 Tagen ziehen, bevor neue Schuppen wachsen"
+    ]
+  },
+  {
+    "id": "SCP-4287",
+    "cat": "b",
+    "title": "SCP-4287",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Blutende Wunden oder fehlende Federn",
+          "Schwellung oder Rötung der Haut",
+          "Wichtig: Infektionsgefahr, besonders durch Pasteurellen"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Wunde reinigen und desinfizieren",
+          "Bei Bedarf lokal betäuben, z. B. mit Lidocain",
+          "Antibiotikum Baytril (Enrofloxacin) gegen Pasteurellen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Wunde vorsichtig reinigen und desinfizieren",
+          "Bei Bedarf lokal betäuben, z. B. mit Lidocain",
+          "Lose Federn nur vorsichtig entfernen",
+          "Bei Bedarf eine Bandage anlegen",
+          "Baytril verabreichen und den Heilungsfortschritt beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me reinigt und desinfiziert die Wunde vorsichtig",
+      "/me betäubt die Wunde lokal",
+      "/me entfernt vorsichtig lose Federn",
+      "/me legt bei Bedarf eine Bandage an",
+      "/me verabreicht Baytril",
+      "Notiz: Infektionszeichen wie Rötung, Schwellung oder Eiter bei jeder Kontrolle beachten"
+    ]
+  },
+  {
+    "id": "Hunde",
+    "cat": "b",
+    "title": "Hunde",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Normwerte: Puls 70–100/min, Atmung 16–18/min",
+          "Normwerte: Blutdruck ca. 110/60 bis 140/80 mmHg, Temperatur 38–39 °C",
+          "Blutgruppen DEA 1.1, 1.2, 3.0, 4.0, 5.0, 7.0 mit Rhesusfaktor",
+          "DEA 1.1 negativ ist Universalspender"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Carprofen (Entzündungshemmer für Gelenke), Metamizol (starkes Schmerzmittel), Tepoxalin (Muskeln und Skelett)",
+          "Knochenbruch: operative Fixierung oder Gips, oft kombiniert",
+          "Warnung: Colistin niemals bei Hunden, es ist toxisch"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Puls, Atmung, Temperatur und Blutdruck prüfen",
+          "Fell um die Wunde rasieren",
+          "Wunde reinigen, desinfizieren und ggf. nähen",
+          "Verband oder Bandage anlegen",
+          "Bruch operativ oder mit Gips fixieren",
+          "Bei Narkose Wärmelampe gegen Unterkühlung, Beißschutz und Zungensicherung bereithalten"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft Puls, Atmung, Temperatur und Blutdruck",
+      "/me rasiert das Fell um die Wunde",
+      "/me reinigt und desinfiziert die Wunde",
+      "/me legt einen Verband oder eine Bandage an",
+      "/me fixiert den Knochenbruch operativ oder mit Gips",
+      "Notiz: Colistin bei Hunden nicht verwenden"
+    ]
+  },
+  {
+    "id": "SCPs: Übersicht der Behandlung",
+    "cat": "b",
+    "title": "SCPs: Übersicht der Behandlung",
+    "sections": [
+      {
+        "h": "Zuordnung",
+        "items": [
+          "SCP-131: Augentropfen ins Auge träufeln oder Nanobots",
+          "SCP-999: reproduziertes Gelee verabreichen",
+          "SCP-066: mit reproduziertem Garn behandeln",
+          "SCP-527: wie ein Mensch, außer bei Kopfverletzung (eigener Eintrag)",
+          "SCP-1048: Füllwatte ausstopfen und wieder zunähen",
+          "SCP-4287: gängige Methoden, immer mit Baytril gegen Pasteurellen"
+        ]
+      }
+    ],
+    "me": []
+  },
+  {
+    "id": "Narkose einleiten",
+    "cat": "n",
+    "title": "Narkose einleiten",
+    "kw": "fentanyl propofol intubation ekg schlaf",
+    "sections": [
+      {
+        "h": "Ablauf",
+        "items": [
+          "Reiner Sauerstoff als Reserve, venöser Zugang (ggf. zweiter für Bluttransfusion)",
+          "Fentanyl (Schmerzmittel), dann Propofol (Schlafmittel)",
+          "EKG: Herz und Kreislauf überwachen",
+          "Patient schläft nach Sekunden ein, dann intubieren und Atmung sichern"
+        ],
+        "mode": "number"
+      },
+      {
+        "h": "Überwachung",
+        "items": [
+          "Puls, Blutdruck, Sauerstoffsättigung, Atmung"
+        ]
+      },
+      {
+        "h": "Ende",
+        "items": [
+          "Narkosemittel absetzen, extubieren, überwachen bis stabil"
+        ]
+      }
+    ],
+    "me": [
+      "/me legt vorsichtig einen venösen Zugang",
+      "/me bereitet reinen Sauerstoff als Reserve vor",
+      "/me verabreicht Fentanyl und Propofol",
+      "/me intubiert den Patienten und sichert die Atmung",
+      "/me überwacht die Vitalwerte auf dem EKG",
+      "/me beendet die Narkose und extubiert den Patienten, sobald er stabil ist",
+      "Notiz: Bei Bedarf zweiten venösen Zugang für eine Bluttransfusion legen"
+    ]
+  },
+  {
+    "id": "Lokalanästhesie",
+    "cat": "n",
+    "title": "Lokalanästhesie",
+    "kw": "betäubung lidocain prilocain bupivacain",
+    "sections": [
+      {
+        "h": "Wann",
+        "items": [
+          "Nur eine Stelle (Handrücken, Wunde, Muttermal): Injektion, Creme, Gel oder Spray"
+        ]
+      },
+      {
+        "h": "Medikamente",
+        "items": [
+          "Lidocain, Prilocain, Bupivacain"
+        ]
+      },
+      {
+        "h": "Nebenwirkungen",
+        "items": [
+          "Übelkeit, Schwindel, niedriger Blutdruck; Dosis nach Körpergewicht"
+        ]
+      }
+    ],
+    "me": [
+      "/me desinfiziert die Stelle vor der Betäubung",
+      "/me sprüht die Betäubungscreme auf die Wunde",
+      "/me injiziert das Lokalanästhetikum langsam unter die Haut",
+      "/me wartet ein paar Minuten, bis die Stelle taub ist",
+      "/me prüft die Betäubung mit einer leichten Berührung",
+      "Notiz: Bei Übelkeit, Schwindel oder niedrigem Blutdruck Patienten hinlegen und Vitalwerte prüfen"
+    ]
+  },
+  {
+    "id": "Regional-, Plexus- und Spinalanästhesie",
+    "cat": "n",
+    "title": "Regional-, Plexus- und Spinalanästhesie",
+    "kw": "betäubung nervenblockade rückenmark ivra tourniquet",
+    "sections": [
+      {
+        "h": "Regional und Plexus (Arm oder Bein, Patient wach)",
+        "items": [
+          "Haut desinfizieren, Nadel oder Katheter einführen (oft mit Ultraschall), Mittel z. B. Lidocain spritzen"
+        ]
+      },
+      {
+        "h": "Spinal (Unterkörper, 1–2 Std.)",
+        "items": [
+          "Punktionsstelle am Rücken desinfizieren, lokal betäuben, Spinalnadel setzen, Mittel in den Spinalraum"
+        ]
+      },
+      {
+        "h": "IVRA (ca. 1 Std.)",
+        "items": [
+          "Tourniquet anlegen, Extremität blutleer machen, Mittel in die Vene"
+        ]
+      }
+    ],
+    "me": [
+      "/me führt vorsichtig die Nadel ein und überprüft die Betäubung",
+      "/me bereitet die Punktionsstelle am Rücken vor",
+      "/me spritzt das Betäubungsmittel langsam in den Spinalraum",
+      "/me wartet, bis der Unterkörper betäubt ist",
+      "Notiz: Verlauf der Betäubung und Empfindung regelmäßig prüfen"
+    ]
+  },
+  {
+    "id": "Herzinfarkt",
+    "cat": "o",
+    "title": "Herzinfarkt",
+    "kw": "herz stent katheter lisinopril ballon",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Herzmuskel bekommt zu wenig Sauerstoff",
+          "Ursache: ein Herzkranzgefäß ist verengt oder verschlossen"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Gefäßerweiterung medikamentös (z. B. mit Lisinopril)",
+          "Katheter mit Ballon und Stent öffnet das verengte Herzgefäß"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Gefäßerweiternde Medikation geben (z. B. Lisinopril)",
+          "Narkose, Katheter über die Armarterie zum verengten Herzgefäß führen",
+          "Kontrastmittel und Röntgen: Position prüfen",
+          "Ballon aufblasen, Stent setzen, Arterie offen halten",
+          "Katheter entfernen, Wunde versorgen, überwachen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Katheter, Röntgengerät, Kontrastmittel, Ballon und Stent"
+        ]
+      }
+    ],
+    "me": [
+      "/me gibt dem Patienten die verordnete Gefäßmedikation",
+      "/me führt den Katheter vorsichtig über die Armarterie ein",
+      "/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät",
+      "/me platziert den Stent und bläst den Miniaturballon auf",
+      "/me entfernt den Katheter und versorgt die Wunde",
+      "/me überwacht die Vitalwerte, während der Patient aus der Narkose erwacht",
+      "Notiz: Vitalwerte bis zum Aufwachen aus der Narkose engmaschig kontrollieren"
+    ]
+  },
+  {
+    "id": "Gesplitterter Bruch",
+    "cat": "o",
+    "title": "Gesplitterter Bruch",
+    "kw": "knochen osteosynthese platte schrauben heparin",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Knochenstücke lassen sich nicht mehr zusammenfügen oder sind verschoben",
+          "Röntgen zeigt die genaue Lage"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Operative Fixierung mit Platte und Zugschrauben",
+          "Heparin gegen Thrombose"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Röntgenbild zur Beurteilung anfertigen",
+          "Betäuben und Operationsstelle desinfizieren",
+          "Knochen mit Skalpell freilegen",
+          "Splitter mit Pinzette entfernen, Metallplatte und Zugschrauben setzen",
+          "Haut schließen und Heparin gegen Thrombose geben"
+        ]
+      },
+      {
+        "h": "Nachsorge",
+        "items": [
+          "Vitalwerte und Infektionen überwachen, Heparin weitergeben, regelmäßig röntgen"
+        ]
+      }
+    ],
+    "me": [
+      "/me erstellt ein Röntgenbild zur Beurteilung des Bruchs",
+      "/me desinfiziert die Operationsstelle gründlich",
+      "/me fixiert die Bruchfragmente mit Platte und Zugschrauben",
+      "/me überwacht die Vitalwerte und verabreicht Heparin",
+      "Notiz: Nachsorge und regelmäßige Röntgenkontrollen einplanen"
+    ]
+  },
+  {
+    "id": "Schädel-Hirn-Trauma",
+    "cat": "o",
+    "title": "Schädel-Hirn-Trauma",
+    "desc": "Verletzung von Schädelknochen oder Gehirn durch Unfall, Sturz oder Gewalt. Gefahr durch Blutungen und erhöhten Hirndruck.",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "items": [
+          "CT oder MRT (Blutungen, Brüche, Schwellungen)",
+          "Neurotests: Bewusstsein, Sprache, Pupillenreaktion",
+          "SpO₂, Blutdruck, Puls und Hirndruck überwachen"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Operation: Schädeldecke öffnen und Bruchstücke entfernen",
+          "Druck senken, Schädelplatte einsetzen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Narkose einleiten, Bereich rasieren",
+          "Kopfhaut desinfizieren, Schädeldecke eröffnen",
+          "Bruchstücke entfernen, Schädelplatte zur Stabilisierung anpassen",
+          "Dura öffnen, Flüssigkeit absaugen, Druck senken",
+          "Dura verschließen, Operationsgebiet spülen, Kopfhaut klammern",
+          "Sterilen Verband anlegen, danach Vitalwerte, Hirndruck und Sprache kontrollieren"
+        ]
+      },
+      {
+        "h": "Richtwerte",
+        "items": [
+          "Hirndruck (ICP): normal unter 15 mmHg, kritisch über 20",
+          "SpO₂ über 95 %, Blutdruck systolisch über 100 mmHg",
+          "GCS (Bewusstsein): 3–15"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft Bewusstsein und Pupillenreaktion des Patienten",
+      "/me legt venösen Zugang und bereitet die Narkoseeinleitung vor",
+      "/me desinfiziert den betroffenen Kopfbereich und eröffnet die Schädeldecke",
+      "/me entfernt vorsichtig Frakturfragmente und passt die Schädelplatte an",
+      "/me saugt überschüssige Flüssigkeit ab und verschließt die Dura",
+      "/me klammert die Kopfhaut und legt einen sterilen Verband an",
+      "Notiz: Hirndruck und Bewusstsein während der Nachsorge engmaschig kontrollieren"
+    ]
+  },
+  {
+    "id": "Brustverletzung (Thoraxtrauma)",
+    "cat": "o",
+    "title": "Brustverletzung (Thoraxtrauma)",
+    "desc": "Verletzung von Brustkorb, Organen und angrenzenden Strukturen. Stumpf: keine offene Wunde (Rippen, Sternum, Wirbelsäule, Lunge). Penetrierend: offene Wunde, z. B. Stich oder Schuss, oft mit Gefahr für Lunge und Herz.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Thoraxdrainage saugt Blut und Luft aus dem Brustraum",
+          "Eingriff unter Narkose"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Narkose einleiten und Patienten vorbereiten",
+          "Einstich- oder Schnittstelle desinfizieren, steriles Lochtuch auflegen",
+          "Schnitt durch Rippen- und Lungenfell setzen",
+          "Thoraxdrainage einbringen, Blut und Luft absaugen",
+          "Vitalwerte während des Eingriffs überwachen",
+          "Einschnitt vernähen, Narkose beenden"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Röntgen oder CT (Brüche, Pneumothorax)",
+          "Thoraxdrainage zur Absaugung von Blut und Luft",
+          "Vitalwertmonitor (EKG, Blutdruck, Puls, SpO₂)"
+        ]
+      }
+    ],
+    "me": [
+      "/me leitet die Narkose ein und bereitet den Patienten für den Eingriff vor",
+      "/me desinfiziert die Einstichstelle und legt das Lochtuch auf",
+      "/me führt den Schnitt durch Rippen- und Lungenfell aus",
+      "/me bringt die Thoraxdrainage ein und überwacht die Vitalwerte",
+      "/me vernäht den Einschnitt und beendet die Narkose",
+      "Notiz: Atmung und Kreislauf nach dem Eingriff engmaschig überwachen"
+    ]
+  },
+  {
+    "id": "Kollabierte Lunge (Pneumothorax)",
+    "cat": "o",
+    "title": "Kollabierte Lunge (Pneumothorax)",
+    "desc": "Luft gelangt in den Pleuraspalt, die Lunge fällt teilweise oder ganz zusammen. Ursachen: Stich- oder Schussverletzung, Rippenbruch, Lungenerkrankung oder spontan. Symptome: Atemnot, Brustschmerzen, vermindertes Atemgeräusch.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Thoraxdrainage entfernt die Luft aus dem Brustraum",
+          "Die Lunge entfaltet sich danach wieder"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Einstichstelle am Brustkorb desinfizieren",
+          "Kleinen Schnitt zwischen den Rippen setzen",
+          "Drainage einführen und an Absaug- oder Wasserballonsystem anschließen",
+          "Vitalwerte und Lungenentfaltung per Röntgen oder Ultraschall überwachen",
+          "Drainage fixieren, Haut verschließen",
+          "Lungenfunktion kontrollieren, Drainage nach vollständiger Entfaltung entfernen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Röntgen oder CT, Thoraxdrainage oder Saugdrainage, steriles OP-Besteck, Vitalwertmonitor"
+        ]
+      }
+    ],
+    "me": [
+      "/me desinfiziert die Einstichstelle am Brustkorb",
+      "/me führt den Schnitt zwischen den Rippen durch",
+      "/me platziert die Thoraxdrainage und verbindet sie mit dem Absaugsystem",
+      "/me überwacht die Vitalwerte und kontrolliert die Lungenexpansion",
+      "/me fixiert die Drainage und verschließt die Haut",
+      "Notiz: Lungenfunktion nach dem Entfernen der Drainage kontrollieren"
+    ]
+  },
+  {
+    "id": "Durchschuss und innere Blutungen",
+    "cat": "o",
+    "title": "Durchschuss und innere Blutungen",
+    "desc": "Penetrierende Verletzung mit schwerer innerer Blutung, wenn eine Arterie getroffen ist. Symptome: Blutdruckabfall, schneller Puls, blasse Haut, Schwindel, Bewusstlosigkeit.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Blutung mit Arterienklemmen stoppen",
+          "Arterie mit Kunststoffgefäß oder Patch rekonstruieren"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Operationsbereich vorbereiten und steril abdecken",
+          "Wunde mit Hautklammern oder Schnitt öffnen",
+          "Arterienklemmen setzen und Blutung stoppen",
+          "Blut absaugen, Wunde mit Ringerlösung spülen",
+          "Kunststoffgefäß oder Patch einnähen und Arterie rekonstruieren",
+          "Gefäßnaht fixieren, Wunde schließen, Schmerzmittel geben, Vitalwerte überwachen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Steriles OP-Besteck, Arterienklemmen, Absauggerät, Ringerlösung, Kunststoffgefäß oder Patch, Vitalwertmonitor"
+        ]
+      }
+    ],
+    "me": [
+      "/me öffnet die Wunde vorsichtig, um Zugang zur verletzten Arterie zu bekommen",
+      "/me setzt Arterienklemmen und stoppt die Blutung",
+      "/me saugt Blut ab und spült die Wunde mit Ringerlösung",
+      "/me näht ein Kunststoffgefäß ein, um die Arterie zu rekonstruieren",
+      "/me schließt die Wunde und überwacht die Vitalwerte",
+      "Notiz: Durchblutung der betroffenen Extremität nach dem Eingriff kontrollieren"
+    ]
+  },
+  {
+    "id": "Korrosion durch SCP-106 (Pocket Dimension)",
+    "cat": "o",
+    "title": "Korrosion durch SCP-106 (Pocket Dimension)",
+    "desc": "Der Korrosionseffekt von SCP-106 zerstört Gewebe rasant, ähnlich einer nekrotisierenden Hautinfektion. Symptome: starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbung (blass bis schwarz), Schwellung. Unbehandelt droht Sepsis.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Totes Gewebe entfernen, gesunde Haut transplantieren",
+          "Defekte mit Kunststoffimplantaten füllen",
+          "Antibiotika (nur im RP)"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Patienten vorbereiten, steril abdecken und Kochsalzlösung i.v. zur Kreislaufstabilisierung geben",
+          "Betroffene Bereiche einschneiden und das Ausmaß der Nekrose bestimmen",
+          "Abgestorbenes Gewebe entfernen, gesundes erhalten und über eine Amputation entscheiden",
+          "An wichtigen Stellen (Gesicht, Hände, Gelenke) Vollhaut transplantieren",
+          "Kunststoffimplantate in verbleibende Defekte einsetzen",
+          "Heilsalbe auftragen, sterile Verbände anlegen, Antibiotika geben und Wundheilung kontrollieren"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "OP-Besteck, Infusion mit Kochsalzlösung, Vollhaut zur Transplantation, Kunststoffimplantate, Vitalwertmonitor"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft die betroffene Stelle auf Ausmaß der Korrosion",
+      "/me macht präzise Einschnitte, um totes Gewebe zu identifizieren",
+      "/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut",
+      "/me setzt Kunststoffimplantate an beschädigten Stellen ein",
+      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte",
+      "Notiz: Wundheilung und Vitalwerte in den Folgetagen kontrollieren"
+    ]
+  },
+  {
+    "id": "Amputation",
+    "cat": "o",
+    "title": "Amputation",
+    "desc": "Chirurgische Entfernung eines Körperteils bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel: Lebensgefahr abwenden und gute Wundheilung ermöglichen.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Körperteil unter Narkose und Tourniquet chirurgisch entfernen",
+          "Stumpf versorgen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Narkose einleiten, ggf. Plexusblockade gegen Schmerzen",
+          "Tourniquet oberhalb des Bereichs anlegen (verhindert Blutverlust)",
+          "Haut zylindrisch ausschneiden und Zugang zu Gelenk oder Knochen schaffen",
+          "Gelenk trennen, Knochen abtrennen, kürzen und abstumpfen, mit Splint fixieren",
+          "Blutgefäße mit Kauterpinzette veröden und Haut über dem Knochen sorgfältig vernähen",
+          "Aufwachen aus der Narkose, Vitalwerte überwachen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Narkoseausrüstung, Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial, sterile Verbände"
+        ]
+      }
+    ],
+    "me": [
+      "/me leitet die Narkose ein und legt das Tourniquet an",
+      "/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe",
+      "/me fixiert den Knochen mit einem Splint und verödet Gefäße",
+      "/me vernäht die Haut und legt sterile Verbände an",
+      "/me überwacht den Patienten beim Erwachen aus der Narkose",
+      "Notiz: Stumpf nach dem Eingriff regelmäßig auf Wundheilung prüfen"
+    ]
+  },
+  {
+    "id": "Schlaganfall",
+    "cat": "o",
+    "title": "Schlaganfall",
+    "desc": "Ein Blutgefäß im Gehirn ist verstopft, das Hirngewebe bekommt zu wenig Sauerstoff. Folgen: Lähmungen, Sprach- und Sinnesstörungen, Koordinationsprobleme, Bewusstlosigkeit.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Blutdruck senken (z. B. mit Esmolol)",
+          "Gerinnsel auflösen mit Alteplase als Infusion",
+          "Stent-Retriever entfernt das Gerinnsel mechanisch"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Vitalwerte prüfen, ggf. Sauerstoff über Maske geben",
+          "Blutdruck senken (z. B. mit Esmolol)",
+          "Gerinnsel auflösen (Alteplase als Infusion)",
+          "Katheter über die Leistenarterie einführen",
+          "Stent-Retriever einsetzen und Gerinnsel entfernen",
+          "Mit Kontrastmittel und Röntgen navigieren, Vitalwerte während und nach dem Eingriff überwachen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "CT-Scan (CCT) zur Lage des Gerinnsels, Bluttests, Katheter mit Stent-Retriever, Kontrastmittel und Röntgen"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft die Vitalwerte des Patienten",
+      "/me legt eine Sauerstoffmaske an",
+      "/me spritzt Esmolol zur Blutdruckkontrolle",
+      "/me verabreicht die Alteplase-Infusion",
+      "/me führt den Katheter über die Leistenarterie ein",
+      "/me navigiert den Stent-Retriever mithilfe von Kontrastmittel und Röntgenbildern",
+      "Notiz: Durchblutung nach dem Eingriff überprüfen"
+    ]
+  },
+  {
+    "id": "Lebertrauma",
+    "cat": "o",
+    "title": "Lebertrauma",
+    "desc": "Verletzung der Leber durch stumpfe Gewalt (Unfall, Sturz, Schlag) oder penetrierende Gewalt (Messer, Schuss). Die Leber ist stark durchblutet, schon kleine Risse können lebensgefährlich bluten.",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Ultraschall oder CT bei Bauchverletzungen oder großen Blutergüssen",
+          "Verdacht auf innere Blutung"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Blutung stillen mit Druck und Fibrinkleber",
+          "Bei schwerer Blutung Gefäße verschließen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Hautschnitt setzen, Bauch öffnen, vorhandenes Blut absaugen",
+          "Leichte Blutung: mit sterilen Tüchern Druck ausüben, dann Fibrinkleber auftragen",
+          "Schwere Blutung: verletzte Arterien oder Venen chirurgisch verschließen",
+          "Vitalwerte und Leberwerte kontrollieren"
+        ]
+      },
+      {
+        "h": "Leberwerte",
+        "items": [
+          "GOT (AST): normal unter ca. 45 U/l, erhöht bei Leberverletzung",
+          "GPT (ALT): normal unter ca. 45 U/l, Marker für Leberzellschäden",
+          "Bilirubin gesamt: 0,3–1,2 mg/dl, erhöht bei gestörter Leberfunktion oder Gallenabfluss"
+        ]
+      }
+    ],
+    "me": [
+      "/me untersucht den Bauchraum per Ultraschall auf freie Flüssigkeit",
+      "/me legt einen venösen Zugang und bereitet Blutabnahme für Leberwerte vor",
+      "/me öffnet vorsichtig den Bauchraum und saugt Blut ab",
+      "/me trägt Fibrinkleber auf die verletzte Stelle auf",
+      "/me kontrolliert abschließend die Vitalwerte und dokumentiert die Leberwerte",
+      "Notiz: Leberwerte im Verlauf wiederholt bestimmen"
+    ]
+  },
+  {
+    "id": "Hüftersatz",
+    "cat": "o",
+    "title": "Hüftersatz",
+    "desc": "Chirurgischer Eingriff, bei dem ein beschädigtes oder schmerzhaftes Hüftgelenk durch eine künstliche Prothese ersetzt wird. Ziel: Schmerzen lindern, Beweglichkeit wiederherstellen, Lebensqualität verbessern.",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "items": [
+          "Hüftgelenk stark verschlissen oder nach Bruch nicht mehr belastbar",
+          "Starke Schmerzen, Gehunfähigkeit, eingeschränkte Beweglichkeit",
+          "Diagnose über Röntgen oder CT bestätigen"
+        ],
+        "mode": "bullet"
+      },
+      {
+        "h": "Behandlung",
+        "items": [
+          "Gelenkersatz durch Totalendoprothese (TEP) nach ärztlicher Indikation",
+          "Antibiose und Thromboseprophylaxe nach Anordnung",
+          "Schmerztherapie und frühe Mobilisation"
+        ],
+        "mode": "bullet"
+      },
+      {
+        "h": "Ablauf",
+        "items": [
+          "Patient in Narkose bringen und in Seitenlage lagern",
+          "Hautschnitt setzen, Muskulatur schichtweise darstellen",
+          "Gelenkkopf entfernen, Pfanne vorbereiten",
+          "Pfanne und Schaft einsetzen, Gelenkstabilität prüfen",
+          "Redon-Drainage einlegen, schichtweise verschließen",
+          "Hautnaht, steriler Verband, Nachsorge"
+        ],
+        "mode": "number"
+      }
+    ],
+    "me": [
+      "/me desinfiziert das Operationsfeld großflächig und deckt es steril ab",
+      "/me lagert den Patienten in Seitenlage und fixiert ihn",
+      "/me setzt den Hautschnitt und präpariert schichtweise bis zum Gelenk",
+      "/me entfernt den Gelenkkopf und bereitet die Pfanne vor",
+      "/me setzt die Prothese ein und prüft die Gelenkstabilität",
+      "/me legt eine Redon-Drainage ein und verschließt die Wunde schichtweise",
+      "Notiz: Antibiose und Thromboseprophylaxe nach ärztlicher Anordnung",
+      "Notiz: Redon-Drainage entfernen, sobald die Sekretmenge gering ist"
+    ]
+  },
+  {
+    "id": "Trommelfellriss",
+    "cat": "o",
+    "title": "Trommelfellriss",
+    "desc": "Ein geplatztes Trommelfell entsteht durch starken Druck oder laute Geräusche (z. B. Explosionen) und führt zu Schmerzen, Hörverlust oder Blutungen im Ohr.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Trommelfell glätten und mit Silikonfolie schienen",
+          "Ohrentropfen gegen Schmerz und Entzündung"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Narkose einleiten, um Schmerzen zu vermeiden",
+          "Ohr reinigen, Schmutz und Blut entfernen",
+          "Eingerollte Ränder des gerissenen Trommelfells glätten und Silikonfolie als Schiene einsetzen",
+          "Ohr erneut spülen, um Rückstände zu entfernen",
+          "Schmerzlindernde Ohrentropfen verabreichen, bei Bedarf Hörgerät einsetzen",
+          "Narkose beenden und den Patienten engmaschig überwachen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Otoskop, Narkoseausrüstung, Silikonfolie zur Schienung, Ohrenspüllösung und sterile Tupfer"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft das Trommelfell mithilfe des Otoskops",
+      "/me reinigt das Ohr vorsichtig",
+      "/me glättet die eingerollten Ränder des Trommelfells",
+      "/me legt die Silikonfolie als Schiene ein",
+      "/me tropft schmerzlindernde Ohrentropfen ein",
+      "/me überwacht den Patienten nach Beendigung der Narkose",
+      "Notiz: Hörvermögen nach der Abheilung kontrollieren"
+    ]
+  },
+  {
+    "id": "Gehirntumor (Wach-OP)",
+    "cat": "o",
+    "title": "Gehirntumor (Wach-OP)",
+    "desc": "Abnorme Zellwucherung im Gehirn, die Druck auf benachbarte Strukturen ausübt und neurologische Funktionen beeinträchtigt. Die Behandlung hängt von Lage, Größe und Art des Tumors ab.",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "items": [
+          "MRT oder CT: Tumorgröße, Lage und angrenzendes Gewebe",
+          "Fluoreszenzmittel macht den Tumor während der OP sichtbar",
+          "Neurologische Tests: Sprache, Bewegung, Sensorik"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Tumor beim wachen Patienten mit Ultraschall oder Laser präzise entfernen",
+          "Sprache und Bewegung laufend prüfen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Wach-OP immer von mindestens zwei Chirurgen durchführen, lokale Betäubung am Kopf",
+          "Kopf in stabiler Halterung fixieren, zweiter Arzt prüft während der OP Sprache und Funktionen",
+          "Hautschnitt setzen, Schädelknochen mit Bohrungen und Sägen öffnen",
+          "Hirnhaut öffnen und mit Spreizern präzisen Zugang zum Tumor schaffen",
+          "Tumor mit Ultraschall- oder Lasersystem präzise entfernen, Blut absaugen, ggf. Kunstgewebe einsetzen",
+          "Operationsgebiet sterilisieren, Dura verschließen, Kopfhaut nähen, sterilen Verband anlegen"
+        ]
+      },
+      {
+        "h": "Überwachung",
+        "items": [
+          "Puls, Blutdruck und Sauerstoffsättigung kontinuierlich, dazu regelmäßige Sprach- und Bewegungschecks"
+        ]
+      }
+    ],
+    "me": [
+      "/me überprüft Bewusstsein und Vitalwerte des Patienten vor OP-Beginn",
+      "/me fixiert den Kopf in der stabilen Halterung und injiziert lokale Betäubung",
+      "/me führt Schnitt durch die Haut und öffnet den Schädelknochen",
+      "/me entfernt Tumor präzise mit dem Ultraschall-Laser und saugt Blut ab",
+      "/me verschließt die Dura, näht die Kopfhaut und legt sterilen Verband an",
+      "/me überprüft fortlaufend neurologische Funktionen während der Wach-OP",
+      "Notiz: Sprache und Bewegung während der Operation dokumentieren"
+    ]
+  },
+  {
+    "id": "Blutvergiftung (Sepsis)",
+    "cat": "o",
+    "title": "Blutvergiftung (Sepsis)",
+    "desc": "Lebensbedrohliche Reaktion des Körpers auf eine Infektion: Bakterien oder Giftstoffe im Blut lösen eine schwere Entzündung aus. Ursachen: infizierte Wunden, Lungenentzündung, Harnwegs- oder Bauchinfektionen. Symptome: Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck, Verwirrtheit.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Kreislauf stabilisieren, Breitbandantibiotika geben",
+          "Dialyse zur Entfernung giftiger Substanzen und überschüssiger Flüssigkeit",
+          "Infektionsquelle operativ entfernen, falls möglich"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Venösen Zugang für Infusionen und Medikamente legen",
+          "Kochsalzlösung zur Stabilisierung des Kreislaufs geben",
+          "Breitbandantibiotika gegen die Infektion verabreichen",
+          "Dialyse einleiten (entfernt giftige Substanzen und überschüssige Flüssigkeit)",
+          "Infektionsquelle operativ entfernen, falls möglich",
+          "Bei starkem Blutverlust Bluttransfusion durchführen"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Venöser Zugang (z. B. Shaldon-Katheter), Infusionssysteme für Kochsalzlösung und Heparin, Blutkulturen und Labor, Dialysegerät, EKG, Blutdruck- und Sauerstoffmonitor, OP-Besteck"
+        ]
+      }
+    ],
+    "me": [
+      "/me legt einen venösen Zugang für Infusionen und Medikamente",
+      "/me verabreicht Kochsalzlösung und Antibiotika",
+      "/me platziert einen Shaldon-Katheter und startet die Dialyse",
+      "/me entfernt operativ die Infektionsquelle, falls erforderlich",
+      "/me überwacht die Vitalwerte und passt die Therapie an",
+      "Notiz: Infektionszeichen und Vitalwerte im Verlauf dokumentieren"
+    ]
+  },
+  {
+    "id": "Unterschenkelprothese",
+    "cat": "o",
+    "title": "Unterschenkelprothese",
+    "desc": "Ersetzt nach einer Amputation das entfernte Bein, ermöglicht Mobilität und verteilt den Druck auf den Stumpf.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Prothese über Silikonhaftschaft am Stumpf befestigen",
+          "Druckverteilung und Sitz prüfen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Silikongel auf Stumpf und Haftschaft auftragen",
+          "Silikonhaftschaft am Stumpf anlegen",
+          "Prothese am Schaft über den Haftschaft befestigen",
+          "Auf Druckstellen und korrekte Sitzposition kontrollieren"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Silikonhaftschaft als Verbindung zwischen Stumpf und Prothese, Prothesenschaft mit Schraubverbindungen, Gel zur Druckverteilung"
+        ]
+      }
+    ],
+    "me": [
+      "/me trägt Gel auf den Stumpf auf und setzt den Silikonhaftschaft",
+      "/me befestigt die Prothese am Schaft und prüft den Sitz",
+      "/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten",
+      "/me prüft die Druckstellen am Stumpf",
+      "/me kontrolliert die Schraubverbindungen des Prothesenschafts",
+      "Notiz: Druckstellen am Stumpf regelmäßig kontrollieren"
+    ]
+  },
+  {
+    "id": "Verätzungen",
+    "cat": "o",
+    "title": "Verätzungen",
+    "desc": "Direkter Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen (Laborunfälle, industrielle Chemikalien, gefährliche SCPs). Symptome: starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden, bei großen Flächen auch Reaktionen im ganzen Körper.",
+    "sections": [
+      {
+        "h": "Behandlung",
+        "mode": "bullet",
+        "items": [
+          "Sofort lange spülen und Kleidung entfernen",
+          "Je nach Grad Salbe, Wundversorgung oder chirurgische Entfernung",
+          "Antibiotika bei offenen Wunden"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Betroffene Haut sofort mindestens 15–20 Minuten mit viel Wasser oder NaCl spülen",
+          "Kontaminierte Kleidung und Rückstände vorsichtig entfernen",
+          "1. Grad: Reinigung, Kühlung, schmerzlindernde Salbe",
+          "2. Grad: abgestorbenes Gewebe entfernen, steril abdecken, Schmerzmittel geben",
+          "3. und 4. Grad: Nekrosen chirurgisch entfernen, ggf. Hauttransplantation, engmaschig überwachen",
+          "Verbände fixieren und Heilungsverlauf regelmäßig kontrollieren"
+        ]
+      },
+      {
+        "h": "Geräte",
+        "items": [
+          "Steriles Spülset (NaCl oder Wasser), Wundverbände und Brandwundenauflagen, Pinzette und Skalpell, Schmerzmittel und Antibiotika, Vitalwertmonitor, bei schweren Fällen Transplantationsbesteck"
+        ]
+      }
+    ],
+    "me": [
+      "/me spült die betroffene Hautpartie gründlich mit sterilem Wasser",
+      "/me entfernt kontaminierte Kleidung und Rückstände vorsichtig",
+      "/me trägt Salbe oder Gel auf und deckt die Wunde steril ab",
+      "/me entfernt abgestorbenes Gewebe bei tieferen Verätzungen",
+      "/me legt neue sterile Verbände an und überwacht die Vitalwerte",
+      "Notiz: Heilungsverlauf der betroffenen Haut regelmäßig kontrollieren"
+    ]
+  },
+  {
+    "id": "Verbrennung 3./4. Grades",
+    "cat": "o",
+    "title": "Verbrennung 3./4. Grades",
+    "desc": "Tiefe Verbrennung, die alle Hautschichten zerstört, bei Grad 4 auch Unterhaut, Muskeln oder Knochen. Die Haut wirkt weiß, braun oder schwarz und ledrig. Im Zentrum fehlt oft das Schmerzempfinden. Die Wunde heilt nicht von selbst, deshalb ist eine Operation nötig.",
+    "kw": "brand verbrennung haut transplantat nekrose hautlappen",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "items": [
+          "Haut weiß, braun oder schwarz, trocken und ledrig",
+          "Im Zentrum oft kaum Schmerz, am Rand starke Schmerzen",
+          "Meist keine Blasen, die Hautschicht ist zerstört"
+        ]
+      },
+      {
+        "h": "Behandlung",
+        "items": [
+          "Atemwege, Atmung und Kreislauf zuerst sichern",
+          "Bei großen Flächen Flüssigkeitsersatz nach ärztlicher Anordnung",
+          "Schmerzmittel und Antibiotika nach ärztlicher Anordnung",
+          "Verbrannte Kleidung und Schmuck entfernen, keine Fette oder Salben auf die frische Wunde"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Vitalwerte überwachen, Flüssigkeitsgabe nach Anordnung",
+          "Narkose einleiten, Wunde großzügig desinfizieren",
+          "Abgestorbenes Gewebe bis auf gesunde Schicht abtragen, Blutung stillen (Druck oder Koagulation)",
+          "Spalthaut oder Vollhaut vom Spenderbereich entnehmen und auf die Wunde auflegen",
+          "Transplantat fixieren, Spender- und Empfangsstelle steril verbinden",
+          "Nachsorge: Vitalwerte, Durchblutung des Transplantats und Infektionszeichen kontrollieren"
+        ]
+      }
+    ],
+    "me": [
+      "/me desinfiziert die Brandwunde und legt sterile Abdeckungen an",
+      "/me entfernt vorsichtig abgestorbenes Gewebe",
+      "/me entnimmt Hautlappen vom Spenderbereich",
+      "/me fixiert das Transplantat und verbindet die Wunde steril",
+      "/me überwacht die Vitalwerte des Patienten",
+      "Notiz: Bei großen Flächen Flüssigkeitsbedarf nach ärztlicher Anordnung festlegen"
+    ]
+  },
+  {
+    "id": "Untersuchungsgeräte und Laborwerte",
+    "cat": "o",
+    "title": "Untersuchungsgeräte und Laborwerte",
+    "desc": "Überblick über die gängigen Untersuchungsgeräte und die wichtigsten Laborwerte. Richtwerte gelten für Erwachsene und können je nach Labor abweichen.",
+    "kw": "labor blut untersuchung geräte ultraschall röntgen ct ekg",
+    "sections": [
+      {
+        "h": "Geräte",
+        "items": [
+          "Pulsoximeter: Sauerstoffsättigung (SpO₂) und Puls am Finger",
+          "Blutdruckmessgerät und Thermometer",
+          "EKG: Herzrhythmus über Elektroden",
+          "Otoskop: Trommelfell und Gehörgang",
+          "Ultraschall: Flüssigkeit im Bauchraum, Organe, Gefäße",
+          "Röntgen und CT: Brüche, Blutungen, Lage von Fremdkörpern"
+        ]
+      },
+      {
+        "h": "Laborwerte",
+        "items": [
+          "Leukozyten (weiße Blutkörperchen): 4–10 Tsd./µl, erhöht bei Infektion",
+          "Hämoglobin: Männer 13,5–17,5 g/dl, Frauen 12–16 g/dl, erniedrigt bei Blutverlust",
+          "Thrombozyten (Blutplättchen): 150–400 Tsd./µl, erniedrigt bei Blutungsneigung",
+          "CRP (Entzündungswert): unter 5 mg/l, erhöht bei Entzündung",
+          "Quick und INR: Hinweis auf die Blutgerinnung, bei Blutverdünnern wichtig"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "items": [
+          "Vitalwerte messen, dann die passende Untersuchung wählen",
+          "Blutprobe steril abnehmen und beschriften",
+          "Befunde mit den Richtwerten vergleichen und dokumentieren"
+        ]
+      }
+    ],
+    "me": [
+      "/me legt das Pulsoximeter am Finger an und liest die Sättigung ab",
+      "/me misst Blutdruck und Puls des Patienten",
+      "/me nimmt eine Blutprobe ab und beschriftet das Röhrchen",
+      "/me wertet die Laborwerte aus und dokumentiert sie",
+      "Notiz: Richtwerte gelten für Erwachsene und können je nach Labor abweichen"
+    ]
+  },
+  {
+    "id": "Paracetamol",
+    "cat": "m",
+    "title": "Paracetamol",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **10–15 mg pro kg KG**",
+          "Tageshöchstdosis: **4000 mg**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Leichte bis mittlere Schmerzen, Fieber; oral oder i.v. Selten Thrombozytopenie, Agranulozytose."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Paracetamol nach ärztlicher Anordnung vor",
+      "/me verabreicht Paracetamol nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Ibuprofen",
+    "cat": "m",
+    "title": "Ibuprofen",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **200–400 mg**",
+          "Tageshöchstdosis: **1200 mg (unter ärztlicher Begleitung bis 2400 mg)**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Leichte bis mittlere Schmerzen, Entzündung, Fieber. Nebenwirkungen: Bauchschmerzen, Übelkeit, Erbrechen."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Ibuprofen nach ärztlicher Anordnung vor",
+      "/me verabreicht Ibuprofen nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Metamizol",
+    "cat": "m",
+    "title": "Metamizol",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **500–1000 mg**",
+          "Tageshöchstdosis: **5000 mg**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Mittlere Schmerzen, Fieber, krampflösend; oral oder i.v. Nebenwirkungen: Benommenheit, Übelkeit, Erbrechen."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Metamizol nach ärztlicher Anordnung vor",
+      "/me verabreicht Metamizol nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Tramadol",
+    "cat": "m",
+    "title": "Tramadol",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **50–100 mg**",
+          "Tageshöchstdosis: **400 mg**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Opioid gegen mäßige bis starke Schmerzen; oral oder i.v. Nebenwirkungen: Übelkeit, Schweißausbrüche, Sedierung."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Tramadol nach ärztlicher Anordnung vor",
+      "/me verabreicht Tramadol nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Morphin",
+    "cat": "m",
+    "title": "Morphin",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **5–10 mg (subkutan meist 10 mg, i.v. max. 5 mg)**",
+          "Tageshöchstdosis: **keine Angabe**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Opiat gegen starke Schmerzen; subkutan (hält länger an) oder i.v. (wirkt in ca. 2 Min.). Nebenwirkungen: Übelkeit, Erbrechen, Schläfrigkeit."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Morphin nach ärztlicher Anordnung vor",
+      "/me verabreicht Morphin nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Fentanyl",
+    "cat": "m",
+    "title": "Fentanyl",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **0,14–0,35 mg**",
+          "Tageshöchstdosis: **keine Angabe**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Opioid, ca. 100-fach stärker als Morphin; Schmerzmittel und Narkose, i.v. Nebenwirkungen: Kopfschmerzen, Übelkeit, Verwirrtheit."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Fentanyl nach ärztlicher Anordnung vor",
+      "/me verabreicht Fentanyl nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Propofol",
+    "cat": "m",
+    "title": "Propofol",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **4–12 mg pro kg KG und Stunde (Erwachsene: 560 mg pro Stunde)**",
+          "Tageshöchstdosis: **keine Angabe**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Beruhigungs- und Narkosemittel, i.v. Nebenwirkungen: Schmerz an der Einstichstelle, Blutdruckabfall, Muskelzucken."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Propofol nach ärztlicher Anordnung vor",
+      "/me verabreicht Propofol nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Dexpanthenol (Bepanthen)",
+    "cat": "m",
+    "title": "Dexpanthenol (Bepanthen)",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **keine Angabe**",
+          "Tageshöchstdosis: **keine Höchstdosis**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Wundheilung der Haut, z. B. leichte Verbrennungen; Salbe oder Spray."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Dexpanthenol (Bepanthen) nach ärztlicher Anordnung vor",
+      "/me verabreicht Dexpanthenol (Bepanthen) nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Diclofenac (Voltaren)",
+    "cat": "m",
+    "title": "Diclofenac (Voltaren)",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **25 mg**",
+          "Tageshöchstdosis: **75 mg**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Schmerz und Entzündung, Hämatome; oral oder als Salbe. Nebenwirkungen: Magen-Darm-Beschwerden, Übelkeit."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Diclofenac (Voltaren) nach ärztlicher Anordnung vor",
+      "/me verabreicht Diclofenac (Voltaren) nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Dimenhydrinat (Vomex)",
+    "cat": "m",
+    "title": "Dimenhydrinat (Vomex)",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **50 mg**",
+          "Tageshöchstdosis: **400 mg (i.v. bis 180 mg)**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Übelkeit und Erbrechen; oral oder i.v. Nebenwirkungen: Benommenheit, Konzentrationsstörungen."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Dimenhydrinat (Vomex) nach ärztlicher Anordnung vor",
+      "/me verabreicht Dimenhydrinat (Vomex) nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Etilefrin",
+    "cat": "m",
+    "title": "Etilefrin",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **5 mg**",
+          "Tageshöchstdosis: **30 mg**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Erhöht niedrigen Blutdruck (Hypotonie); Tablette. Nebenwirkungen: Schweißausbrüche, Kopfschmerzen, Herzklopfen."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Etilefrin nach ärztlicher Anordnung vor",
+      "/me verabreicht Etilefrin nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Nitroglycerin (Nitrolingualspray)",
+    "cat": "m",
+    "title": "Nitroglycerin (Nitrolingualspray)",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **1–3 Sprühstöße sublingual**",
+          "Tageshöchstdosis: **i.v. max. 8 mg pro Stunde (selten 10)**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Senkt hohen Blutdruck; Spray unter die Zunge, auch als Infusion. Nebenwirkungen: Kopfschmerzen, Hautrötung, Schweißausbrüche."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Nitroglycerin (Nitrolingualspray) nach ärztlicher Anordnung vor",
+      "/me verabreicht Nitroglycerin (Nitrolingualspray) nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Epinephrin (Adrenalin)",
+    "cat": "m",
+    "title": "Epinephrin (Adrenalin)",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **ca. 0,35–0,7 mg (Erwachsene, Schock)**",
+          "Tageshöchstdosis: **keine Angabe**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Anaphylaktischer Schock, Herzstillstand. Nebenwirkungen: Herzklopfen, Angst, selten Herzinfarkt oder Herzstillstand."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Epinephrin (Adrenalin) nach ärztlicher Anordnung vor",
+      "/me verabreicht Epinephrin (Adrenalin) nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
   }
 ]

@@ -311,7 +311,10 @@ function checkRecord(x){   // null = gültig, sonst der Grund
   if (x.desc !== undefined && typeof x.desc !== 'string') return 'desc muss ein Text sein';
   if (x.kw !== undefined && typeof x.kw !== 'string') return 'kw muss ein Text sein';
   if (x.widget !== undefined && typeof x.widget !== 'boolean') return 'widget muss true oder false sein';
-  if (x.table !== undefined && x.table !== null && (!x.table || !Array.isArray(x.table.h) || !Array.isArray(x.table.r))) return 'table hat kein gültiges Format';
+  if (x.table !== undefined && x.table !== null) {
+    if (!x.table || !Array.isArray(x.table.h) || x.table.h.some(c => typeof c !== 'string')) return 'table.h muss eine Liste von Texten sein';
+    if (!Array.isArray(x.table.r) || x.table.r.some(row => !Array.isArray(row) || row.some(c => typeof c !== 'string'))) return 'table.r muss eine Liste von Zeilen sein; jede Zeile ist eine Liste von Texten';
+  }
   return null;
 }
 function normalizeRecord(x){   // feste Form, die die Anzeige erwartet
@@ -849,6 +852,7 @@ function runTests(){
   });
   T('Gültige Akte bekommt eine feste Form', () => { const q = parseData([{id: 'z', cat: 'b', title: 'Z', sections: [{h: 'Erkennung', items: ['x']}]}]).records[0]; ok(q.me.length === 0 && q.table === null && q.desc === '' && q.sections[0].h === 'Erkennung' && q.widget === false, 'Form falsch'); });
   T('Abschnitte ohne Überschrift werden erkannt', () => ok(parseData([{id: 'y', cat: 'b', title: 'Y', sections: [{h: '', items: []}]}]).problems.length === 1, 'nicht erkannt'));
+  T('Tabellen mit falschem Format werden erkannt', () => ok(parseData([{id: 't', cat: 'v', title: 'T', table: {h: ['a'], r: ['flach']}}]).problems.length === 1, 'nicht erkannt'));
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
   SET = {theme: 'dark', grid: 'auto', sec: 'closed', compact: false}; saveSet(); applySet(); closeModal();
