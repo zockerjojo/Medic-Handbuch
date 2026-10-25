@@ -166,15 +166,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Ruhigstellen, kühlen und komprimieren (PECH-Regel)",
-          "Schmerzmittel bei Bedarf",
-          "Bei starker Schwellung siehe [[Gelenkpunktion]]"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -186,6 +177,7 @@
       }
     ],
     "me": [
+      "/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten",
       "/me desinfiziert die Hände und legt einen Kühlakku auf die betroffene Stelle",
       "/me wickelt einen elastischen Verband um das verletzte Gelenk",
       "/me lagert den Fuß oder Arm vorsichtig hoch",
@@ -207,14 +199,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Flüssigkeit wird steril mit einer Hohlnadel aus dem Gelenk abgesaugt",
-          "Nach dem Eingriff Ruhigstellung und Kühlung"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -226,6 +210,7 @@
       }
     ],
     "me": [
+      "/me nimmt Hohlnadel, Spritze, Lochtuch, Desinfektionsmittel, Tupfer und Pflaster aus dem Sterilset",
       "/me bereitet sterile Materialien vor und desinfiziert die Einstichstelle",
       "/me deckt das Gelenk mit einem Lochtuch ab",
       "/me führt die Hohlnadel vorsichtig ins Gelenk ein und saugt Flüssigkeit ab",
@@ -248,14 +233,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Ruhigstellung mit Schiene oder Gips",
-          "Kühlung und Schmerzmittel bei Bedarf"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -268,6 +245,7 @@
       }
     ],
     "me": [
+      "/me nimmt Schiene, Gipsbinde, Kühlpack und Schmerzmittel aus dem Verbandskasten",
       "/me legt vorsichtig eine Schiene oder einen Gipsverband an",
       "/me platziert ein Kühlpack auf der verletzten Stelle",
       "/me hebt die Extremität leicht an und stützt sie",
@@ -291,32 +269,25 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Blutung stoppen, Kugel entfernen, Wunde verschließen",
-          "Schmerzmittel und Antibiotikum (z. B. Amoxicillin/Clavulansäure)"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Druckverband anlegen",
+          "Druckverband anlegen und die Blutung stillen",
           "Lokale Betäubung mit Lidocain",
-          "Wunde mit Kanüle ausspülen und Kugel mit steriler Pinzette entfernen",
+          "Wunde mit einer Knopfkanüle ausspülen und die Kugel mit steriler Pinzette entfernen",
           "Blut absaugen und erneut desinfizieren",
-          "Wunde verschließen (Klammern, Nähen oder Kleben)",
+          "Wundverschluss mit Klammern, Nähten oder Klebestreifen",
           "Schmerzmittel und Antibiotikum geben"
         ]
       }
     ],
     "me": [
-      "/me stillt die Blutung mit einem sterilen Druckverband",
-      "/me injiziert Lidocain zur lokalen Betäubung",
+      "/me nimmt Druckverband, Lidocain, Knopfkanüle, sterile Pinzette, Klammern und Nahtmaterial aus dem Notfallkoffer",
+      "/me legt einen sterilen Druckverband an, um die Blutung zu stillen",
+      "/me betäubt die Wunde mit Lidocain",
       "/me spült die Wunde mit einer Knopfkanüle aus",
-      "/me entfernt die Kugel vorsichtig mit sterilen Pinzetten",
-      "/me verschließt die Wunde durch Klammern, Nähen oder Kleben",
+      "/me entfernt die Kugel mit einer sterilen Pinzette",
+      "/me führt den Wundverschluss mit Klammern, Nähten oder Klebestreifen durch",
       "Notiz: Auf Blutungen und Anzeichen einer Infektion überwachen"
     ]
   },
@@ -336,15 +307,6 @@
         "mode": "bullet"
       },
       {
-        "h": "Behandlung",
-        "items": [
-          "Blutung mit Druckverband stillen",
-          "Wunde gründlich spülen, Fremdkörper und abgestorbenes Gewebe entfernen",
-          "Lokale Betäubung mit Lidocain, anschließend Naht mit Einzelknopfnähten"
-        ],
-        "mode": "bullet"
-      },
-      {
         "h": "Ablauf",
         "items": [
           "Vitalwerte prüfen und Blutung kontrollieren",
@@ -357,6 +319,7 @@
       }
     ],
     "me": [
+      "/me nimmt Lidocain, Wundspülung, sterile Tücher, Nahtmaterial und Verbandmaterial aus dem Sterilset",
       "/me spült die Wunde gründlich mit steriler Lösung",
       "/me desinfiziert die Wunde und die umliegende Haut",
       "/me betäubt den Wundrand mit Lidocain",
@@ -381,16 +344,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Kühlen unter fließendem Wasser",
-          "Wundpflege mit Bepanthen-Schaumspray",
-          "Abdeckung mit Brandwunden-Pflaster",
-          "Schmerzmittel bei Bedarf"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -402,6 +355,7 @@
       }
     ],
     "me": [
+      "/me nimmt Bepanthen-Schaumspray, Brandwunden-Pflaster und Schmerzmittel aus dem Verbandskasten",
       "/me kühlt die verbrannte Stelle unter fließendem Wasser",
       "/me trägt Bepanthen-Schaumspray auf",
       "/me legt Pflaster auf die Brandstelle",
@@ -423,15 +377,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Kühlen mit Kühlpack und Schmerzmittel bei Bedarf",
-          "Alternativ PECH-Regel (siehe [[Verstauchung]])",
-          "Brustprellung: Brustkorsett oder fester Verband zur Stütze"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -443,6 +388,7 @@
       }
     ],
     "me": [
+      "/me nimmt Kühlpack, elastische Binde, Brustkorsett und Schmerzmittel aus dem Verbandskasten",
       "/me untersucht die verletzte Stelle auf Schwellung und Druckschmerz",
       "/me legt ein Kühlpack auf die Prellung",
       "/me kontrolliert bei Brustprellung Atmung und Atemgeräusche",
@@ -465,15 +411,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Cortison-Infusion gegen Entzündung",
-          "Schmerzlindernde und antibakterielle Ohrentropfen (z. B. Colistin)",
-          "Schwerer Trommelfellriss: operative Reparatur (siehe [[Trommelfellriss]])"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -487,6 +424,7 @@
       }
     ],
     "me": [
+      "/me nimmt Otoskop, Ohrentropfen, Infusionsbesteck mit Cortison und sterile Tupfer aus dem Untersuchungskoffer",
       "/me untersucht das Ohr mit einem Otoskop",
       "/me reinigt vorsichtig Blut und Fremdkörper aus dem Ohr",
       "/me verabreicht eine Cortison-Infusion",
@@ -511,15 +449,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Reinigen, desinfizieren, Fremdkörper und totes Gewebe entfernen, vernähen oder Drainage legen",
-          "Antibiotikum (z. B. Amoxicillin/Clavulansäure)",
-          "Bei Tierbiss Tollwut-Impfung, Tetanus auffrischen, wenn die letzte Auffrischung über 10 Jahre her ist"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -533,6 +462,7 @@
       }
     ],
     "me": [
+      "/me nimmt Druckverband, Desinfektionsmittel, Lokalanästhetikum, Nahtmaterial, Drainage und Antibiotika aus dem Notfallkoffer",
       "/me stillt die Blutung mit einem Druckverband",
       "/me reinigt die Wunde gründlich und desinfiziert sie",
       "/me injiziert ein Lokalanästhetikum vor der chirurgischen Reinigung",
@@ -557,15 +487,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Aktive innere Erwärmung mit erwärmten Infusionen (ca. 43 °C)",
-          "Rettungsdecke gegen weiteren Wärmeverlust",
-          "Atmung und Kreislauf laufend überwachen"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -579,6 +500,7 @@
       }
     ],
     "me": [
+      "/me nimmt Rettungsdecke, Infusionsbesteck und Infusionslösung aus dem Notfallkoffer",
       "/me überprüft Puls, Atmung und Kreislauf des Patienten",
       "/me legt einen Zugang für eine erwärmte Infusion",
       "/me verabreicht die erwärmte Infusion",
@@ -602,15 +524,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Sauerstoff, Bronchodilatatoren und Prednisolon gegen Lungenentzündung",
-          "Infusion und Antibiotika bei Infektionsgefahr",
-          "Schwere Atemnot: künstliche Beatmung"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -624,6 +537,7 @@
       }
     ],
     "me": [
+      "/me nimmt Sauerstoffmaske, Pulsoximeter, Bronchodilatator, Prednisolon und Infusionsbesteck aus dem Notfallkoffer",
       "/me überprüft Puls, Atmung und Kreislauf",
       "/me misst die Sauerstoffsättigung mit dem Pulsoximeter",
       "/me verabreicht Sauerstoff über Maske oder Nasensonde",
@@ -647,15 +561,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Abduschen zur Dekontamination",
-          "Kaliumiodid schützt die Schilddrüse",
-          "Infusionen, Bluttransfusionen und Vitamine"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -669,6 +574,7 @@
       }
     ],
     "me": [
+      "/me nimmt Kaliumiodid-Tabletten, EKG-Elektroden, Infusionsbesteck und Blutkonserven aus dem Notfallkoffer",
       "/me duscht den Patienten gründlich ab",
       "/me misst Puls, Blutdruck und Atmung regelmäßig",
       "/me schließt den Patienten ans EKG an",
@@ -692,14 +598,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "2a: lokale Betäubung, antiseptisch spülen, Brandsalbe und Mullbinde",
-          "2b: zusätzlich totes Gewebe entfernen, Hauttransplantat, Silbersulfadiazin-Creme"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -712,6 +610,7 @@
       }
     ],
     "me": [
+      "/me nimmt Lokalanästhetikum, Wundspülung, Brandsalbe, Silbersulfadiazin-Creme und Mullbinden aus dem Verbandskasten",
       "/me betäubt die Wunde lokal",
       "/me spült die Wunde antiseptisch aus",
       "/me trägt Brandsalbe auf",
@@ -735,14 +634,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Desinfizieren und mit Lidocain betäuben",
-          "Schuppen entfernen, nähen und verbinden"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -756,6 +647,7 @@
       }
     ],
     "me": [
+      "/me nimmt Desinfektionsmittel, Lidocain, Pinzette, Nahtmaterial, Wundkompressen und elastische Mullbinde aus dem Sterilset",
       "/me desinfiziert die Wunde am Kopf",
       "/me betäubt den Bereich lokal mit Lidocain",
       "/me entfernt vorsichtig Schuppen mit der Pinzette",
@@ -780,15 +672,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Wunde reinigen und desinfizieren",
-          "Bei Bedarf lokal betäuben, z. B. mit Lidocain",
-          "Antibiotikum Baytril (Enrofloxacin) gegen Pasteurellen"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -801,6 +684,7 @@
       }
     ],
     "me": [
+      "/me nimmt Desinfektionsmittel, Lidocain, Pinzette, Bandage und Baytril aus dem Tierarztkoffer",
       "/me reinigt und desinfiziert die Wunde vorsichtig",
       "/me betäubt die Wunde lokal",
       "/me entfernt vorsichtig lose Federn",
@@ -825,15 +709,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Carprofen (Entzündungshemmer für Gelenke), Metamizol (starkes Schmerzmittel), Tepoxalin (Muskeln und Skelett)",
-          "Knochenbruch: operative Fixierung oder Gips, oft kombiniert",
-          "Warnung: Colistin niemals bei Hunden, es ist toxisch"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -847,6 +722,7 @@
       }
     ],
     "me": [
+      "/me nimmt Schermaschine, Desinfektionsmittel, Verband, Bandage, Gipsmaterial und Beißschutz aus dem Tierarztkoffer",
       "/me überprüft Puls, Atmung, Temperatur und Blutdruck",
       "/me rasiert das Fell um die Wunde",
       "/me reinigt und desinfiziert die Wunde",
@@ -872,7 +748,9 @@
         ]
       }
     ],
-    "me": []
+    "me": [
+      "/me nimmt die passende Behandlungsakte aus dem Ordner zur Hand"
+    ]
   },
   {
     "id": "Narkose einleiten",
@@ -904,6 +782,7 @@
       }
     ],
     "me": [
+      "/me nimmt Narkosemittel, Beatmungsbeutel, Intubationsbesteck, Sauerstoff und EKG-Elektroden aus dem Narkosewagen",
       "/me legt vorsichtig einen venösen Zugang",
       "/me bereitet reinen Sauerstoff als Reserve vor",
       "/me verabreicht Fentanyl und Propofol",
@@ -939,6 +818,7 @@
       }
     ],
     "me": [
+      "/me nimmt Betäubungscreme, Lokalanästhetikum mit Spritze und Desinfektionsmittel aus dem Verbandskasten",
       "/me desinfiziert die Stelle vor der Betäubung",
       "/me sprüht die Betäubungscreme auf die Wunde",
       "/me injiziert das Lokalanästhetikum langsam unter die Haut",
@@ -973,6 +853,7 @@
       }
     ],
     "me": [
+      "/me nimmt Lokalanästhetikum, Punktionsnadel, Ultraschallgerät, Desinfektionsmittel und Tourniquet aus dem Narkosewagen",
       "/me führt vorsichtig die Nadel ein und überprüft die Betäubung",
       "/me bereitet die Punktionsstelle am Rücken vor",
       "/me spritzt das Betäubungsmittel langsam in den Spinalraum",
@@ -995,14 +876,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Gefäßerweiterung medikamentös (z. B. mit Lisinopril)",
-          "Katheter mit Ballon und Stent öffnet das verengte Herzgefäß"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -1021,6 +894,7 @@
       }
     ],
     "me": [
+      "/me nimmt Katheter, Ballon, Stent, Kontrastmittel, Röntgengerät und Gefäßmedikation aus dem Herzkatheterlabor",
       "/me gibt dem Patienten die verordnete Gefäßmedikation",
       "/me führt den Katheter vorsichtig über die Armarterie ein",
       "/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät",
@@ -1045,14 +919,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Operative Fixierung mit Platte und Zugschrauben",
-          "Heparin gegen Thrombose"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -1071,6 +937,7 @@
       }
     ],
     "me": [
+      "/me nimmt Skalpell, Pinzette, Metallplatte, Zugschrauben, Heparin und Röntgengerät aus dem OP-Set",
       "/me erstellt ein Röntgenbild zur Beurteilung des Bruchs",
       "/me desinfiziert die Operationsstelle gründlich",
       "/me fixiert die Bruchfragmente mit Platte und Zugschrauben",
@@ -1090,14 +957,6 @@
           "CT oder MRT (Blutungen, Brüche, Schwellungen)",
           "Neurotests: Bewusstsein, Sprache, Pupillenreaktion",
           "SpO₂, Blutdruck, Puls und Hirndruck überwachen"
-        ]
-      },
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Operation: Schädeldecke öffnen und Bruchstücke entfernen",
-          "Druck senken, Schädelplatte einsetzen"
         ]
       },
       {
@@ -1122,6 +981,7 @@
       }
     ],
     "me": [
+      "/me nimmt Operationsbesteck, Schädelplatte, Narkosemittel, Klammern und Verbandmaterial aus dem OP-Set",
       "/me überprüft Bewusstsein und Pupillenreaktion des Patienten",
       "/me legt venösen Zugang und bereitet die Narkoseeinleitung vor",
       "/me desinfiziert den betroffenen Kopfbereich und eröffnet die Schädeldecke",
@@ -1137,14 +997,6 @@
     "title": "Brustverletzung (Thoraxtrauma)",
     "desc": "Verletzung von Brustkorb, Organen und angrenzenden Strukturen. Stumpf: keine offene Wunde (Rippen, Sternum, Wirbelsäule, Lunge). Penetrierend: offene Wunde, z. B. Stich oder Schuss, oft mit Gefahr für Lunge und Herz.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Thoraxdrainage saugt Blut und Luft aus dem Brustraum",
-          "Eingriff unter Narkose"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1167,6 +1019,7 @@
       }
     ],
     "me": [
+      "/me nimmt Thoraxdrainage, Lochtuch, Skalpell, Nahtmaterial und Vitalwertmonitor aus dem OP-Set",
       "/me leitet die Narkose ein und bereitet den Patienten für den Eingriff vor",
       "/me desinfiziert die Einstichstelle und legt das Lochtuch auf",
       "/me führt den Schnitt durch Rippen- und Lungenfell aus",
@@ -1181,14 +1034,6 @@
     "title": "Kollabierte Lunge (Pneumothorax)",
     "desc": "Luft gelangt in den Pleuraspalt, die Lunge fällt teilweise oder ganz zusammen. Ursachen: Stich- oder Schussverletzung, Rippenbruch, Lungenerkrankung oder spontan. Symptome: Atemnot, Brustschmerzen, vermindertes Atemgeräusch.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Thoraxdrainage entfernt die Luft aus dem Brustraum",
-          "Die Lunge entfaltet sich danach wieder"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1209,6 +1054,7 @@
       }
     ],
     "me": [
+      "/me nimmt Thoraxdrainage, Absaugsystem, Skalpell, Lochtuch und Vitalwertmonitor aus dem OP-Set",
       "/me desinfiziert die Einstichstelle am Brustkorb",
       "/me führt den Schnitt zwischen den Rippen durch",
       "/me platziert die Thoraxdrainage und verbindet sie mit dem Absaugsystem",
@@ -1223,14 +1069,6 @@
     "title": "Durchschuss und innere Blutungen",
     "desc": "Penetrierende Verletzung mit schwerer innerer Blutung, wenn eine Arterie getroffen ist. Symptome: Blutdruckabfall, schneller Puls, blasse Haut, Schwindel, Bewusstlosigkeit.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Blutung mit Arterienklemmen stoppen",
-          "Arterie mit Kunststoffgefäß oder Patch rekonstruieren"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1251,6 +1089,7 @@
       }
     ],
     "me": [
+      "/me nimmt Arterienklemmen, Kunststoffgefäß oder Patch, Ringerlösung, Absauggerät und Nahtmaterial aus dem OP-Set",
       "/me öffnet die Wunde vorsichtig, um Zugang zur verletzten Arterie zu bekommen",
       "/me setzt Arterienklemmen und stoppt die Blutung",
       "/me saugt Blut ab und spült die Wunde mit Ringerlösung",
@@ -1265,15 +1104,6 @@
     "title": "Korrosion durch SCP-106 (Pocket Dimension)",
     "desc": "Der Korrosionseffekt von SCP-106 zerstört Gewebe rasant, ähnlich einer nekrotisierenden Hautinfektion. Symptome: starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbung (blass bis schwarz), Schwellung. Unbehandelt droht Sepsis.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Totes Gewebe entfernen, gesunde Haut transplantieren",
-          "Defekte mit Kunststoffimplantaten füllen",
-          "Antibiotika (nur im RP)"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1294,6 +1124,7 @@
       }
     ],
     "me": [
+      "/me nimmt Kochsalzlösung, Vollhaut, Kunststoffimplantate, Heilsalbe und Verbandmaterial aus dem OP-Set",
       "/me prüft die betroffene Stelle auf Ausmaß der Korrosion",
       "/me macht präzise Einschnitte, um totes Gewebe zu identifizieren",
       "/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut",
@@ -1308,14 +1139,6 @@
     "title": "Amputation",
     "desc": "Chirurgische Entfernung eines Körperteils bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel: Lebensgefahr abwenden und gute Wundheilung ermöglichen.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Körperteil unter Narkose und Tourniquet chirurgisch entfernen",
-          "Stumpf versorgen"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1336,6 +1159,7 @@
       }
     ],
     "me": [
+      "/me nimmt Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial und sterile Verbände aus dem OP-Set",
       "/me leitet die Narkose ein und legt das Tourniquet an",
       "/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe",
       "/me fixiert den Knochen mit einem Splint und verödet Gefäße",
@@ -1350,15 +1174,6 @@
     "title": "Schlaganfall",
     "desc": "Ein Blutgefäß im Gehirn ist verstopft, das Hirngewebe bekommt zu wenig Sauerstoff. Folgen: Lähmungen, Sprach- und Sinnesstörungen, Koordinationsprobleme, Bewusstlosigkeit.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Blutdruck senken (z. B. mit Esmolol)",
-          "Gerinnsel auflösen mit Alteplase als Infusion",
-          "Stent-Retriever entfernt das Gerinnsel mechanisch"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1379,6 +1194,7 @@
       }
     ],
     "me": [
+      "/me nimmt Katheter mit Stent-Retriever, Kontrastmittel, Alteplase, Esmolol und Sauerstoffmaske aus dem Neuro-Katheterlabor",
       "/me überprüft die Vitalwerte des Patienten",
       "/me legt eine Sauerstoffmaske an",
       "/me spritzt Esmolol zur Blutdruckkontrolle",
@@ -1403,14 +1219,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Blutung stillen mit Druck und Fibrinkleber",
-          "Bei schwerer Blutung Gefäße verschließen"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -1430,6 +1238,7 @@
       }
     ],
     "me": [
+      "/me nimmt Ultraschallgerät, Fibrinkleber, sterile Tücher, Absauggerät und Blutabnahmeset aus dem OP-Set",
       "/me untersucht den Bauchraum per Ultraschall auf freie Flüssigkeit",
       "/me legt einen venösen Zugang und bereitet Blutabnahme für Leberwerte vor",
       "/me öffnet vorsichtig den Bauchraum und saugt Blut ab",
@@ -1454,15 +1263,6 @@
         "mode": "bullet"
       },
       {
-        "h": "Behandlung",
-        "items": [
-          "Gelenkersatz durch Totalendoprothese (TEP) nach ärztlicher Indikation",
-          "Antibiose und Thromboseprophylaxe nach Anordnung",
-          "Schmerztherapie und frühe Mobilisation"
-        ],
-        "mode": "bullet"
-      },
-      {
         "h": "Ablauf",
         "items": [
           "Patient in Narkose bringen und in Seitenlage lagern",
@@ -1476,6 +1276,7 @@
       }
     ],
     "me": [
+      "/me nimmt Totalendoprothese, Operationsbesteck, Redon-Drainage, Nahtmaterial und sterile Abdeckungen aus dem OP-Set",
       "/me desinfiziert das Operationsfeld großflächig und deckt es steril ab",
       "/me lagert den Patienten in Seitenlage und fixiert ihn",
       "/me setzt den Hautschnitt und präpariert schichtweise bis zum Gelenk",
@@ -1492,14 +1293,6 @@
     "title": "Trommelfellriss",
     "desc": "Ein geplatztes Trommelfell entsteht durch starken Druck oder laute Geräusche (z. B. Explosionen) und führt zu Schmerzen, Hörverlust oder Blutungen im Ohr.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Trommelfell glätten und mit Silikonfolie schienen",
-          "Ohrentropfen gegen Schmerz und Entzündung"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1520,6 +1313,7 @@
       }
     ],
     "me": [
+      "/me nimmt Otoskop, Silikonfolie, Ohrenspüllösung, sterile Tupfer und Narkosemittel aus dem Untersuchungskoffer",
       "/me überprüft das Trommelfell mithilfe des Otoskops",
       "/me reinigt das Ohr vorsichtig",
       "/me glättet die eingerollten Ränder des Trommelfells",
@@ -1544,14 +1338,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Tumor beim wachen Patienten mit Ultraschall oder Laser präzise entfernen",
-          "Sprache und Bewegung laufend prüfen"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -1571,6 +1357,7 @@
       }
     ],
     "me": [
+      "/me nimmt Ultraschall-Laser-System, Spreizer, Säge, Lokalanästhetikum, Kopfhalterung und Kunstgewebe aus dem Neuro-OP",
       "/me überprüft Bewusstsein und Vitalwerte des Patienten vor OP-Beginn",
       "/me fixiert den Kopf in der stabilen Halterung und injiziert lokale Betäubung",
       "/me führt Schnitt durch die Haut und öffnet den Schädelknochen",
@@ -1586,15 +1373,6 @@
     "title": "Blutvergiftung (Sepsis)",
     "desc": "Lebensbedrohliche Reaktion des Körpers auf eine Infektion: Bakterien oder Giftstoffe im Blut lösen eine schwere Entzündung aus. Ursachen: infizierte Wunden, Lungenentzündung, Harnwegs- oder Bauchinfektionen. Symptome: Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck, Verwirrtheit.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Kreislauf stabilisieren, Breitbandantibiotika geben",
-          "Dialyse zur Entfernung giftiger Substanzen und überschüssiger Flüssigkeit",
-          "Infektionsquelle operativ entfernen, falls möglich"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1615,6 +1393,7 @@
       }
     ],
     "me": [
+      "/me nimmt Shaldon-Katheter, Infusionssysteme, Kochsalzlösung, Breitbandantibiotika und Blutkulturen aus dem Intensivraum",
       "/me legt einen venösen Zugang für Infusionen und Medikamente",
       "/me verabreicht Kochsalzlösung und Antibiotika",
       "/me platziert einen Shaldon-Katheter und startet die Dialyse",
@@ -1629,14 +1408,6 @@
     "title": "Unterschenkelprothese",
     "desc": "Ersetzt nach einer Amputation das entfernte Bein, ermöglicht Mobilität und verteilt den Druck auf den Stumpf.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Prothese über Silikonhaftschaft am Stumpf befestigen",
-          "Druckverteilung und Sitz prüfen"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1655,6 +1426,7 @@
       }
     ],
     "me": [
+      "/me nimmt Silikonhaftschaft, Prothesenschaft, Gel und Schraubverbindungen aus dem Prothesenlager",
       "/me trägt Gel auf den Stumpf auf und setzt den Silikonhaftschaft",
       "/me befestigt die Prothese am Schaft und prüft den Sitz",
       "/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten",
@@ -1669,15 +1441,6 @@
     "title": "Verätzungen",
     "desc": "Direkter Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen (Laborunfälle, industrielle Chemikalien, gefährliche SCPs). Symptome: starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden, bei großen Flächen auch Reaktionen im ganzen Körper.",
     "sections": [
-      {
-        "h": "Behandlung",
-        "mode": "bullet",
-        "items": [
-          "Sofort lange spülen und Kleidung entfernen",
-          "Je nach Grad Salbe, Wundversorgung oder chirurgische Entfernung",
-          "Antibiotika bei offenen Wunden"
-        ]
-      },
       {
         "h": "Ablauf",
         "mode": "number",
@@ -1698,6 +1461,7 @@
       }
     ],
     "me": [
+      "/me nimmt steriles Spülset mit NaCl, Wundverbände, Brandwundenauflagen, Pinzette und Schmerzmittel aus dem Verbandskasten",
       "/me spült die betroffene Hautpartie gründlich mit sterilem Wasser",
       "/me entfernt kontaminierte Kleidung und Rückstände vorsichtig",
       "/me trägt Salbe oder Gel auf und deckt die Wunde steril ab",
@@ -1722,15 +1486,6 @@
         ]
       },
       {
-        "h": "Behandlung",
-        "items": [
-          "Atemwege, Atmung und Kreislauf zuerst sichern",
-          "Bei großen Flächen Flüssigkeitsersatz nach ärztlicher Anordnung",
-          "Schmerzmittel und Antibiotika nach ärztlicher Anordnung",
-          "Verbrannte Kleidung und Schmuck entfernen, keine Fette oder Salben auf die frische Wunde"
-        ]
-      },
-      {
         "h": "Ablauf",
         "mode": "number",
         "items": [
@@ -1744,6 +1499,7 @@
       }
     ],
     "me": [
+      "/me nimmt Narkosemittel, Wundspülung, Skalpell, Transplantat-Besteck, Blutstiller und sterile Abdeckungen aus dem OP-Set",
       "/me desinfiziert die Brandwunde und legt sterile Abdeckungen an",
       "/me entfernt vorsichtig abgestorbenes Gewebe",
       "/me entnimmt Hautlappen vom Spenderbereich",
@@ -1790,6 +1546,7 @@
       }
     ],
     "me": [
+      "/me nimmt Pulsoximeter, Blutdruckmessgerät, Thermometer, Otoskop, Ultraschallgerät und Blutröhrchen aus dem Untersuchungskoffer",
       "/me legt das Pulsoximeter am Finger an und liest die Sättigung ab",
       "/me misst Blutdruck und Puls des Patienten",
       "/me nimmt eine Blutprobe ab und beschriftet das Röhrchen",
@@ -1827,6 +1584,7 @@
       }
     ],
     "me": [
+      "/me nimmt Paracetamol und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Paracetamol nach ärztlicher Anordnung vor",
       "/me verabreicht Paracetamol nach ärztlicher Anordnung",
@@ -1864,6 +1622,7 @@
       }
     ],
     "me": [
+      "/me nimmt Ibuprofen und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Ibuprofen nach ärztlicher Anordnung vor",
       "/me verabreicht Ibuprofen nach ärztlicher Anordnung",
@@ -1901,6 +1660,7 @@
       }
     ],
     "me": [
+      "/me nimmt Metamizol und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Metamizol nach ärztlicher Anordnung vor",
       "/me verabreicht Metamizol nach ärztlicher Anordnung",
@@ -1938,6 +1698,7 @@
       }
     ],
     "me": [
+      "/me nimmt Tramadol und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Tramadol nach ärztlicher Anordnung vor",
       "/me verabreicht Tramadol nach ärztlicher Anordnung",
@@ -1975,6 +1736,7 @@
       }
     ],
     "me": [
+      "/me nimmt Morphin und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Morphin nach ärztlicher Anordnung vor",
       "/me verabreicht Morphin nach ärztlicher Anordnung",
@@ -2012,6 +1774,7 @@
       }
     ],
     "me": [
+      "/me nimmt Fentanyl und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Fentanyl nach ärztlicher Anordnung vor",
       "/me verabreicht Fentanyl nach ärztlicher Anordnung",
@@ -2049,6 +1812,7 @@
       }
     ],
     "me": [
+      "/me nimmt Propofol und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Propofol nach ärztlicher Anordnung vor",
       "/me verabreicht Propofol nach ärztlicher Anordnung",
@@ -2086,6 +1850,7 @@
       }
     ],
     "me": [
+      "/me nimmt Dexpanthenol (Bepanthen) und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Dexpanthenol (Bepanthen) nach ärztlicher Anordnung vor",
       "/me verabreicht Dexpanthenol (Bepanthen) nach ärztlicher Anordnung",
@@ -2123,6 +1888,7 @@
       }
     ],
     "me": [
+      "/me nimmt Diclofenac (Voltaren) und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Diclofenac (Voltaren) nach ärztlicher Anordnung vor",
       "/me verabreicht Diclofenac (Voltaren) nach ärztlicher Anordnung",
@@ -2160,6 +1926,7 @@
       }
     ],
     "me": [
+      "/me nimmt Dimenhydrinat (Vomex) und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Dimenhydrinat (Vomex) nach ärztlicher Anordnung vor",
       "/me verabreicht Dimenhydrinat (Vomex) nach ärztlicher Anordnung",
@@ -2197,6 +1964,7 @@
       }
     ],
     "me": [
+      "/me nimmt Etilefrin und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Etilefrin nach ärztlicher Anordnung vor",
       "/me verabreicht Etilefrin nach ärztlicher Anordnung",
@@ -2234,6 +2002,7 @@
       }
     ],
     "me": [
+      "/me nimmt Nitroglycerin (Nitrolingualspray) und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Nitroglycerin (Nitrolingualspray) nach ärztlicher Anordnung vor",
       "/me verabreicht Nitroglycerin (Nitrolingualspray) nach ärztlicher Anordnung",
@@ -2271,6 +2040,7 @@
       }
     ],
     "me": [
+      "/me nimmt Epinephrin (Adrenalin) und die nötigen Hilfsmittel aus dem Medikamentenschrank",
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Epinephrin (Adrenalin) nach ärztlicher Anordnung vor",
       "/me verabreicht Epinephrin (Adrenalin) nach ärztlicher Anordnung",

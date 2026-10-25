@@ -148,7 +148,7 @@ const TEST = /[?&]test\b/.test(location.search);
 const C = {v: 'Vitalwerte & Amnestika', b: 'Behandlungen', n: 'Narkose', o: 'Operationen', m: 'Medikamente'};
 const RO = {v: 1};                                  // schreibgeschützte Kategorien
 const FORM = {m: ['Dosis', 'Wirkung']};             // Formularabschnitte je Kategorie
-const DEFAULT_FORM = ['Erkennung', 'Behandlung', 'Ablauf'];
+const DEFAULT_FORM = ['Erkennung', 'Ablauf'];   // Standardabschnitte neuer Akten; die Durchführung ist die /me-Box
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 const KEY = 'medic-handbuch-v2';
 const SETKEY = 'medic-handbuch-einstellungen-v2';   // v2: die neuen Standardwerte gelten einmal für alle
@@ -187,7 +187,7 @@ function applySet(){
 }
 
 /* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
-const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: []});
+const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], v: 3});   // v: Stand der Umstellungen
 function save(){
   const now = JSON.stringify(S);
   if (lastSaved !== null && now !== lastSaved) {
@@ -210,7 +210,17 @@ function orderFix(saved, made = S.made){
   (saved || []).concat(ids).forEach(id => { if (ids.includes(id) && !seen.has(id)) { seen.add(id); out.push(id); } });
   return out;
 }
-function load(){
+// Einmalige Umstellung: den Abschnitt „Behandlung“ gibt es nicht mehr, auch nicht in früher gespeicherten Änderungen
+function migrate(){
+  if (S.v >= 3) return;
+  const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
+  Object.keys(S.ov || {}).forEach(k => { if (S.ov[k] && Array.isArray(S.ov[k].sections)) S.ov[k].sections = ohneBeh(S.ov[k].sections); });
+  (S.made || []).forEach(m => { m.sections = ohneBeh(m.sections); });
+  S.v = 3;
+  try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+}
+function load(){ loadRaw(); migrate(); }
+function loadRaw(){
   S = fresh();
   let raw = null;
   try { raw = store.getItem(KEY); } catch (e) {}
@@ -790,7 +800,7 @@ function cleanSections(x){
   (Array.isArray(x) ? x : []).forEach(s => {
     if (!s || typeof s !== 'object') return;
     const h = cleanText(s.h), items = (Array.isArray(s.items) ? s.items : []).filter(t => typeof t === 'string' && t.trim()).map(t => t.trim());
-    if (!h || !items.length) return;
+    if (!h || !items.length || h === 'Behandlung') return;   // den Abschnitt Behandlung gibt es nicht mehr
     const o = {h, items};
     if (typeof s.k === 'string' && s.k) o.k = s.k;
     if (own(MODES, s.mode)) o.mode = s.mode;
@@ -1092,6 +1102,10 @@ function runTests(){
   T('Spalten und Seitenleiste werden gespeichert', () => { setOpt('cols', '3'); act('navtoggle', {dataset: {}}); SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; loadSet(); const gemerkt = SET.cols === 3 && SET.nav === 'closed'; setOpt('cols', '2'); act('navtoggle', {dataset: {}}); ok(gemerkt, 'nicht gespeichert'); });
   T('Gespeicherte Einstellung „Eine Spalte“ wird zu einer Spalte', () => { store.setItem(SETKEY, JSON.stringify({grid: 'one'})); loadSet(); const eine = SET.cols === 1; store.removeItem(SETKEY); ok(eine, 'alte Einstellung nicht übernommen'); });
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
+  T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
+  T('Den Abschnitt Behandlung gibt es in keiner Akte mehr', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung')), 'Behandlung noch in einer Akte'));
+  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 3 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
+  T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
   SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);

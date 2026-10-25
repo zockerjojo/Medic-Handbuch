@@ -38,7 +38,7 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 
 **Abschnitte (`sections`).** Jeder Abschnitt ist ein Objekt mit diesen Feldern:
 
-- `h`: die Überschrift. Pflicht, nicht leer, z. B. `"Erkennung"`, `"Behandlung"`, `"Ablauf"` oder `"Geräte"`.
+- `h`: die Überschrift. Pflicht, nicht leer, z. B. `"Erkennung"`, `"Ablauf"` oder für Sonderfälle `"Geräte"`. Einen Abschnitt „Behandlung“ gibt es nicht mehr.
 - `items`: die Zeilen des Abschnitts. Pflicht. Eine Liste von Texten, jede Zeile ist ein Eintrag, keine leeren Zeilen.
 - `mode` (optional): die Darstellung.
   - `"bullet"`: Stichpunkte
@@ -53,10 +53,10 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 - **Zeile ohne `/me`** ist eine Notiz und nicht kopierbar. Notizen beginnen mit `Notiz: `, z. B. `Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen`.
 - **Eine Notiz darf das Wort `/me` nirgends enthalten.** Sonst würde sie als kopierbare Zeile behandelt.
 
-## 5. Stil für Erkennung, Behandlung und Ablauf
+## 5. Stil für Erkennung, Ablauf und Durchführung
 
 - **Erkennung** (`mode` `"bullet"`): 2 bis 4 kurze Stichpunkte mit typischen Anzeichen und Befunden.
-- **Behandlung** (`mode` `"bullet"`): 2 bis 4 kurze Stichpunkte mit Maßnahmen. Medikamente werden nur als Wirkstoffgruppe genannt, nie mit Dosis, z. B. „Lokalanästhetikum (Lidocain)“.
+- **Medikamente:** Sie werden nur als Wirkstoff oder Wirkstoffgruppe genannt, nie mit Dosis, z. B. „Lidocain“.
 - **Ablauf** (`mode` `"number"`): 4 bis 6 Schritte in praktischer Reihenfolge. Jeder Schritt ist ein kurzer Satz ohne Punkt am Ende, z. B. „Wunde spülen und desinfizieren“.
 - **Weitere Abschnitte** (z. B. Geräte, Richtwerte, Nachsorge): nur übernehmen, wenn sie in der Vorlage stehen. Sachlich und knapp formulieren.
 - **/me-Zeilen:** 4 bis 6 Stück (ohne die Material-Zeile), jede Zeile eine einzelne Handlung im chirurgischen Standardvokabular, z. B. Desinfektion, sterile Abdeckung, Lokalanästhesie, Einzelknopfnähte, Redon-Drainage, Verband.
@@ -146,15 +146,6 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
         "mode": "bullet"
       },
       {
-        "h": "Behandlung",
-        "items": [
-          "Blutung mit Druckverband stillen",
-          "Wunde gründlich spülen, Fremdkörper und abgestorbenes Gewebe entfernen",
-          "Lokale Betäubung mit Lidocain, anschließend Naht mit Einzelknopfnähten"
-        ],
-        "mode": "bullet"
-      },
-      {
         "h": "Ablauf",
         "items": [
           "Vitalwerte prüfen und Blutung kontrollieren",
@@ -192,6 +183,7 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 - [ ] Keine Notiz enthält das Wort `/me`.
 - [ ] `table` hat `h` (Liste von Texten) und `r` (Liste von Zeilen, jede Zeile ist eine Liste von Texten).
 - [ ] Es gibt keine doppelten Kennungen und keine doppelten Titel.
+- [ ] Es gibt keinen Abschnitt „Behandlung“. Standardabschnitte sind Erkennung und Ablauf, dazu die Durchführung (`me`).
 - [ ] Keine Dosierungen, Mengen oder erfundenen Angaben.
 - [ ] Keine HTML-Tags. Verweise nur als `[[Titel]]` auf vorhandene Akten.
 - [ ] Keine Kommentare, keine nachgestellten Kommas, nur gerade Anführungszeichen.
