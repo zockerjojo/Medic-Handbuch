@@ -1,46 +1,16 @@
 [
   {
-    "id": "herzinfarkt",
-    "titel": "Herzinfarkt",
-    "abschnitte": [
-      {
-        "titel": "Erkennung & Diagnostik",
-        "zeilen": [
-          "/me schließt den Patienten an das 12-Kanal-EKG an und beurteilt die ST-Strecken",
-          "Notiz: Auf thorakale Schmerzen und Ausstrahlung in den linken Arm achten"
-        ]
-      },
-      {
-        "titel": "Akutbehandlung",
-        "zeilen": [
-          "/me verabreicht Sauerstoff bei einer Sättigung unter 90 %",
-          "/me gibt ASS 250 mg und Heparin i.v.",
-          "Notiz: Kreislauf stabilisieren und Notarzt / OP-Team verständigen"
-        ]
-      }
-    ],
-    "meBoxen": [
-      {
-        "titel": "Schrank-Aktionen & Medikamente",
-        "eintraege": [
-          "/me holt die Notfall-Medikamente aus dem medizinischen Wandschrank",
-          "/me verstaut das EKG-Gerät ordnungsgemäß nach dem Einsatz"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "bluterguss",
-    "titel": "Bluterguss & Prellung (Hämatom)",
+    "id": "verstauchung",
+    "titel": "Verstauchung",
+    "kategorie": "Behandlungen",
+    "favorit": false,
     "abschnitte": [
       {
         "titel": "PECH-Schema & Versorgung",
         "zeilen": [
-          "/me untersucht das betroffene Areal und tastet die Prellmarke vorsichtig ab",
-          "/me legt ein mit einem Tuch umwickeltes Kühlpack auf die betroffene Stelle",
-          "/me legt einen elastischen Kompressionsverband von distal nach proximal an",
-          "/me lagert die betroffene Extremität vorsichtig über Herzniveau hoch",
-          "Notiz: Röntgen zum Ausschluss einer Fraktur bei starkem Schmerz einleiten"
+          "/me untersucht das betroffene Gelenk und prüft die Beweglichkeit",
+          "/me kühlt die betroffene Stelle mit einem Kühlpack",
+          "Notiz: Auf Schwellungen und Blutergüsse achten"
         ]
       }
     ],
@@ -48,9 +18,47 @@
       {
         "titel": "Material-Entnahme",
         "eintraege": [
-          "/me holt den Verbandskasten und elastische Binden aus dem Regal"
+          "/me holt elastische Binden und Kühlpacks aus dem Schrank"
         ]
       }
     ]
+  },
+  {
+    "id": "herzinfarkt",
+    "titel": "Herzinfarkt",
+    "kategorie": "Behandlungen",
+    "favorit": true,
+    "abschnitte": [
+      {
+        "titel": "Erkennung & Diagnostik",
+        "zeilen": [
+          "/me schließt den Patienten an das EKG an",
+          "Notiz: Auf thorakale Schmerzen achten"
+        ]
+      }
+    ],
+    "meBoxen": [
+      {
+        "titel": "Schrank-Aktionen",
+        "eintraege": [
+          "/me holt Notfall-Medikamente"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "narkose-einleiten",
+    "titel": "Narkose einleiten",
+    "kategorie": "Narkose",
+    "favorit": false,
+    "abschnitte": [
+      {
+        "titel": "Vorbereitung",
+        "zeilen": [
+          "/me prüft die Vitalwerte und legt den Zugang"
+        ]
+      }
+    ],
+    "meBoxen": []
   }
 ]

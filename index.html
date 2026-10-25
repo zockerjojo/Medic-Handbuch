@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCP-RP Medic-Handbuch</title>
+    <title>Medic-Handbuch</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --sidebar-bg: #1e293b;
-            --card-bg: #1e293b;
+            --bg-color: #121A24;
+            --sidebar-bg: #1A2431;
+            --card-bg: #182331;
             --text-color: #f8fafc;
             --text-muted: #94a3b8;
-            --accent-color: #f59e0b;
+            --accent-color: #F2B84B;
             --accent-hover: #d97706;
-            --border-color: #334155;
+            --border-color: #2a3748;
         }
 
         [data-theme="light"] {
@@ -31,44 +31,56 @@
         body { background-color: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
 
         /* Sidebar */
-        aside { width: 280px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; }
-        .sidebar-header { padding: 20px; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid var(--border-color); }
+        aside { width: 300px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; }
+        .sidebar-header { padding: 20px; font-size: 1.4rem; font-weight: bold; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px; }
         .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px; }
-        .nav-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 5px; color: var(--text-muted); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .nav-item:hover, .nav-item.active { background-color: rgba(245, 158, 11, 0.1); color: var(--accent-color); }
+        
+        .nav-item { padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; color: var(--text-muted); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; transition: 0.15s; }
+        .nav-item:hover { background-color: rgba(255, 255, 255, 0.03); color: var(--text-color); }
+        .nav-item.active { background-color: #F2B84B !important; color: #121A24 !important; font-weight: bold; opacity: 1 !important; }
+        
+        .nav-category { margin-top: 5px; }
+        .nav-category-header { padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-category-header:hover { background-color: rgba(255, 255, 255, 0.03); color: var(--text-color); }
+        .nav-subitems { padding-left: 15px; display: none; margin-top: 2px; border-left: 2px solid var(--border-color); margin-left: 12px; }
+        .nav-subitems.open { display: block; }
+        .nav-subitem { padding: 6px 10px; border-radius: 4px; cursor: pointer; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2px; }
+        .nav-subitem:hover { color: var(--text-color); background: rgba(255,255,255,0.02); }
+
+        .sidebar-footer { padding: 15px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; background: var(--sidebar-bg); }
+        .footer-buttons { display: flex; gap: 8px; }
 
         /* Main Content */
         main { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
         header { padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; background: var(--sidebar-bg); }
         .search-bar { flex: 1; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); font-size: 1rem; }
-        .btn { background: var(--accent-color); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn:hover { background: var(--accent-hover); }
-        .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); }
+        
+        .btn { background: var(--accent-color); color: #121A24; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.2s; }
+        .btn:hover { background: var(--accent-hover); color: #fff; }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); flex: 1; text-align: center; }
         .btn-secondary:hover { background: rgba(255,255,255,0.05); }
 
         /* Grid Layout (2-3 Spalten) */
         .content-area { flex: 1; overflow-y: auto; padding: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; align-content: start; }
         
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .card-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+        .card-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: var(--text-color); }
         
         /* Abschnitte & Me-Boxen */
-        .section-box { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: rgba(0,0,0,0.02); }
-        .section-header { font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; color: var(--accent-color); align-items: center; }
-        .section-content { margin-top: 8px; font-size: 0.95rem; line-height: 1.5; }
-        .me-line { padding: 6px 10px; background: rgba(245, 158, 11, 0.08); border-left: 3px solid var(--accent-color); margin-bottom: 5px; cursor: pointer; border-radius: 4px; font-family: monospace; display: flex; justify-content: space-between; }
-        .me-line:hover { background: rgba(245, 158, 11, 0.15); }
-        .notiz-line { padding: 4px 8px; color: var(--text-muted); font-style: italic; font-size: 0.9rem; }
+        .section-box { margin-top: 12px; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; background: rgba(0,0,0,0.1); }
+        .section-header { font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; color: var(--accent-color); align-items: center; font-size: 0.95rem; }
+        .section-content { margin-top: 8px; font-size: 0.9rem; line-height: 1.5; }
+        
+        .me-line { padding: 6px 10px; background: rgba(242, 184, 75, 0.08); border-left: 3px solid var(--accent-color); margin-bottom: 5px; cursor: pointer; border-radius: 4px; font-family: monospace; display: flex; justify-content: space-between; align-items: center; color: var(--text-color); }
+        .me-line:hover { background: rgba(242, 184, 75, 0.15); }
+        .notiz-line { padding: 4px 8px; color: var(--text-muted); font-style: italic; font-size: 0.88rem; }
 
-        /* KI-Hinweis */
-        .ai-badge { position: fixed; bottom: 10px; right: 15px; font-size: 0.75rem; color: var(--text-muted); opacity: 0.7; pointer-events: none; }
+        .ai-badge { position: fixed; bottom: 8px; right: 15px; font-size: 0.75rem; color: var(--text-muted); opacity: 0.6; pointer-events: none; }
 
-        /* Modal / Settings */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 12px; width: 450px; border: 1px solid var(--border-color); }
-        .modal-content h2 { margin-bottom: 20px; }
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 10px; width: 400px; border: 1px solid var(--border-color); }
         .setting-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
-        .setting-group label { font-size: 0.9rem; color: var(--text-muted); }
         .setting-group select { padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); }
     </style>
 </head>
@@ -76,25 +88,35 @@
 
     <aside>
         <div class="sidebar-header">Medic-Handbuch</div>
-        <div class="sidebar-nav" id="sidebarNav"></div>
-        <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 8px;">
-            <button class="btn btn-secondary" onclick="triggerUndo()" title="Rückgängig">↩️</button>
-            <button class="btn btn-secondary" onclick="triggerRedo()" title="Wiederholen">🔁</button>
-            <button class="btn" style="flex: 1;" onclick="openSettings()">⚙️ Einstellungen</button>
+        <div class="sidebar-nav" id="sidebarNav">
+            <!-- Dynamisch generierte Navigation -->
+        </div>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="filterByPapierkorb()" style="margin: 0;">
+                <span>Papierkorb</span>
+                <span id="trashCount">0</span>
+            </div>
+            <div class="footer-buttons">
+                <button class="btn btn-secondary" onclick="exportData()">Exportieren</button>
+                <button class="btn btn-secondary" onclick="importDataClick()">Importieren</button>
+                <button class="btn" onclick="openSettings()" title="Einstellungen">⚙️</button>
+            </div>
         </div>
     </aside>
 
     <main>
         <header>
             <input type="text" class="search-bar" id="searchInput" placeholder="Suchen: Verletzung, Medikament, Maßnahme..." oninput="filterAkten()">
+            <button class="btn btn-secondary" onclick="triggerUndo()" style="flex:0; padding:8px 12px;" title="Rückgängig">↩️</button>
+            <button class="btn btn-secondary" onclick="triggerRedo()" style="flex:0; padding:8px 12px;" title="Wiederholen">🔁</button>
         </header>
         <div class="content-area" id="contentArea"></div>
     </main>
 
-    <!-- Einstellungen Modal -->
+    <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
-            <h2>Einstellungen</h2>
+            <h3 style="margin-bottom: 15px;">Einstellungen</h3>
             <div class="setting-group">
                 <label>Design-Modus:</label>
                 <select id="themeSelect" onchange="changeTheme(this.value)">
@@ -103,7 +125,7 @@
                 </select>
             </div>
             <div class="setting-group">
-                <label>Standard-Zustand der Abschnitte:</label>
+                <label>Standard-Zustand Abschnitte:</label>
                 <select id="defaultFoldSelect" onchange="updateFoldSetting(this.value)">
                     <option value="expanded">Ausgeklappt</option>
                     <option value="collapsed">Eingeklappt</option>
@@ -115,6 +137,7 @@
         </div>
     </div>
 
+    <input type="file" id="importFile" style="display:none" onchange="processImport(event)">
     <div class="ai-badge">Erstellt mit KI</div>
 
     <script>
@@ -122,6 +145,7 @@
         let historyStack = [];
         let redoStack = [];
         let settings = { theme: 'dark', defaultFold: 'expanded' };
+        let activeFilter = 'all';
 
         async function loadData() {
             try {
@@ -131,7 +155,7 @@
                 renderSidebar();
                 renderAkten(aktenData);
             } catch (error) {
-                console.error("Fehler beim Laden der akten.json:", error);
+                console.error("Fehler beim Laden:", error);
             }
         }
 
@@ -160,7 +184,61 @@
 
         function renderSidebar() {
             const nav = document.getElementById('sidebarNav');
-            nav.innerHTML = `<div class="nav-item active" onclick="renderAkten(aktenData)">Alle Akten <span>${aktenData.length}</span></div>`;
+            let totalCount = aktenData.length;
+            let favCount = aktenData.filter(a => a.favorit).length;
+
+            let html = `
+                <div class="nav-item ${activeFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all')">
+                    <span>Alle Akten</span>
+                    <span>${totalCount}</span>
+                </div>
+                <div class="nav-item ${activeFilter === 'favorites' ? 'active' : ''}" onclick="filterByCategory('favorites')">
+                    <span>★ Favoriten</span>
+                    <span>${favCount}</span>
+                </div>
+            `;
+
+            // Gruppierung nach Kategorie
+            const categories = {};
+            aktenData.forEach(akte => {
+                let cat = akte.kategorie || 'Allgemein';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(akte);
+            });
+
+            for (const [catName, items] of Object.entries(categories)) {
+                html += `
+                    <div class="nav-category">
+                        <div class="nav-category-header" onclick="toggleCategory(this)">
+                            <span>▶ ${catName}</span>
+                            <span>${items.length}</span>
+                        </div>
+                        <div class="nav-subitems">
+                            ${items.map(item => `<div class="nav-subitem" onclick="scrollToAkte('${item.id}')">${item.titel}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            nav.innerHTML = html;
+        }
+
+        function toggleCategory(header) {
+            const sub = header.nextElementSibling;
+            sub.classList.toggle('open');
+            header.querySelector('span').textContent = sub.classList.contains('open') ? `▼ ${header.textContent.trim().substring(2)}` : `▶ ${header.textContent.trim().substring(2)}`;
+        }
+
+        function filterByCategory(cat) {
+            activeFilter = cat;
+            renderSidebar();
+            if (cat === 'all') renderAkten(aktenData);
+            else if (cat === 'favorites') renderAkten(aktenData.filter(a => a.favorit));
+        }
+
+        function scrollToAkte(id) {
+            const el = document.getElementById('akte-' + id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function renderAkten(data) {
@@ -171,7 +249,14 @@
             data.forEach((akte, akteIndex) => {
                 let card = document.createElement('div');
                 card.className = 'card';
-                let html = `<div class="card-title">${akte.titel}</div>`;
+                card.id = 'akte-' + akte.id;
+                
+                let html = `
+                    <div class="card-title">
+                        <span>${akte.titel}</span>
+                        <button class="btn-secondary" style="font-size:0.8rem; padding:2px 8px; flex:0;" onclick="toggleFavorite('${akte.id}')">${akte.favorit ? '★' : '☆'}</button>
+                    </div>
+                `;
                 
                 if (akte.abschnitte) {
                     akte.abschnitte.forEach(abs => {
@@ -192,7 +277,7 @@
                             <div class="section-box" style="border-color: var(--accent-color);">
                                 <div class="section-header">
                                     <span>⭐ ${box.titel}</span>
-                                    <button class="btn-secondary" style="font-size:0.75rem; padding:2px 6px;" onclick="clearMeBox(${akteIndex}, ${boxIndex})">Leeren</button>
+                                    <button class="btn" style="font-size:0.7rem; padding:2px 6px;" onclick="clearMeBox('${akte.id}', ${boxIndex})">Leeren</button>
                                 </div>
                                 <div class="section-content" style="display: ${isCollapsed};">
                                     ${box.eintraege.length > 0 ? box.eintraege.map(e => `<div class="me-line" onclick="copyText('${e}')"><span>${e}</span><small style="opacity:0.6">Kopieren</small></div>`).join('') : '<div class="notiz-line">Keine Einträge</div>'}
@@ -207,10 +292,22 @@
             });
         }
 
-        function clearMeBox(akteIndex, boxIndex) {
+        function toggleFavorite(id) {
             saveStateToHistory();
-            aktenData[akteIndex].meBoxen[boxIndex].eintraege = [];
-            renderAkten(aktenData);
+            const akte = aktenData.find(a => a.id === id);
+            if (akte) akte.favorit = !akte.favorit;
+            renderSidebar();
+            if (activeFilter === 'favorites') renderAkten(aktenData.filter(a => a.favorit));
+            else if (activeFilter === 'all') renderAkten(aktenData);
+        }
+
+        function clearMeBox(akteId, boxIndex) {
+            saveStateToHistory();
+            const akte = aktenData.find(a => a.id === akteId);
+            if (akte && akte.meBoxen[boxIndex]) {
+                akte.meBoxen[boxIndex].eintraege = [];
+                renderAkten(aktenData);
+            }
         }
 
         function toggleSection(header) {
@@ -228,18 +325,37 @@
             renderAkten(filtered);
         }
 
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(aktenData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "akten.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importDataClick() { document.getElementById('importFile').click(); }
+        function processImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    aktenData = JSON.parse(e.target.result);
+                    saveStateToHistory();
+                    renderSidebar();
+                    renderAkten(aktenData);
+                } catch(err) { alert("Fehler beim Importieren der Datei!"); }
+            };
+            reader.readAsText(file);
+        }
+
         function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
-
-        function changeTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            settings.theme = theme;
-        }
-
-        function updateFoldSetting(val) {
-            settings.defaultFold = val;
-            renderAkten(aktenData);
-        }
+        function changeTheme(theme) { document.body.setAttribute('data-theme', theme); settings.theme = theme; }
+        function updateFoldSetting(val) { settings.defaultFold = val; renderAkten(aktenData); }
+        function filterByPapierkorb() { alert("Papierkorb ist leer."); }
 
         loadData();
     </script>
