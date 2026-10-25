@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCP-RP Medic-Handbuch</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #f59e0b;
+            --accent-hover: #d97706;
+            --border-color: #334155;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --border-color: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar */
+        aside { width: 280px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; }
+        .sidebar-header { padding: 20px; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid var(--border-color); }
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px; }
+        .nav-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 5px; color: var(--text-muted); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { background-color: rgba(245, 158, 11, 0.1); color: var(--accent-color); }
+
+        /* Main Content */
+        main { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
+        header { padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; background: var(--sidebar-bg); }
+        .search-bar { flex: 1; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); font-size: 1rem; }
+        .btn { background: var(--accent-color); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+
+        /* Grid Layout (2-3 Spalten) */
+        .content-area { flex: 1; overflow-y: auto; padding: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; align-content: start; }
+        
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Abschnitte & Me-Boxen */
+        .section-box { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: rgba(0,0,0,0.02); }
+        .section-header { font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; color: var(--accent-color); align-items: center; }
+        .section-content { margin-top: 8px; font-size: 0.95rem; line-height: 1.5; }
+        .me-line { padding: 6px 10px; background: rgba(245, 158, 11, 0.08); border-left: 3px solid var(--accent-color); margin-bottom: 5px; cursor: pointer; border-radius: 4px; font-family: monospace; display: flex; justify-content: space-between; }
+        .me-line:hover { background: rgba(245, 158, 11, 0.15); }
+        .notiz-line { padding: 4px 8px; color: var(--text-muted); font-style: italic; font-size: 0.9rem; }
+
+        /* KI-Hinweis */
+        .ai-badge { position: fixed; bottom: 10px; right: 15px; font-size: 0.75rem; color: var(--text-muted); opacity: 0.7; pointer-events: none; }
+
+        /* Modal / Settings */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 12px; width: 450px; border: 1px solid var(--border-color); }
+        .modal-content h2 { margin-bottom: 20px; }
+        .setting-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .setting-group label { font-size: 0.9rem; color: var(--text-muted); }
+        .setting-group select { padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <aside>
+        <div class="sidebar-header">Medic-Handbuch</div>
+        <div class="sidebar-nav" id="sidebarNav"></div>
+        <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 8px;">
+            <button class="btn btn-secondary" onclick="triggerUndo()" title="Rückgängig">↩️</button>
+            <button class="btn btn-secondary" onclick="triggerRedo()" title="Wiederholen">🔁</button>
+            <button class="btn" style="flex: 1;" onclick="openSettings()">⚙️ Einstellungen</button>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <input type="text" class="search-bar" id="searchInput" placeholder="Suchen: Verletzung, Medikament, Maßnahme..." oninput="filterAkten()">
+        </header>
+        <div class="content-area" id="contentArea"></div>
+    </main>
+
+    <!-- Einstellungen Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2>Einstellungen</h2>
+            <div class="setting-group">
+                <label>Design-Modus:</label>
+                <select id="themeSelect" onchange="changeTheme(this.value)">
+                    <option value="dark">Dunkel (Dark Mode)</option>
+                    <option value="light">Hell (Light Mode)</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label>Standard-Zustand der Abschnitte:</label>
+                <select id="defaultFoldSelect" onchange="updateFoldSetting(this.value)">
+                    <option value="expanded">Ausgeklappt</option>
+                    <option value="collapsed">Eingeklappt</option>
+                </select>
+            </div>
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                <button class="btn" onclick="closeSettings()">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="ai-badge">Erstellt mit KI</div>
+
+    <script>
+        let aktenData = [];
+        let historyStack = [];
+        let redoStack = [];
+        let settings = { theme: 'dark', defaultFold: 'expanded' };
+
+        async function loadData() {
+            try {
+                const response = await fetch('akten.json');
+                aktenData = await response.json();
+                saveStateToHistory();
+                renderSidebar();
+                renderAkten(aktenData);
+            } catch (error) {
+                console.error("Fehler beim Laden der akten.json:", error);
+            }
+        }
+
+        function saveStateToHistory() {
+            historyStack.push(JSON.stringify(aktenData));
+            if (historyStack.length > 20) historyStack.shift();
+            redoStack = [];
+        }
+
+        function triggerUndo() {
+            if (historyStack.length > 1) {
+                redoStack.push(historyStack.pop());
+                aktenData = JSON.parse(historyStack[historyStack.length - 1]);
+                renderAkten(aktenData);
+            }
+        }
+
+        function triggerRedo() {
+            if (redoStack.length > 0) {
+                const nextState = redoStack.pop();
+                historyStack.push(nextState);
+                aktenData = JSON.parse(nextState);
+                renderAkten(aktenData);
+            }
+        }
+
+        function renderSidebar() {
+            const nav = document.getElementById('sidebarNav');
+            nav.innerHTML = `<div class="nav-item active" onclick="renderAkten(aktenData)">Alle Akten <span>${aktenData.length}</span></div>`;
+        }
+
+        function renderAkten(data) {
+            const area = document.getElementById('contentArea');
+            area.innerHTML = '';
+            const isCollapsed = settings.defaultFold === 'collapsed' ? 'none' : 'block';
+
+            data.forEach((akte, akteIndex) => {
+                let card = document.createElement('div');
+                card.className = 'card';
+                let html = `<div class="card-title">${akte.titel}</div>`;
+                
+                if (akte.abschnitte) {
+                    akte.abschnitte.forEach(abs => {
+                        html += `
+                            <div class="section-box">
+                                <div class="section-header" onclick="toggleSection(this)">${abs.titel} <span>▼</span></div>
+                                <div class="section-content" style="display: ${isCollapsed};">
+                                    ${abs.zeilen.map(z => z.startsWith('/me') ? `<div class="me-line" onclick="copyText('${z}')"><span>${z}</span><small style="opacity:0.6">Kopieren</small></div>` : `<div class="notiz-line">${z}</div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (akte.meBoxen) {
+                    akte.meBoxen.forEach((box, boxIndex) => {
+                        html += `
+                            <div class="section-box" style="border-color: var(--accent-color);">
+                                <div class="section-header">
+                                    <span>⭐ ${box.titel}</span>
+                                    <button class="btn-secondary" style="font-size:0.75rem; padding:2px 6px;" onclick="clearMeBox(${akteIndex}, ${boxIndex})">Leeren</button>
+                                </div>
+                                <div class="section-content" style="display: ${isCollapsed};">
+                                    ${box.eintraege.length > 0 ? box.eintraege.map(e => `<div class="me-line" onclick="copyText('${e}')"><span>${e}</span><small style="opacity:0.6">Kopieren</small></div>`).join('') : '<div class="notiz-line">Keine Einträge</div>'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                card.innerHTML = html;
+                area.appendChild(card);
+            });
+        }
+
+        function clearMeBox(akteIndex, boxIndex) {
+            saveStateToHistory();
+            aktenData[akteIndex].meBoxen[boxIndex].eintraege = [];
+            renderAkten(aktenData);
+        }
+
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+        }
+
+        function filterAkten() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = aktenData.filter(a => a.titel.toLowerCase().includes(query));
+            renderAkten(filtered);
+        }
+
+        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
+        function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
+
+        function changeTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            settings.theme = theme;
+        }
+
+        function updateFoldSetting(val) {
+            settings.defaultFold = val;
+            renderAkten(aktenData);
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
