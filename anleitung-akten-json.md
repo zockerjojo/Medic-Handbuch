@@ -32,7 +32,7 @@ Diese Anleitung ist für eine KI oder eine Person gedacht, die Akten für das Me
 | `me` | nein | Liste der Zeilen für die untere Box (Abschnitt 4). Weglassen oder `[]`. |
 | `table` | nein | Optionale Tabelle, z. B. für Normwerte, meist bei Kategorie `"v"`: `{"h": [...], "r": [[...], ...]}`. |
 | `widget` | nein | Nur `true` bei der Akte „Blutgruppen und Spender“. Sonst weglassen. |
-| `boxes` | nein | Zusätzliche /me-Boxen, jede Box ist eine Liste von Zeilen (Texten). Meist weglassen, die Nutzer legen weitere Boxen selbst an. |
+| `boxes` | nein | Zusätzliche /me-Boxen. Jede Box ist ein Objekt mit `t` (Titel) und `me` (Liste der Zeilen). Meist weglassen, die Nutzer legen weitere Boxen selbst an. |
 
 Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf nicht verwendet werden.
 
@@ -48,7 +48,7 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 
 ## 4. Die untere Box (`me`): Handlungen und Notizen
 
-- **Material-Zeile:** Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile. Sie beginnt mit `/me nimmt` und nennt die Gegenstände, die die Behandlung braucht, z. B. `/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten`. Übersichtsakten ohne eigene Behandlung haben nur diese Zeile.
+- **Material-Zeile:** Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile. Sie beginnt mit `/me nimmt` und nennt die Gegenstände, die die Behandlung braucht, z. B. `/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten`. Übersichtsakten ohne eigene Behandlung haben nur diese Zeile. Die Box `me` heißt in der Anzeige immer „Durchführung“.
 - **Zeile mit `/me`** ist eine Handlung, die man im Rollenspiel per Klick kopieren kann. Sie beginnt mit `/me ` (Schrägstrich, `me`, Leerzeichen). Danach folgt die Handlung im Präsens in der dritten Person, z. B. `/me desinfiziert die Wunde und die umliegende Haut`.
 - **Zeile ohne `/me`** ist eine Notiz und nicht kopierbar. Notizen beginnen mit `Notiz: `, z. B. `Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen`.
 - **Eine Notiz darf das Wort `/me` nirgends enthalten.** Sonst würde sie als kopierbare Zeile behandelt.
@@ -79,7 +79,7 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 | Zeile in `items` oder `me` ist kein Text, z. B. eine Zahl oder ein Objekt | Akte wird übersprungen |
 | Abschnitt ohne `h` oder ohne `items` | Akte wird übersprungen |
 | `table` mit falschem Format, z. B. Zeilen, die keine Listen sind | Akte wird übersprungen |
-| `boxes` mit falschem Format, z. B. Boxen, die keine Listen sind | Akte wird übersprungen |
+| `boxes` mit falschem Format, z. B. eine Box ohne Liste `me` | Akte wird übersprungen |
 | `desc`, `kw` oder `widget` mit falschem Typ | Akte wird übersprungen |
 | Ungültiger `mode` | wird ignoriert, es gilt der Standard |
 | Syntaxfehler im JSON, z. B. eine fehlende Klammer oder ein Komma zu viel | es werden **keine** Akten geladen, die Seite zeigt eine Fehlermeldung |

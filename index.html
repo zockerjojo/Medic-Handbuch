@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCP-RP Medic Handbuch</title>
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>✚ SCP-RP Medic Handbuch</title><link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiNmZmZmZmYiLz48cGF0aCBmaWxsPSIjYzYyODI4IiBkPSJNMjYgMTBoMTJ2MTZoMTZ2MTJIMzh2MTZIMjZWMzhIMTBWMjZoMTZ6Ii8+PC9zdmc+">
 <style>
 :root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;--karte-min:450px;--grid-max:1600px;color-scheme:dark}
 :root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);color-scheme:light}
@@ -98,9 +98,14 @@ mark{background:rgba(242,184,75,.38);color:inherit;border-radius:3px;padding:0 .
 .brand{display:flex;align-items:center;gap:8px}
 .cross{width:20px;height:20px;flex:none}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--a);opacity:.8;flex:none;align-self:center}
-.mehead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px}
-.mehead .c{margin:0}
+.mtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 2px}
+.mtitle{color:var(--a);font-weight:700;font-size:15px}
+.bhead .tx{color:var(--a);font-weight:700;font-size:15px}
 .cpall{font-size:12px;padding:2px 10px;border-radius:12px;color:var(--m);flex:none}
+body:not(.edit) .only-edit{display:none!important}
+.mbtn{height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--l);background:var(--p);color:var(--m);font:inherit;font-size:14px;white-space:nowrap;flex:none;cursor:pointer}
+.mbtn:hover{color:var(--a);border-color:var(--a)}
+.mbtn[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a);font-weight:600}
 :focus-visible{outline:2px solid var(--a)}
 #f{position:absolute;top:calc(100% - 10px);left:0;width:min(100%,760px);z-index:6}
 #f .form{max-width:none;margin:0;max-height:calc(100vh - 170px);overflow:auto;box-shadow:0 14px 32px rgba(0,0,0,.35)}
@@ -124,7 +129,7 @@ mark{background:rgba(242,184,75,.38);color:inherit;border-radius:3px;padding:0 .
 </style></head><body>
 <nav id="n"><h1 class="brand"><svg class="cross" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:var(--r)" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg><span>Medic Handbuch</span></h1></nav>
 <main>
-<div id="sb"><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><div id="f"></div></div>
+<div id="sb"><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
 <div id="l"></div>
 </main>
 <div id="ok"></div>
@@ -155,6 +160,7 @@ let store = (TEST || !PERSIST) ? memStore() : localStorage;
 let SEED = [], BASE = {};   // werden beim Start aus akten.json geladen
 let S, view = 'a', query = '', opened = new Set(), folded = new Set(), secOv = new Map(), editing = null, pending = null, formState = null, sectionForm = null;
 let undoStack = [], redoStack = [], lastSaved = null, mergeNext = false;
+let EDIT = false;   // Bearbeitungsmodus: im Standard aus, also Zuschauermodus
 let SET = {theme: 'dark', grid: 'auto', sec: 'open', compact: true};
 
 /* ===== Einstellungen (nur Darstellung, getrennt von den Akten) ===== */
@@ -212,9 +218,13 @@ function load(){
 /* ===== Akten lesen und ändern (immer kopierend, nie die Grunddaten verändern) ===== */
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const withKeys = secs => (secs || []).map((s, i) => (s.k ? s : Object.assign({}, s, {k: 'b' + i})));
-const boxesOf = r => (r && Array.isArray(r.boxes) ? r.boxes : []);   // zusätzliche /me-Boxen einer Akte
+const validBox = b => Array.isArray(b) ? b.every(t => typeof t === 'string')   // alte Form: nur die Zeilen
+  : (!!b && typeof b === 'object' && (b.t === undefined || typeof b.t === 'string') && Array.isArray(b.me) && b.me.every(t => typeof t === 'string'));
+const normBox = b => Array.isArray(b) ? {t: '', me: b.filter(t => typeof t === 'string')}
+  : {t: (b && typeof b.t === 'string') ? b.t.trim() : '', me: (b && Array.isArray(b.me) ? b.me : []).filter(t => typeof t === 'string')};
+const boxesOf = r => (r && Array.isArray(r.boxes) ? r.boxes.map(normBox) : []);   // zusätzliche /me-Boxen einer Akte, immer frische Kopien
 const boxAt = s => (/^x\d+$/.test(s) ? +s.slice(1) : -1);   // 'x0', 'x1' … = zusätzliche Box Nr. 0, 1 …
-const meLinesOf = r => [...r.me, ...boxesOf(r).flat()].filter(t => t.includes('/me'));   // alle kopierbaren Zeilen einer Akte
+const meLinesOf = r => [...r.me, ...boxesOf(r).flatMap(b => b.me)].filter(t => t.includes('/me'));   // alle kopierbaren Zeilen einer Akte
 const get = id => {
   const m = S.made.find(r => r.id === id);
   if (m) return Object.assign({}, m, {sections: withKeys(m.sections)});
@@ -242,9 +252,15 @@ function setText(id, path, text){
     if (!text || text === '/me' || text === 'Notiz:') me.splice(+p[1], 1); else me[+p[1]] = text;
     patch(id, 'me', me);
   } else if (p[0] === 'x') {   // zusätzliche /me-Boxen, Pfad x:Box:Zeile
-    const boxes = boxesOf(r).map(b => b.slice()), bi = +p[1];
+    const boxes = boxesOf(r), bi = +p[1];
     if (!boxes[bi]) return;
-    if (!text || text === '/me' || text === 'Notiz:') boxes[bi].splice(+p[2], 1); else boxes[bi][+p[2]] = text;
+    const me = boxes[bi].me;
+    if (!text || text === '/me' || text === 'Notiz:') me.splice(+p[2], 1); else me[+p[2]] = text;
+    patch(id, 'boxes', boxes);
+  } else if (p[0] === 'xt') {   // Titel einer zusätzlichen Box, Pfad xt:Box
+    const boxes = boxesOf(r), bi = +p[1];
+    if (!boxes[bi] || !text) return;
+    boxes[bi].t = text;
     patch(id, 'boxes', boxes);
   } else {
     const secs = clone(r.sections), s = secs[+p[1]];
@@ -258,32 +274,32 @@ function move(id, s, i, d){
   const r = get(id), j = i + d;
   const swap = arr => { if (j < 0 || j >= arr.length) return false; [arr[i], arr[j]] = [arr[j], arr[i]]; return true; };
   if (s === 'm') { const me = r.me.slice(); if (swap(me)) patch(id, 'me', me); }
-  else if (boxAt(s) >= 0) { const boxes = boxesOf(r).map(b => b.slice()), bi = boxAt(s); if (boxes[bi] && swap(boxes[bi])) patch(id, 'boxes', boxes); }
+  else if (boxAt(s) >= 0) { const boxes = boxesOf(r), bi = boxAt(s); if (boxes[bi] && swap(boxes[bi].me)) patch(id, 'boxes', boxes); }
   else { const secs = clone(r.sections); if (swap(secs[s].items)) patch(id, 'sections', secs); }
 }
 function removeLine(id, s, i){
   if (s === 'm') return patch(id, 'me', get(id).me.filter((_, k) => k !== i));
-  if (boxAt(s) >= 0) { const boxes = boxesOf(get(id)).map(b => b.slice()), bi = boxAt(s); if (boxes[bi]) { boxes[bi].splice(i, 1); patch(id, 'boxes', boxes); } return; }
+  if (boxAt(s) >= 0) { const boxes = boxesOf(get(id)), bi = boxAt(s); if (boxes[bi]) { boxes[bi].me.splice(i, 1); patch(id, 'boxes', boxes); } return; }
   const secs = clone(get(id).sections);
   secs[s].items.splice(i, 1);
   patch(id, 'sections', secs.filter(x => x.items.length));
 }
 function addLine(id, s, start){
   if (s === 'm') { const me = get(id).me.concat(start || '/me '); patch(id, 'me', me); mergeNext = true; return 'm:' + (me.length - 1); }
-  if (boxAt(s) >= 0) { const boxes = boxesOf(get(id)).map(b => b.slice()), bi = boxAt(s); if (!boxes[bi]) return null; const n = boxes[bi].push(start || '/me ') - 1; patch(id, 'boxes', boxes); mergeNext = true; return 'x:' + bi + ':' + n; }
+  if (boxAt(s) >= 0) { const boxes = boxesOf(get(id)), bi = boxAt(s); if (!boxes[bi]) return null; const n = boxes[bi].me.push(start || '/me ') - 1; patch(id, 'boxes', boxes); mergeNext = true; return 'x:' + bi + ':' + n; }
   const secs = clone(get(id).sections), n = secs[s].items.push('Neue Zeile') - 1;
   patch(id, 'sections', secs);
   mergeNext = true;
   return 'i:' + s + ':' + n;
 }
-function addBox(id){   // neue zusätzliche /me-Box mit einer Zeile; gibt den Pfad dieser Zeile zurück
-  const boxes = boxesOf(get(id)).map(b => b.slice());
-  boxes.push(['/me ']);
+function addBox(id){   // neue zusätzliche /me-Box mit Titel und einer Zeile; gibt den Pfad dieser Zeile zurück
+  const boxes = boxesOf(get(id));
+  boxes.push({t: 'Zusätzliche Box', me: ['/me ']});
   patch(id, 'boxes', boxes); mergeNext = true;
   return 'x:' + (boxes.length - 1) + ':0';
 }
 function removeBox(id, bi){
-  const boxes = boxesOf(get(id)).map(b => b.slice());
+  const boxes = boxesOf(get(id));
   if (!boxes[bi]) return;
   boxes.splice(bi, 1); patch(id, 'boxes', boxes);
 }
@@ -329,7 +345,7 @@ function akteExportObj(id){   // die Akte so, wie sie gerade angezeigt wird (mit
   return {format: 'medic-akte', version: 1, akte: {
     cat: r.cat, title: r.title, desc: r.desc || '',
     sections: r.sections.map(s => { const o = {h: s.h, items: s.items.slice()}; if (s.mode) o.mode = s.mode; return o; }),
-    me: r.me.slice(), boxes: boxesOf(r).map(b => b.slice())
+    me: r.me.slice(), boxes: boxesOf(r)
   }};
 }
 function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; ungültige Angaben werden abgelehnt
@@ -376,7 +392,7 @@ function fmt(s){   // gespeicherter Klartext -> sicheres HTML
     return hlEsc(p);
   }).join('');
 }
-const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', r.me.join(' '), boxesOf(r).map(b => b.join(' ')).join(' ')].join(' '));
+const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', r.me.join(' '), boxesOf(r).map(b => b.t + ' ' + b.me.join(' ')).join(' ')].join(' '));
 
 /* ===== Akten-Daten aus akten.json: prüfen und in die feste Form bringen ===== */
 let DATA_PROBLEMS = [];
@@ -394,7 +410,7 @@ function checkRecord(x){   // null = gültig, sonst der Grund
   if (x.desc !== undefined && typeof x.desc !== 'string') return 'desc muss ein Text sein';
   if (x.kw !== undefined && typeof x.kw !== 'string') return 'kw muss ein Text sein';
   if (x.widget !== undefined && typeof x.widget !== 'boolean') return 'widget muss true oder false sein';
-  if (x.boxes !== undefined && (!Array.isArray(x.boxes) || x.boxes.some(b => !Array.isArray(b) || b.some(t => typeof t !== 'string')))) return 'boxes muss eine Liste von /me-Boxen sein (jede Box ist eine Liste von Texten)';
+  if (x.boxes !== undefined && (!Array.isArray(x.boxes) || !x.boxes.every(validBox))) return 'boxes muss eine Liste von /me-Boxen sein (jede Box hat Zeilen me und einen Titel t)';
   if (x.table !== undefined && x.table !== null) {
     if (!x.table || !Array.isArray(x.table.h) || x.table.h.some(c => typeof c !== 'string')) return 'table.h muss eine Liste von Texten sein';
     if (!Array.isArray(x.table.r) || x.table.r.some(row => !Array.isArray(row) || row.some(c => typeof c !== 'string'))) return 'table.r muss eine Liste von Zeilen sein; jede Zeile ist eine Liste von Texten';
@@ -404,7 +420,7 @@ function checkRecord(x){   // null = gültig, sonst der Grund
 function normalizeRecord(x){   // feste Form, die die Anzeige erwartet
   return {id: x.id.trim(), cat: x.cat, title: x.title.trim(), desc: x.desc || '', kw: x.kw || '',
     sections: (x.sections || []).map(s => { const o = {h: s.h.trim(), items: s.items.slice()}; if (own(MODES, s.mode)) o.mode = s.mode; return o; }),
-    me: (x.me || []).slice(), boxes: (x.boxes || []).map(b => b.slice()), table: x.table || null, widget: x.widget === true};
+    me: (x.me || []).slice(), boxes: (x.boxes || []).map(normBox), table: x.table || null, widget: x.widget === true};
 }
 function parseData(raw){   // reine Prüfung, ändert nichts
   if (!Array.isArray(raw)) return {records: [], problems: ['akten.json muss eine Liste (Array) von Akten enthalten.']};
@@ -435,39 +451,48 @@ const modeOf = s => (s.mode && own(MODES, s.mode)) ? s.mode : (s.h === 'Ablauf' 
 const secOpen = (id, k) => secOv.has(id + '|' + k) ? secOv.get(id + '|' + k) : SET.sec === 'open';
 function card(r){
   const id = esc(r.id), ro = !!RO[r.cat], starred = S.fav.includes(r.id), shut = folded.has(r.id);
-  const b = (act, sym, label, extra) => ro ? '' : `<button data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>`;
+  const can = EDIT && !ro;   // Bearbeiten erlaubt: Bearbeitungsmodus an und bearbeitbare Akte
+  const b = (act, sym, label, extra) => can ? `<button data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>` : '';
+  const bv = (act, sym, label, extra) => ro ? '' : `<button data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>`;   // auch im Zuschauermodus, z. B. Export
   const tx = (path, raw, html) => `<span class="tx" data-rec="${id}" data-path="${path}" data-raw="${esc(raw)}">${html}</span>`;
   const ed = b('edit', '✎', 'Bearbeiten');
   const ord = (s, i) => b('move', '▲', 'Nach oben', `data-s="${s}" data-i="${i}" data-d="-1"`) + b('move', '▼', 'Nach unten', `data-s="${s}" data-i="${i}" data-d="1"`) + b('remove', '✕', 'Entfernen', `data-s="${s}" data-i="${i}"`);
   const arrow = `<span class="arw" data-act="fold" data-id="${id}" title="Ein- und ausklappen" aria-label="Ein- und ausklappen">${shut ? '▸' : '▾'}</span>`;
   const edited = !!BASE[r.id] && !!S.ov[r.id];   // Standard-Akte, die du geändert hast
   const dot = edited ? '<span class="dot" title="Von dir angepasst" aria-label="Von dir angepasst"></span>' : '';
-  const head = `<h2>${arrow}${dot}<span class="row" data-hold>${tx('title', r.title, hlEsc(r.title))}<span class="ct">${ed}</span></span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button><span class="hv">${b('recmove', '▲', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼', 'Akte nach unten', 'data-d="1"')}${b('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}${b('trash', 'Papierkorb', 'In den Papierkorb legen')}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}</span></span></h2>`;
+  const head = `<h2>${arrow}${dot}<span class="row" data-hold>${tx('title', r.title, hlEsc(r.title))}<span class="ct">${ed}</span></span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button><span class="hv">${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}${b('recmove', '▲', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼', 'Akte nach unten', 'data-d="1"')}${b('trash', 'Papierkorb', 'In den Papierkorb legen')}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}</span></span></h2>`;
   // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar
   const cat = (view === 'a' || view === 'fav') ? `<p class="c">${C[r.cat]}</p>` : '';
-  const desc = (r.desc || !ro) ? `<p><span class="row" data-hold>${r.desc ? tx('desc', r.desc, fmt(r.desc)) : tx('desc', '', '<em class="c">Beschreibung hinzufügen</em>')}<span class="ct">${ed}</span></span></p>` : '';
+  const desc = (r.desc || can) ? `<p><span class="row" data-hold>${r.desc ? tx('desc', r.desc, fmt(r.desc)) : tx('desc', '', '<em class="c">Beschreibung hinzufügen</em>')}<span class="ct">${ed}</span></span></p>` : '';
   const tbl = r.table ? `<div class="tw"><table><tr>${r.table.h.map(x => `<th>${esc(x)}</th>`).join('')}</tr>${r.table.r.map(w => `<tr>${w.map(x => `<td>${fmt(x)}</td>`).join('')}</tr>`).join('')}</table></div>` : '';
   const secs = r.sections.map((s, si) => {
     const m = modeOf(s), tag = m === 'number' ? 'ol' : (m === 'text' ? 'div' : 'ul'), it = m === 'text' ? 'p' : 'li';
     const open = secOpen(r.id, s.k), sk = esc(s.k);
-    const smode = ro ? '' : `<select class="smode" data-smode="1" data-id="${id}" data-s="${si}" title="Darstellung" aria-label="Darstellung">${Object.keys(MODES).map(k => `<option value="${k}"${k === m ? ' selected' : ''}>${MODES[k]}</option>`).join('')}</select>`;
-    const sctl = ro ? '' : `<span class="ct">${ed}${b('secmove', '▲', 'Abschnitt nach oben', `data-s="${si}" data-d="-1"`)}${b('secmove', '▼', 'Abschnitt nach unten', `data-s="${si}" data-d="1"`)}${b('add', '＋', 'Zeile hinzufügen', `data-s="${si}"`)}${smode}${b('delsec', '✕', 'Abschnitt löschen', `data-s="${si}"`)}</span>`;
+    const smode = !can ? '' : `<select class="smode" data-smode="1" data-id="${id}" data-s="${si}" title="Darstellung" aria-label="Darstellung">${Object.keys(MODES).map(k => `<option value="${k}"${k === m ? ' selected' : ''}>${MODES[k]}</option>`).join('')}</select>`;
+    const sctl = !can ? '' : `<span class="ct">${ed}${b('secmove', '▲', 'Abschnitt nach oben', `data-s="${si}" data-d="-1"`)}${b('secmove', '▼', 'Abschnitt nach unten', `data-s="${si}" data-d="1"`)}${b('add', '＋', 'Zeile hinzufügen', `data-s="${si}"`)}${smode}${b('delsec', '✕', 'Abschnitt löschen', `data-s="${si}"`)}</span>`;
     const sarw = `<span class="sarw" data-act="secopen" data-id="${id}" data-sk="${sk}" title="Auf- und zuklappen" aria-label="Auf- und zuklappen">${open ? '▾' : '▸'}</span>`;
     return `<div class="sec${open ? ' open' : ''}"><h4 data-rec="${id}" data-sk="${sk}">${sarw}<span class="row" data-hold>${tx('h:' + si, s.h, hlEsc(s.h))}${sctl}</span></h4><div class="sbody"><${tag}>${s.items.map((t, ii) => `<${it}><span class="row" data-hold>${tx(`i:${si}:${ii}`, t, fmt(t))}<span class="ct">${ed}${ord(si, ii)}</span></span></${it}>`).join('')}</${tag}></div></div>`;
   }).join('');
   const blood = r.widget ? `<h4>Patient wählen</h4><select data-blood><option value="">Blutgruppe</option>${Object.keys(BG).map(k => `<option>${k}</option>`).join('')}</select><p class="bo"></p><p class="c">AB+ ist Universalempfänger, 0- ist Universalspender.</p>` : '';
+  // /me-Boxen: die Hauptbox heißt immer „Durchführung“, zusätzliche Boxen tragen einen Titel
   const lineRow = (m, path, s, i) => `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}<span class="ct">${ed}${ord(s, i)}</span></span></div>`;
-  const addRow = s => `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button>`;
-  const mehead = (r.me.length || boxesOf(r).length) ? `<div class="mehead">${r.me.length ? '<small class="c">Zeile mit /me anklicken zum Kopieren</small>' : '<span></span>'}${meLinesOf(r).length ? `<button class="cpall" data-act="copyall" data-id="${id}" title="Alle /me-Zeilen dieser Akte in die Zwischenablage kopieren">Alle kopieren</button>` : ''}</div>` : '';
-  const me = ro ? '' : `<div class="me">${mehead}${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
-  const xboxes = ro ? '' : boxesOf(r).map((box, bi) => `<div class="me xb"><div class="bhead"><small class="c">Zusätzliche /me-Box</small><button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button></div>${box.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div>`).join('') + `<button class="ad" data-act="addbox" data-id="${id}">+ /me-Box hinzufügen</button>`;
-  const addSec = ro ? '' : `<button class="ad" data-act="secform" data-id="${id}">+ Abschnitt hinzufügen</button>`;
-  const sform = (!ro && sectionForm && sectionForm.id === r.id) ? secFormHTML(sectionForm, id) : '';
+  const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button>`;
+  const copyBtn = meLinesOf(r).length ? `<button class="cpall" data-act="copyall" data-id="${id}" title="Alle /me-Zeilen dieser Akte in die Zwischenablage kopieren">Alle kopieren</button>` : '';
+  const hint = r.me.length ? '<small class="c">Zeile mit /me anklicken zum Kopieren</small>' : '';
+  const me = ro ? '' : `<div class="me"><div class="mtop"><span class="mtitle">Durchführung</span>${copyBtn}</div>${hint}${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
+  const xboxes = ro ? '' : boxesOf(r).map((box, bi) => {
+    const bt = box.t || 'Zusätzliche Box';
+    return `<div class="me xb"><div class="bhead"><span class="row" data-hold>${tx('xt:' + bi, bt, hlEsc(bt))}<span class="ct">${ed}</span></span>${can ? `<button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : ''}</div>${box.me.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div>`;
+  }).join('') + (can ? `<button class="ad" data-act="addbox" data-id="${id}">+ /me-Box hinzufügen</button>` : '');
+  const addSec = can ? `<button class="ad" data-act="secform" data-id="${id}">+ Abschnitt hinzufügen</button>` : '';
+  const sform = (can && sectionForm && sectionForm.id === r.id) ? secFormHTML(sectionForm, id) : '';
   return `<article class="card${shut ? ' folded' : ''}${S.del[r.id] ? ' gone' : ''}" data-rec="${id}">${head}${cat}${desc}${tbl}${secs}${addSec}${sform}${blood}${me}${xboxes}</article>`;
 }
 function trashCard(r){
   const id = esc(r.id), mine = S.made.some(x => x.id === r.id);
-  return `<article class="card gone" data-rec="${id}"><h2>${esc(r.title)}</h2><p><button data-act="restore" data-id="${id}">Wiederherstellen</button> ${mine ? `<button class="danger" data-act="purge" data-id="${id}">Endgültig löschen</button>` : '<span class="c">Mitgelieferte Akten lassen sich nur wiederherstellen.</span>'}</p></article>`;
+  const acts = !EDIT ? '<span class="c">Zum Wiederherstellen in den Bearbeitungsmodus wechseln.</span>'
+    : `<button data-act="restore" data-id="${id}">Wiederherstellen</button> ${mine ? `<button class="danger" data-act="purge" data-id="${id}">Endgültig löschen</button>` : '<span class="c">Mitgelieferte Akten lassen sich nur wiederherstellen.</span>'}`;
+  return `<article class="card gone" data-rec="${id}"><h2>${esc(r.title)}</h2><p>${acts}</p></article>`;
 }
 function renderNav(){
   const L = live(), item = (v, label, n) => `<div class="cr${view === v ? ' on' : ''}" data-act="view" data-v="${v}"><span>${label}</span><i>${n}</i></div>`;
@@ -479,7 +504,7 @@ function renderNav(){
   });
   h += '<div class="sep"></div>' + item('trash', '<span class="ic" aria-hidden="true">🗑️</span>Papierkorb', trashed().length);
   if (DATA_PROBLEMS.length) h += '<p class="warn" title="' + esc(DATA_PROBLEMS.join(' | ')) + '">Hinweis: ' + DATA_PROBLEMS.length + ' Einträge in akten.json wurden übersprungen.</p>';
-  $('#n').innerHTML = h + (PERSIST || TEST ? '' : '<p class="warn">Dein Browser speichert hier nichts dauerhaft. Änderungen gehen beim Schließen verloren. Bitte exportiere sie vorher.</p>') + '<div class="foot"><button data-act="export" title="Enthält deine Änderungen, aber keine Favoriten">Exportieren</button><button data-act="import">Importieren</button><button data-act="importakte" title="Eine einzelne Akte aus einer Datei als eigene Akte hinzufügen">Akte importieren</button></div>';
+  $('#n').innerHTML = h + (PERSIST || TEST ? '' : '<p class="warn">Dein Browser speichert hier nichts dauerhaft. Änderungen gehen beim Schließen verloren. Bitte exportiere sie vorher.</p>') + '<div class="foot"><button data-act="export" title="Enthält deine Änderungen, aber keine Favoriten">Exportieren</button>' + (EDIT ? '<button data-act="import">Importieren</button><button data-act="importakte" title="Eine einzelne Akte aus einer Datei als eigene Akte hinzufügen">Akte importieren</button>' : '') + '</div>';
   const u = $('#undo'), rd = $('#redo');
   if (u) u.disabled = !undoStack.length;
   if (rd) rd.disabled = !redoStack.length;
@@ -532,7 +557,12 @@ function render(){
 
 /* ===== Bearbeiten: ein Mechanismus für alle Textstellen ===== */
 function startEdit(el){
-  if (editing) finishEdit();
+  if (editing) {   // eine andere Stelle ist noch offen: erst abschließen, dann die angeklickte Stelle in der neu gezeichneten Anzeige suchen
+    const rec = el.dataset.rec, path = el.dataset.path;
+    finishEdit();
+    el = [...document.querySelectorAll('.tx')].find(x => x.dataset.rec === rec && x.dataset.path === path);
+    if (!el) return;
+  }
   editing = {el, cancel: false};
   el.contentEditable = 'true'; el.classList.add('ed');
   el.textContent = el.dataset.raw; el.focus();
@@ -586,6 +616,19 @@ function submit(){
 }
 
 /* ===== Einstellungen ===== */
+function setMode(on){   // Zuschauermodus (im Standard) oder Bearbeitungsmodus
+  if (!on && editing) finishEdit();
+  EDIT = !!on;
+  formState = null; sectionForm = null; pending = null;
+  document.body.classList.toggle('edit', EDIT);
+  const mb = $('#modebtn');
+  if (mb) {
+    mb.innerHTML = EDIT ? '✓<span class="lbl"> Fertig</span>' : '✎<span class="lbl"> Bearbeiten</span>';
+    mb.setAttribute('aria-pressed', String(EDIT));
+    mb.title = EDIT ? 'Bearbeitungsmodus beenden, zurück zum Zuschauermodus' : 'Bearbeitungsmodus einschalten';
+  }
+  render();
+}
 function setOpt(k, v){
   if (k === 'theme') SET.theme = v === 'light' ? 'light' : 'dark';
   else if (k === 'grid') SET.grid = v === 'one' ? 'one' : 'auto';
@@ -613,7 +656,9 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'delsec', 'addbox', 'rmbox', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo']);   // nur im Bearbeitungsmodus
 function act(name, b){
+  if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
   if (name === 'edit') return startEdit(b.closest('[data-hold]').querySelector('.tx'));
   if (name === 'go') return openRec(id);
@@ -622,6 +667,7 @@ function act(name, b){
   if (name === 'export') return exportData();
   if (name === 'import') return $('#imp').click();
   if (name === 'copyall') return copyAllMe(id);
+  if (name === 'mode') return setMode(!EDIT);
   if (name === 'exportrec') return exportAkte(id);
   if (name === 'importakte') return $('#impakte').click();
   if (name === 'fold') { toggleFold(id); return render(); }
@@ -739,7 +785,7 @@ function cleanSections(x){
   });
   return out;
 }
-function cleanBoxes(x){ return (Array.isArray(x) ? x : []).filter(Array.isArray).map(b => b.filter(t => typeof t === 'string')); }
+function cleanBoxes(x){ return (Array.isArray(x) ? x : []).filter(validBox).map(normBox); }
 function cleanMade(x, seen){
   if (!x || typeof x !== 'object' || !Array.isArray(x.sections)) return null;
   const id = typeof x.id === 'string' ? x.id.trim() : '', title = cleanText(x.title);
@@ -829,7 +875,7 @@ document.addEventListener('keydown', e => {
     return;
   }
   const typing = e.target.matches && e.target.matches('input,textarea,select,[contenteditable="true"]');
-  if ((e.ctrlKey || e.metaKey) && !typing) {
+  if ((e.ctrlKey || e.metaKey) && !typing && EDIT) {
     const k = e.key.toLowerCase();
     if (k === 'z' && !e.shiftKey) { e.preventDefault(); return undo(); }
     if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); return redo(); }
@@ -844,7 +890,7 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.matches && t.matches('select[data-blood]')) t.closest('.card').querySelector('.bo').textContent = t.value ? 'Darf Blut erhalten von: ' + BG[t.value].split(' ').join(', ') : '';
-  else if (t.matches && t.matches('select[data-smode]')) { setSecMode(t.dataset.id, +t.dataset.s, t.value); render(); }
+  else if (t.matches && t.matches('select[data-smode]')) { if (EDIT) { setSecMode(t.dataset.id, +t.dataset.s, t.value); render(); } }
   else if (t.dataset && t.dataset.sf && sectionForm) sectionForm[t.dataset.sf] = t.value;
   else if (t.id === 'fcat') { formState = Object.assign(readForm(), {text: [], errors: null}); render(); }
   else if (t.id === 'imp') { const f = t.files[0]; t.value = ''; if (f) importFile(f); }   // Auswahl leeren, damit dieselbe Datei erneut gewählt werden kann
@@ -898,6 +944,8 @@ const mainEl = document.querySelector('main');
 /* ===== Tests: im Browser mit ?test öffnen. Probespeicher, deine Daten bleiben unberührt. ===== */
 function runTests(){
   const res = [];
+  const startedInView = !EDIT;   // beim Start war der Zuschauermodus an
+  setMode(true);   // die Tests prüfen das Bearbeiten, deshalb mit Bearbeitungsmodus
   const T = (name, fn) => { try { fn(); res.push([true, name]); } catch (e) { res.push([false, name + ': ' + e.message]); } };
   const ok = (c, m) => { if (!c) throw new Error(m || 'nicht erfüllt'); };
   const reset0 = () => { S = fresh(); S.order = orderFix([]); folded.clear(); secOv.clear(); save(); undoStack = []; redoStack = []; };
@@ -991,18 +1039,40 @@ function runTests(){
   T('Jede bearbeitbare Akte beginnt mit einer Material-Zeile', () => { const ohne = SEED.filter(r => !RO[r.cat] && !/^\/me nimmt /.test((r.me || [])[0] || '')).map(r => r.title); ok(!ohne.length, 'ohne Material-Zeile: ' + ohne.join(', ')); });
   T('Suchtreffer werden markiert', () => { reset0(); const r = E(); const w = (r.sections[0].items[0].split(' ')[0] || '').replace(/[^\p{L}]/gu, ''); query = w; const c = card(get(r.id)); query = ''; ok(w && c.includes('<mark>'), 'keine Markierung für ' + w); });
   T('Treffer im Text bleiben als HTML sicher', () => { query = 'b'; const out = hlEsc('<i>b</i>'); query = ''; ok(out === '&lt;i&gt;<mark>b</mark>&lt;/i&gt;', out); });
-  T('Zusätzliche /me-Box anlegen, befüllen, entfernen', () => { reset0(); const i = id(), path = addBox(i); ok(get(i).boxes.length === 1 && path === 'x:0:0', 'nicht angelegt'); setText(i, path, '/me Test-Box'); ok(get(i).boxes[0][0] === '/me Test-Box', 'Zeile nicht gespeichert'); const c = card(get(i)); ok(c.includes('Zusätzliche /me-Box') && c.includes('data-s="x0"'), 'nicht angezeigt'); removeBox(i, 0); ok(get(i).boxes.length === 0, 'nicht entfernt'); });
-  T('Zusätzliche Boxen bleiben beim Export und Import erhalten', () => { reset0(); const i = id(); addBox(i); setText(i, 'x:0:0', '/me Export-Box'); const r = sanitize(JSON.parse(exportText())); ok(r.data.ov[i].boxes[0][0] === '/me Export-Box', 'Box fehlt nach dem Import'); });
-  T('Boxen in akten.json werden geprüft', () => { ok(parseData([{id: 'bx', cat: 'b', title: 'BX', boxes: 'kaputt'}]).problems.length === 1, 'kaputte Box nicht erkannt'); ok(parseData([{id: 'by', cat: 'b', title: 'BY', boxes: [['/me a']]}]).records[0].boxes[0][0] === '/me a', 'gültige Box verloren'); });
+  T('Zusätzliche /me-Box anlegen, befüllen, entfernen', () => { reset0(); const i = id(), path = addBox(i); ok(get(i).boxes.length === 1 && path === 'x:0:0', 'nicht angelegt'); setText(i, path, '/me Test-Box'); ok(get(i).boxes[0].me[0] === '/me Test-Box', 'Zeile nicht gespeichert'); const c = card(get(i)); ok(c.includes('Zusätzliche Box') && c.includes('data-s="x0"'), 'nicht angezeigt'); removeBox(i, 0); ok(get(i).boxes.length === 0, 'nicht entfernt'); });
+  T('Zusätzliche Boxen bleiben beim Export und Import erhalten', () => { reset0(); const i = id(); addBox(i); setText(i, 'x:0:0', '/me Export-Box'); const r = sanitize(JSON.parse(exportText())); ok(r.data.ov[i].boxes[0].me[0] === '/me Export-Box', 'Box fehlt nach dem Import'); });
+  T('Alte und neue Box-Form werden übernommen', () => { const a = parseData([{id: 'by', cat: 'b', title: 'BY', boxes: [['/me a']]}]).records[0], n = parseData([{id: 'bz', cat: 'b', title: 'BZ', boxes: [{t: 'Nachsorge', me: ['/me b']}]}]).records[0]; ok(a.boxes[0].me[0] === '/me a' && a.boxes[0].t === '', 'alte Form'); ok(n.boxes[0].t === 'Nachsorge' && n.boxes[0].me[0] === '/me b', 'neue Form'); });
+  T('Boxen mit falschem Format werden erkannt', () => ok(parseData([{id: 'bx', cat: 'b', title: 'BX', boxes: 'kaputt'}]).problems.length === 1, 'kaputte Box nicht erkannt'));
   T('Titel in der Seitenleiste ohne Bindestrich, mit rotem Kreuz', () => { const h = $('#n').innerHTML; ok(h.includes('Medic Handbuch') && !h.includes('Medic-Handbuch'), 'Titel falsch'); ok(h.includes('<svg'), 'Kreuz fehlt'); });
-  T('Browser-Titel ist SCP-RP Medic Handbuch', () => ok(document.title === 'SCP-RP Medic Handbuch', document.title));
+  T('Browser-Titel mit Kreuz und Name, Symbol im Reiter', () => { ok(document.title === '✚ SCP-RP Medic Handbuch', document.title); ok(!!document.querySelector('link[rel="icon"]'), 'Symbol im Reiter fehlt'); });
   T('Alles kopieren sammelt alle /me-Zeilen, ohne Notizen', () => { reset0(); const i = id(); addBox(i); setText(i, 'x:0:0', '/me Kopier-Test'); const got = meLinesOf(get(i)); ok(got.includes('/me Kopier-Test'), 'Box-Zeile fehlt'); ok(got.every(t => t.includes('/me')), 'Notiz gesammelt'); ok(got.length === get(i).me.filter(t => t.includes('/me')).length + 1, 'Anzahl falsch'); ok(card(get(i)).includes('data-act="copyall"'), 'Schaltfläche fehlt'); });
   T('Angepasste Akten bekommen einen dezenten Punkt, Originale nicht', () => { reset0(); const i = id(); ok(!card(get(i)).includes('class="dot"'), 'Punkt ohne Änderung'); setText(i, 'i:0:0', 'Punkt-Test'); ok(card(get(i)).includes('class="dot"'), 'kein Punkt nach Änderung'); reset(i); ok(!card(get(i)).includes('class="dot"'), 'Punkt nach dem Zurücksetzen'); });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
   T('Ungültige Akten-Dateien werden abgelehnt', () => { ok(akteImport({format: 'medic-handbuch'}).errors, 'falsches Format angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'v', title: 'X', sections: [{h: 'A', items: ['x']}]}}).errors.cat, 'schreibgeschützte Kategorie angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Leer', sections: []}}).errors.sections, 'Akte ohne Abschnitte angenommen'); });
+  T('Zuschauermodus ist der Standard', () => ok(startedInView, 'beim Start war der Bearbeitungsmodus an'));
+  T('Im Zuschauermodus gibt es keine Bearbeiten-Schaltflächen', () => {
+    setMode(false); reset0(); const c = card(get(id())); setMode(true);
+    ok(!/data-act="(edit|add|move|remove|trash|recmove|secmove|delsec|addbox|rmbox|secform|reset)"/.test(c), 'Bearbeiten-Schaltfläche sichtbar');
+    ok(!c.includes('class="smode"') && !c.includes('+ Abschnitt hinzufügen'), 'Darstellung oder Abschnitt hinzufügen sichtbar');
+    ok(c.includes('data-act="exportrec"') && c.includes('data-act="copyall"') && c.includes('data-act="fav"') && c.includes('data-act="fold"'), 'Export, Kopieren, Favorit oder Einklappen fehlt');
+  });
+  T('Im Zuschauermodus lassen sich Inhalte nicht ändern', () => {
+    setMode(false); reset0(); const i = id(), before = JSON.stringify(S);
+    act('newform', {dataset: {}}); act('trash', {dataset: {id: i}}); act('add', {dataset: {id: i, s: 'm'}}); act('undo', {dataset: {}});
+    const formOffen = formState !== null, geaendert = JSON.stringify(S) !== before;
+    setMode(true);
+    ok(!formOffen, 'Formular geöffnet'); ok(!geaendert, 'Daten geändert');
+  });
+  T('Umschalter in der Kopfleiste schaltet den Bearbeitungsmodus um', () => {
+    setMode(false); act('mode', {dataset: {}}); const an = EDIT && document.body.classList.contains('edit') && $('#modebtn').getAttribute('aria-pressed') === 'true';
+    act('mode', {dataset: {}}); const aus = !EDIT && !document.body.classList.contains('edit') && $('#modebtn').getAttribute('aria-pressed') === 'false';
+    setMode(true); ok(an && aus, 'Umschalter wirkt nicht');
+  });
+  T('Die Hauptbox heißt Durchführung, neue Boxen bekommen einen Titel', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel der Hauptbox fehlt'); addBox(i); ok(get(i).boxes[0].t === 'Zusätzliche Box' && card(get(i)).includes('Zusätzliche Box'), 'Titel der neuen Box fehlt'); });
+  T('Titel einer zusätzlichen Box lässt sich ändern', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'Nachsorge'); ok(get(i).boxes[0].t === 'Nachsorge' && card(get(i)).includes('Nachsorge'), 'Titel nicht geändert'); });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
-  SET = {theme: 'dark', grid: 'auto', sec: 'open', compact: true}; saveSet(); applySet(); closeModal();
+  SET = {theme: 'dark', grid: 'auto', sec: 'open', compact: true}; saveSet(); applySet(); closeModal(); setMode(false);
   $('#f').innerHTML = '';
   $('#l').innerHTML = `<h2>Tests</h2><p>${res.filter(r => r[0]).length} von ${res.length} bestanden</p>` + res.map(([good, m]) => `<p class="${good ? 'okt' : 'err'}">${good ? '✓' : '✗'} ${esc(m)}</p>`).join('');
 }
