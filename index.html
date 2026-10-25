@@ -118,6 +118,10 @@ body:not(.edit) .only-edit{display:none!important}
 .srow{padding:12px 0;border-top:1px solid var(--l)}
 .slabel{margin:0 0 8px;font-weight:600}
 .shint{margin:6px 0 0;color:var(--m);font-size:13px;line-height:1.4}
+.srange{display:flex;align-items:center;gap:10px}
+.srange input[type=range]{flex:1;min-width:0;margin:0;accent-color:var(--a)}
+.rnum{color:var(--m);font-size:13px}
+#colsout{min-width:86px;text-align:right;font-weight:600;white-space:nowrap}
 .seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--l);border-radius:8px;overflow:hidden}
 .seg button{border:0;border-radius:0;padding:6px 12px;background:none;color:var(--m)}
 .seg button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
@@ -516,10 +520,13 @@ function segRow(label, hint, k, opts){
   const sel = v => k === 'compact' ? SET.compact === (v === 'on') : String(SET[k]) === String(v);
   return `<div class="srow"><p class="slabel">${label}</p><div class="seg">${opts.map(([v, t]) => `<button data-act="set" data-k="${k}" data-v="${v}" aria-pressed="${sel(v) ? 'true' : 'false'}">${t}</button>`).join('')}</div><p class="shint">${hint}</p></div>`;
 }
+function colsRow(){   // Schieberegler für die Spalten (1 bis 4), mit der gewählten Zahl daneben
+  return `<div class="srow"><p class="slabel">Spalten pro Reihe</p><div class="srange"><span class="rnum">1</span><input type="range" id="colsrange" data-set="cols" min="1" max="4" step="1" value="${SET.cols}" list="colticks" aria-label="Spalten pro Reihe"><span class="rnum">4</span><output id="colsout" for="colsrange">Spalten: ${SET.cols}</output></div><datalist id="colticks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option></datalist><p class="shint">Wie viele Akten-Karten nebeneinander stehen (1 bis 4). Auf dem Handy ist immer eine Spalte.</p></div>`;
+}
 function renderSettings(){
   $('#mbody').innerHTML =
     segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
-    segRow('Spalten pro Reihe', 'Wie viele Akten-Karten nebeneinander stehen, bis zu vier. Auf dem Handy ist immer eine Spalte.', 'cols', [['2', '2 Spalten'], ['1', '1 Spalte'], ['3', '3 Spalten'], ['4', '4 Spalten']]) +
+    colsRow() +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]);
 }
@@ -632,9 +639,15 @@ function setMode(on){   // Zuschauermodus (im Standard) oder Bearbeitungsmodus
   }
   render();
 }
+function setCols(v){   // Spalten pro Reihe (1 bis 4): Raster, Anzeige und Regler sofort aktualisieren
+  SET.cols = [1, 2, 3, 4].includes(+v) ? +v : 2;
+  saveSet(); applySet();
+  const out = $('#colsout'); if (out) out.textContent = 'Spalten: ' + SET.cols;
+  const rg = $('#colsrange'); if (rg && +rg.value !== SET.cols) rg.value = String(SET.cols);
+}
 function setOpt(k, v){
   if (k === 'theme') SET.theme = v === 'light' ? 'light' : 'dark';
-  else if (k === 'cols') SET.cols = [1, 2, 3, 4].includes(+v) ? +v : 2;
+  else if (k === 'cols') return setCols(v);
   else if (k === 'sec') { SET.sec = v === 'open' ? 'open' : 'closed'; secOv.clear(); }
   else if (k === 'compact') SET.compact = v === 'on';
   else return;
@@ -881,6 +894,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('input', e => {
   const t = e.target;
   if (t.id === 'q') setQuery(t.value);
+  else if (t.matches && t.matches('input[data-set="cols"]')) setCols(t.value);   // Schieberegler: sofort übernehmen, ohne das Fenster neu zu zeichnen
   else if (t.dataset && t.dataset.sf && sectionForm) sectionForm[t.dataset.sf] = t.value;   // Eingaben merken, damit sie beim Neuzeichnen bleiben
 });
 document.addEventListener('change', e => {
@@ -1066,12 +1080,13 @@ function runTests(){
   T('Die Hauptbox heißt Durchführung, neue Boxen bekommen einen Titel', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel der Hauptbox fehlt'); addBox(i); ok(get(i).boxes[0].t === 'Zusätzliche Box' && card(get(i)).includes('Zusätzliche Box'), 'Titel der neuen Box fehlt'); });
   T('Titel einer zusätzlichen Box lässt sich ändern', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'Nachsorge'); ok(get(i).boxes[0].t === 'Nachsorge' && card(get(i)).includes('Nachsorge'), 'Titel nicht geändert'); });
   T('Kein Alle-kopieren-Knopf in den /me-Boxen', () => { reset0(); const c = card(get(id())); ok(!c.includes('Alle kopieren') && !c.includes('data-act="copyall"'), 'Knopf noch da'); });
-  T('Einstellungen: der Standard steht immer links', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; ok(erster('theme') === 'dark' && erster('cols') === '2' && erster('sec') === 'open' && erster('compact') === 'on', 'Standard nicht links'); });
+  T('Einstellungen: Standardwerte und Schieberegler für die Spalten', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; const r = document.querySelector('#mbody input[data-set="cols"]'); ok(erster('theme') === 'dark' && erster('sec') === 'open' && erster('compact') === 'on', 'Standard nicht links'); ok(r && r.type === 'range' && r.min === '1' && r.max === '4' && r.step === '1' && r.value === '2', 'Schieberegler falsch'); });
   T('Spalten pro Reihe: 1 bis 4, ungültige Werte fallen auf 2 zurück', () => { setOpt('cols', '4'); ok(SET.cols === 4 && document.body.style.getPropertyValue('--cols').trim() === '4', 'vier Spalten nicht gesetzt'); setOpt('cols', '9'); ok(SET.cols === 2, 'ungültiger Wert nicht abgefangen'); setOpt('cols', '2'); });
   T('Volle Breite: die Kartenreihe hat keine Breitenbegrenzung mehr', () => ok(getComputedStyle(document.getElementById('l')).maxWidth === 'none', 'Breitenbegrenzung noch da'));
   T('Seitenleiste ein- und ausklappen', () => { SET.nav = 'open'; applySet(); act('navtoggle', {dataset: {}}); const zu = SET.nav === 'closed' && document.body.classList.contains('nav-off') && getComputedStyle(document.querySelector('nav')).display === 'none'; act('navtoggle', {dataset: {}}); ok(zu && SET.nav === 'open' && !document.body.classList.contains('nav-off'), 'Seitenleiste reagiert nicht'); });
   T('Spalten und Seitenleiste werden gespeichert', () => { setOpt('cols', '3'); act('navtoggle', {dataset: {}}); SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; loadSet(); const gemerkt = SET.cols === 3 && SET.nav === 'closed'; setOpt('cols', '2'); act('navtoggle', {dataset: {}}); ok(gemerkt, 'nicht gespeichert'); });
   T('Gespeicherte Einstellung „Eine Spalte“ wird zu einer Spalte', () => { store.setItem(SETKEY, JSON.stringify({grid: 'one'})); loadSet(); const eine = SET.cols === 1; store.removeItem(SETKEY); ok(eine, 'alte Einstellung nicht übernommen'); });
+  T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
   SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
