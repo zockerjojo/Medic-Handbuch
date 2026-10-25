@@ -14,10 +14,9 @@ nav h1{font:700 22px Georgia,serif;margin:0 8px 18px}
 .gl a{display:block;padding:4px 10px;color:var(--m);border-radius:4px;text-decoration:none}.gl a:hover{background:var(--l);color:var(--t)}
 .foot{margin-top:auto;padding-top:16px;display:flex;gap:6px;flex-wrap:wrap}
 main{flex:1;overflow:auto;padding:22px clamp(16px,4vw,48px)}
-#sb{position:sticky;top:0;z-index:5;background:rgba(var(--bg-rgb),.72);-webkit-backdrop-filter:blur(10px) saturate(1.15);backdrop-filter:blur(10px) saturate(1.15);padding:6px 0 14px;display:flex;align-items:center;gap:8px;max-width:var(--grid-max);transition:background-color .35s ease,box-shadow .35s ease}
-#sb::after{content:"";position:absolute;left:0;right:0;top:100%;height:32px;background:linear-gradient(rgba(var(--bg-rgb),.6),rgba(var(--bg-rgb),0));pointer-events:none}
-#sb.scrolled{background:rgba(var(--bg-rgb),.86);box-shadow:0 12px 26px -16px var(--shadow)}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#sb{background:rgba(var(--bg-rgb),.95)}}
+#sb{position:sticky;top:0;z-index:5;background:none;border:0;box-shadow:none;padding:6px 0 14px;display:flex;align-items:center;gap:8px;max-width:var(--grid-max);pointer-events:none}
+#sb>*{pointer-events:auto}
+#sb .ibtn{background:var(--p)}
 #q{flex:1;min-width:0;padding:13px 16px;border:1px solid var(--l);border-radius:24px;background:var(--p);color:var(--t);font:inherit}
 button{font:inherit;color:var(--t);background:none;border:1px solid var(--l);border-radius:6px;padding:5px 10px;cursor:pointer}
 button:hover{border-color:var(--a)}
@@ -723,12 +722,14 @@ document.addEventListener('change', e => {
 });
 
 /* ===== Start: akten.json laden, prüfen, dann anzeigen ===== */
+// Pfad zur Datei, relativ zur Seite berechnet: funktioniert auch in einem Unterordner (z. B. GitHub Pages unter /repo/)
+const DATA_URL = new URL('./akten.json', document.baseURI).href;
 async function boot(){
   loadSet(); applySet();
   $('#l').innerHTML = '<p class="empty">Akten werden geladen …</p>';
   let text;
   try {
-    const r = await fetch('akten.json', {cache: 'no-cache'});
+    const r = await fetch(DATA_URL, {cache: 'no-cache'});
     if (!r.ok) throw new Error('HTTP ' + r.status + ' – die Datei fehlt oder liegt nicht im selben Ordner wie index.html.');
     text = await r.text();
   } catch (e) { return dataError(location.protocol === 'file:' ? 'Die Datei akten.json fehlt oder kann nicht geladen werden.' : 'akten.json konnte nicht geladen werden: ' + e.message, true); }
@@ -762,9 +763,6 @@ function loadDataFile(file){
 
 /* ===== Suchleiste: wird beim Scrollen fester, der Übergang bleibt dabei weich ===== */
 const mainEl = document.querySelector('main');
-const sbScroll = () => { const s = document.querySelector('#sb'); if (s) s.classList.toggle('scrolled', mainEl.scrollTop > 8 || window.scrollY > 8); };
-mainEl.addEventListener('scroll', sbScroll, {passive: true});
-window.addEventListener('scroll', sbScroll, {passive: true});
 
 /* ===== Tests: im Browser mit ?test öffnen. Probespeicher, deine Daten bleiben unberührt. ===== */
 function runTests(){
@@ -778,6 +776,8 @@ function runTests(){
   const E2 = () => all().find(r => !RO[r.cat] && r.sections.length >= 2);                          // bearbeitbare Akte mit zwei Abschnitten
   const V = () => all().find(r => RO[r.cat]);                                                        // schreibgeschützte Akte
   const id = () => E().id;
+  // Vergleich unabhängig von der Reihenfolge der Schlüssel (Inhalt zählt, nicht die Reihenfolge)
+  const canon = x => JSON.stringify(x, (k, v) => (v && typeof v === 'object' && !Array.isArray(v)) ? Object.keys(v).sort().reduce((o, key) => (o[key] = v[key], o), {}) : v);
   T('Kennungen sind eindeutig', () => ok(new Set(SEED.map(r => r.id)).size === SEED.length));
   T('Alle Akten haben eine gültige Kategorie und einen Titel', () => ok(SEED.every(r => own(C, r.cat) && r.title)));
   T('Alle Verweise zeigen auf vorhandene Akten', () => walk(SEED, []).forEach(t => (t.match(/\[\[.+?\]\]/g) || []).forEach(l => ok(resolve(l.slice(2, -2)), 'ohne Ziel: ' + l))));
@@ -806,7 +806,7 @@ function runTests(){
   T('Suche klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); setQuery('x'); ok(folded.size === 0); setQuery(''); });
   T('Löschen und Reihenfolge liegen im Überfahren-Bereich', () => { const c = card(get(id())); ok(c.indexOf('class="hv"') > c.indexOf('data-act="fav"'), 'Bereich falsch'); ok(c.indexOf('data-act="trash"') > c.indexOf('class="hv"'), 'Papierkorb außerhalb'); });
   T('Export-Datei wird erkannt, fremde Datei nicht', () => { ok(looksLikeExport(JSON.parse(exportText()))); ok(!looksLikeExport({foo: 1})); ok(!looksLikeExport([1, 2])); });
-  T('Export und Import ergeben denselben Stand', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Export-Test'); fav(i); const d = JSON.parse(exportText()); ok(!('fav' in d), 'Favoriten im Export'); const r = sanitize(d); ok(JSON.stringify(r.data.ov) === JSON.stringify(S.ov), 'Änderungen fehlen'); ok(r.skipped === 0, 'unerwartet übersprungen'); });
+  T('Export und Import ergeben denselben Stand', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Export-Test'); fav(i); const d = JSON.parse(exportText()); ok(!('fav' in d), 'Favoriten im Export'); const r = sanitize(d); ok(canon(r.data.ov) === canon(S.ov), 'Änderungen fehlen'); ok(r.skipped === 0, 'unerwartet übersprungen'); });
   T('Export enthält keine Favoriten, Import behält die eigenen', () => { reset0(); const i = id(); fav(i); ok(!('fav' in JSON.parse(exportText()))); const r = importedState({ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.includes(i), 'eigener Favorit verloren'); });
   T('Favoriten aus einer Datei ersetzen die eigenen', () => { reset0(); fav(id()); const other = SEED[SEED.length - 1].id; const r = importedState({fav: [other], ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.length === 1 && r.data.fav[0] === other, 'falsch'); });
   T('Ungültige Einträge beim Import werden übersprungen', () => {
