@@ -50,16 +50,17 @@ h4{margin:14px 0 4px;color:var(--a);font-size:15px}
 .row{display:flex;gap:6px;align-items:flex-start;position:relative}
 .tx{flex:1;min-width:0;outline:0;border-radius:3px;white-space:pre-wrap}
 .tx.ed{background:var(--l);box-shadow:0 1px 0 var(--a);cursor:text;padding:0 4px}
-.ct{display:inline-flex;gap:2px;opacity:0;transition:opacity .15s;flex:none}
-.row:hover>.ct,.row:focus-within>.ct{opacity:1}
-@media(hover:none){.ct{opacity:1}}
-.ct button{border:0;padding:0 3px;color:var(--m);font-size:14px;line-height:1.5}
-.ct button:hover{color:var(--a);background:none}
-.row>.ct{position:absolute;right:0;top:50%;transform:translateY(-50%);background:var(--l);border-radius:6px;padding:1px 2px;box-shadow:0 2px 8px var(--shadow)}
-@media(hover:none){.row>.ct{position:static;transform:none;background:none;border-radius:0;padding:0;box-shadow:none}}
-.hv{position:absolute;right:42px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;opacity:0;pointer-events:none;transition:opacity .15s;background:var(--card-b);border:1px solid var(--cardb);border-radius:8px;padding:2px 4px;box-shadow:0 4px 12px var(--shadow)}
-h2:hover .hv,h2:focus-within .hv{opacity:1;pointer-events:auto}
-@media(hover:none){.acts{flex-wrap:wrap;justify-content:flex-end}.hv{position:static;transform:none;opacity:1;pointer-events:auto;background:none;border:0;box-shadow:none;padding:0}}
+@media(hover:none){.acts{flex-wrap:wrap;justify-content:flex-end}}
+/* Werkzeuge stehen fest im Layout: keine schwebenden Menüs, nichts ragt aus der Karte */
+.tools{display:inline-flex;gap:2px;align-items:center;margin-left:auto;flex:none;opacity:.8}
+.tb{border:0;background:none;padding:0;width:22px;height:22px;border-radius:6px;color:var(--m);font-size:13px;line-height:22px;text-align:center;cursor:pointer;flex:none}
+.tb:hover{color:var(--a);background:var(--l)}
+.tb[data-act="remove"]:hover,.tb[data-act="delsec"]:hover,.tb[data-act="trash"]:hover{color:var(--r)}
+.ctools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin:0 0 6px}
+.ctools .tb{width:auto;height:auto;line-height:20px;padding:0 9px;font-size:12px;border:1px solid var(--l);border-radius:12px}
+.row>.tx{flex:1 1 auto;min-width:0}
+.sec h4 .row{flex:1 1 auto;min-width:0;flex-wrap:wrap}
+.smode{font:inherit;font-size:12px;background:var(--p);color:var(--t);border:1px solid var(--l);border-radius:6px;padding:1px 4px;margin:0 2px;max-width:none}
 .arw{cursor:pointer;color:var(--m);font:400 18px/1.4 system-ui,"Segoe UI",sans-serif;width:20px;flex:none;text-align:center;user-select:none}
 .arw:hover{color:var(--a)}
 .sec{margin:4px 0 0}
@@ -67,7 +68,6 @@ h2:hover .hv,h2:focus-within .hv{opacity:1;pointer-events:auto}
 .sarw{color:var(--m);width:16px;flex:none;text-align:center;font-size:14px;user-select:none}
 .sarw:hover,.sec h4:hover .sarw{color:var(--a)}
 .sec:not(.open)>.sbody{display:none}
-.smode{background:var(--bg);color:var(--t);border:1px solid var(--l);border-radius:4px;font:inherit;font-size:12px;padding:1px 4px;max-width:160px}
 .me{margin-top:16px;padding:6px;background:var(--me);border:1px solid var(--l);border-radius:6px}
 .ml{padding:4px 6px;border-radius:4px;cursor:pointer;color:var(--t)}.ml:hover{background:var(--l)}
 .ml small{display:block;padding:2px 4px}
@@ -460,40 +460,44 @@ const secOpen = (id, k) => secOv.has(id + '|' + k) ? secOv.get(id + '|' + k) : S
 function card(r){
   const id = esc(r.id), ro = !!RO[r.cat], starred = S.fav.includes(r.id), shut = folded.has(r.id);
   const can = EDIT && !ro;   // Bearbeiten erlaubt: Bearbeitungsmodus an und bearbeitbare Akte
-  const b = (act, sym, label, extra) => can ? `<button data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>` : '';
+  // Alle Werkzeuge stehen fest im Layout der Karte, nie schwebend: ein Klick gehört immer zu der Akte, auf der er liegt
+  const b = (act, sym, label, extra) => can ? `<button class="tb" data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>` : '';
   const bv = (act, sym, label, extra) => ro ? '' : `<button data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>`;   // auch im Zuschauermodus, z. B. Export
   const tx = (path, raw, html) => `<span class="tx" data-rec="${id}" data-path="${path}" data-raw="${esc(raw)}">${html}</span>`;
+  const tools = inner => inner ? `<span class="tools">${inner}</span>` : '';   // Werkzeuge rechts in der Zeile, nur im Bearbeitungsmodus gefüllt
   const ed = b('edit', '✎', 'Bearbeiten');
   const ord = (s, i) => b('move', '▲', 'Nach oben', `data-s="${s}" data-i="${i}" data-d="-1"`) + b('move', '▼', 'Nach unten', `data-s="${s}" data-i="${i}" data-d="1"`) + b('remove', '✕', 'Entfernen', `data-s="${s}" data-i="${i}"`);
   const arrow = `<span class="arw" data-act="fold" data-id="${id}" title="Ein- und ausklappen" aria-label="Ein- und ausklappen">${shut ? '▸' : '▾'}</span>`;
   const edited = !!BASE[r.id] && !!S.ov[r.id];   // Standard-Akte, die du geändert hast
   const dot = edited ? '<span class="dot" title="Von dir angepasst" aria-label="Von dir angepasst"></span>' : '';
-  const head = `<h2>${arrow}${dot}<span class="row" data-hold>${tx('title', r.title, hlEsc(r.title))}<span class="ct">${ed}</span></span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button><span class="hv">${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}${b('recmove', '▲', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼', 'Akte nach unten', 'data-d="1"')}${b('trash', 'Papierkorb', 'In den Papierkorb legen')}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}</span></span></h2>`;
+  const head = `<h2>${arrow}${dot}<span class="row" data-hold>${tx('title', r.title, hlEsc(r.title))}${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
+  // Werkzeuge der ganzen Akte: fest unter dem Kopf, nur im Bearbeitungsmodus
+  const ctools = can ? `<div class="ctools">${b('recmove', '▲ Nach oben', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼ Nach unten', 'Akte nach unten', 'data-d="1"')}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}${b('trash', 'In den Papierkorb', 'In den Papierkorb legen')}</div>` : '';
   // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar
   const cat = (view === 'a' || view === 'fav') ? `<p class="c">${C[r.cat]}</p>` : '';
-  const desc = (r.desc || can) ? `<p><span class="row" data-hold>${r.desc ? tx('desc', r.desc, fmt(r.desc)) : tx('desc', '', '<em class="c">Beschreibung hinzufügen</em>')}<span class="ct">${ed}</span></span></p>` : '';
+  const desc = (r.desc || can) ? `<p><span class="row" data-hold>${r.desc ? tx('desc', r.desc, fmt(r.desc)) : tx('desc', '', '<em class="c">Beschreibung hinzufügen</em>')}${tools(ed)}</span></p>` : '';
   const tbl = r.table ? `<div class="tw"><table><tr>${r.table.h.map(x => `<th>${esc(x)}</th>`).join('')}</tr>${r.table.r.map(w => `<tr>${w.map(x => `<td>${fmt(x)}</td>`).join('')}</tr>`).join('')}</table></div>` : '';
   const secs = r.sections.map((s, si) => {
     const m = modeOf(s), tag = m === 'number' ? 'ol' : (m === 'text' ? 'div' : 'ul'), it = m === 'text' ? 'p' : 'li';
     const open = secOpen(r.id, s.k), sk = esc(s.k);
     const smode = !can ? '' : `<select class="smode" data-smode="1" data-id="${id}" data-s="${si}" title="Darstellung" aria-label="Darstellung">${Object.keys(MODES).map(k => `<option value="${k}"${k === m ? ' selected' : ''}>${MODES[k]}</option>`).join('')}</select>`;
-    const sctl = !can ? '' : `<span class="ct">${ed}${b('secmove', '▲', 'Abschnitt nach oben', `data-s="${si}" data-d="-1"`)}${b('secmove', '▼', 'Abschnitt nach unten', `data-s="${si}" data-d="1"`)}${b('add', '＋', 'Zeile hinzufügen', `data-s="${si}"`)}${smode}${b('delsec', '✕', 'Abschnitt löschen', `data-s="${si}"`)}</span>`;
+    const sctl = tools(can ? `${ed}${b('secmove', '▲', 'Abschnitt nach oben', `data-s="${si}" data-d="-1"`)}${b('secmove', '▼', 'Abschnitt nach unten', `data-s="${si}" data-d="1"`)}${b('add', '＋', 'Zeile hinzufügen', `data-s="${si}"`)}${smode}${b('delsec', '✕', 'Abschnitt löschen', `data-s="${si}"`)}` : '');
     const sarw = `<span class="sarw" data-act="secopen" data-id="${id}" data-sk="${sk}" title="Auf- und zuklappen" aria-label="Auf- und zuklappen">${open ? '▾' : '▸'}</span>`;
-    return `<div class="sec${open ? ' open' : ''}"><h4 data-rec="${id}" data-sk="${sk}">${sarw}<span class="row" data-hold>${tx('h:' + si, s.h, hlEsc(s.h))}${sctl}</span></h4><div class="sbody"><${tag}>${s.items.map((t, ii) => `<${it}><span class="row" data-hold>${tx(`i:${si}:${ii}`, t, fmt(t))}<span class="ct">${ed}${ord(si, ii)}</span></span></${it}>`).join('')}</${tag}></div></div>`;
+    return `<div class="sec${open ? ' open' : ''}"><h4 data-rec="${id}" data-sk="${sk}">${sarw}<span class="row" data-hold>${tx('h:' + si, s.h, hlEsc(s.h))}${sctl}</span></h4><div class="sbody"><${tag}>${s.items.map((t, ii) => `<${it}><span class="row" data-hold>${tx(`i:${si}:${ii}`, t, fmt(t))}${tools(ed + ord(si, ii))}</span></${it}>`).join('')}</${tag}></div></div>`;
   }).join('');
   const blood = r.widget ? `<h4>Patient wählen</h4><select data-blood><option value="">Blutgruppe</option>${Object.keys(BG).map(k => `<option>${k}</option>`).join('')}</select><p class="bo"></p><p class="c">AB+ ist Universalempfänger, 0- ist Universalspender.</p>` : '';
   // /me-Boxen: die Hauptbox heißt immer „Durchführung“, zusätzliche Boxen tragen einen Titel
-  const lineRow = (m, path, s, i) => `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}<span class="ct">${ed}${ord(s, i)}</span></span></div>`;
+  const lineRow = (m, path, s, i) => `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}${tools(ed + ord(s, i))}</span></div>`;
   const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button>`;
   const hint = r.me.length ? '<small class="c">Zeile mit /me anklicken zum Kopieren</small>' : '';
   const me = ro ? '' : `<div class="me"><div class="mtop"><span class="mtitle">Durchführung</span></div>${hint}${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
   const xboxes = ro ? '' : boxesOf(r).map((box, bi) => {
     const bt = box.t || 'Zusätzliche Box';
-    return `<div class="me xb"><div class="bhead"><span class="row" data-hold>${tx('xt:' + bi, bt, hlEsc(bt))}<span class="ct">${ed}</span></span>${can ? `<button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : ''}</div>${box.me.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div>`;
+    return `<div class="me xb"><div class="bhead"><span class="row" data-hold>${tx('xt:' + bi, bt, hlEsc(bt))}${tools(ed)}</span>${can ? `<button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : ''}</div>${box.me.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div>`;
   }).join('') + (can ? `<button class="ad" data-act="addbox" data-id="${id}">+ /me-Box hinzufügen</button>` : '');
   const addSec = can ? `<button class="ad" data-act="secform" data-id="${id}">+ Abschnitt hinzufügen</button>` : '';
   const sform = (can && sectionForm && sectionForm.id === r.id) ? secFormHTML(sectionForm, id) : '';
-  return `<article class="card${shut ? ' folded' : ''}${S.del[r.id] ? ' gone' : ''}" data-rec="${id}">${head}${cat}${desc}${tbl}${secs}${addSec}${sform}${blood}${me}${xboxes}</article>`;
+  return `<article class="card${shut ? ' folded' : ''}${S.del[r.id] ? ' gone' : ''}" data-rec="${id}">${head}${ctools}${cat}${desc}${tbl}${secs}${addSec}${sform}${blood}${me}${xboxes}</article>`;
 }
 function trashCard(r){
   const id = esc(r.id), mine = S.made.some(x => x.id === r.id);
@@ -993,7 +997,8 @@ function runTests(){
   T('Akte einklappen blendet nur diese Akte ein und aus', () => { reset0(); const i = id(); act('fold', {dataset: {id: i}}); ok(folded.has(i) && card(get(i)).includes('folded')); act('fold', {dataset: {id: i}}); ok(!folded.has(i)); });
   T('Kategoriewechsel klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); act('view', {dataset: {v: 'b'}}); ok(folded.size === 0); });
   T('Suche klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); setQuery('x'); ok(folded.size === 0); setQuery(''); });
-  T('Löschen und Reihenfolge liegen im Überfahren-Bereich', () => { const c = card(get(id())); ok(c.indexOf('class="hv"') > c.indexOf('data-act="fav"'), 'Bereich falsch'); ok(c.indexOf('data-act="trash"') > c.indexOf('class="hv"'), 'Papierkorb außerhalb'); });
+  T('Keine schwebenden Hover-Menüs, Werkzeuge stehen fest in der Karte', () => { reset0(); const c = card(get(id())); ok(!c.includes('class="hv"') && !c.includes('class="ct"'), 'schwebendes Menü noch da'); ok(c.includes('class="tools"') && c.includes('class="ctools"'), 'feste Werkzeuge fehlen'); ok([...document.querySelectorAll('#l article.card .tools, #l article.card .tb')].every(e => getComputedStyle(e).position === 'static'), 'Werkzeug ist absolut positioniert'); });
+  T('Werkzeuge liegen innerhalb ihrer Karte', () => { reset0(); view = 'a'; query = ''; render(); const schlecht = []; [...document.querySelectorAll('#l article.card')].slice(0, 6).forEach(a => { const cr = a.getBoundingClientRect(); a.querySelectorAll('.tb').forEach(t => { const br = t.getBoundingClientRect(); if (br.width > 0 && (br.left < cr.left - 1 || br.right > cr.right + 1)) schlecht.push(a.dataset.rec); }); }); ok(schlecht.length === 0, 'Werkzeuge ragen aus der Karte: ' + schlecht.join(', ')); });
   T('Export-Datei wird erkannt, fremde Datei nicht', () => { ok(looksLikeExport(JSON.parse(exportText()))); ok(!looksLikeExport({foo: 1})); ok(!looksLikeExport([1, 2])); });
   T('Export und Import ergeben denselben Stand', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Export-Test'); fav(i); const d = JSON.parse(exportText()); ok(!('fav' in d), 'Favoriten im Export'); const r = sanitize(d); ok(canon(r.data.ov) === canon(S.ov), 'Änderungen fehlen'); ok(r.skipped === 0, 'unerwartet übersprungen'); });
   T('Export enthält keine Favoriten, Import behält die eigenen', () => { reset0(); const i = id(); fav(i); ok(!('fav' in JSON.parse(exportText()))); const r = importedState({ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.includes(i), 'eigener Favorit verloren'); });
