@@ -1,213 +1,125 @@
 <!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Medic-Handbuch</title>
 <style>
-:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;color-scheme:dark}
+:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;--karte-min:450px;--grid-max:1600px;color-scheme:dark}
+:root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;display:flex;height:100vh;background:var(--bg);color:var(--t);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
 nav{width:250px;flex:none;display:flex;flex-direction:column;background:var(--p);border-right:1px solid var(--l);padding:20px 12px;overflow:auto}
 nav h1{font:700 22px Georgia,serif;margin:0 8px 18px}
 .cr{display:flex;align-items:center;gap:6px;padding:8px 10px;margin:2px 0;border-radius:4px;cursor:pointer}
-.cr:hover{background:var(--l)}.cr.on{background:var(--a);color:#241a05;font-weight:600}
-.cr span{flex:1}.cr i{font-style:normal;color:var(--m)}.cr.on i{color:#241a05}
+.cr:hover{background:var(--l)}.cr.on{background:var(--a);color:var(--on-a);font-weight:600}
+.cr span{flex:1}.cr i{font-style:normal;color:var(--m)}.cr.on i{color:var(--on-a)}
 .tg{width:14px;font-weight:400;text-align:center}
 .gl{margin:0 0 6px 22px;border-left:1px solid var(--l)}
 .gl a{display:block;padding:4px 10px;color:var(--m);border-radius:4px;text-decoration:none}.gl a:hover{background:var(--l);color:var(--t)}
 .foot{margin-top:auto;padding-top:16px;display:flex;gap:6px;flex-wrap:wrap}
 main{flex:1;overflow:auto;padding:22px clamp(16px,4vw,48px)}
-#sb{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 14px;display:flex;gap:10px;max-width:760px}
+#sb{position:sticky;top:0;z-index:5;background:rgba(var(--bg-rgb),.72);-webkit-backdrop-filter:blur(10px) saturate(1.15);backdrop-filter:blur(10px) saturate(1.15);padding:6px 0 14px;display:flex;align-items:center;gap:8px;max-width:var(--grid-max);transition:background-color .35s ease,box-shadow .35s ease}
+#sb::after{content:"";position:absolute;left:0;right:0;top:100%;height:32px;background:linear-gradient(rgba(var(--bg-rgb),.6),rgba(var(--bg-rgb),0));pointer-events:none}
+#sb.scrolled{background:rgba(var(--bg-rgb),.86);box-shadow:0 12px 26px -16px var(--shadow)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#sb{background:rgba(var(--bg-rgb),.95)}}
 #q{flex:1;min-width:0;padding:13px 16px;border:1px solid var(--l);border-radius:24px;background:var(--p);color:var(--t);font:inherit}
 button{font:inherit;color:var(--t);background:none;border:1px solid var(--l);border-radius:6px;padding:5px 10px;cursor:pointer}
 button:hover{border-color:var(--a)}
-.btn{background:var(--a);color:#241a05;border-color:var(--a);font-weight:600;border-radius:20px;white-space:nowrap}
+.btn{background:var(--a);color:var(--on-a);border-color:var(--a);font-weight:600;border-radius:20px;white-space:nowrap}
 .danger{color:var(--r);border-color:var(--r)}
 .st{border:0;color:var(--a);font-size:20px;padding:0 4px}
-.card{max-width:760px;margin:0 0 30px;padding-left:18px;border-left:3px solid var(--l);scroll-margin-top:76px}
-.card.gone{opacity:.65}.card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px rgba(0,0,0,.28)}}
-h2{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin:0 0 2px;font:700 24px Georgia,serif}
-h2 .row{flex:1 1 auto;min-width:0}
-.acts{margin-left:auto;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.ibtn{width:34px;height:34px;padding:0;border-radius:50%;background:none;border:1px solid var(--l);color:var(--m);font-size:16px;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ibtn:hover:not(:disabled){color:var(--a);border-color:var(--a)}
+.ibtn:disabled{opacity:.35;cursor:default}
+@media(max-width:560px){.lbl{display:none}}
+#l{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--karte-min),100%),1fr));gap:26px;max-width:var(--grid-max);align-items:start;padding-bottom:20px}
+body.one-col #l{grid-template-columns:minmax(0,1fr)}
+#l>.empty{grid-column:1/-1}
+.card{min-width:0;border:1px solid var(--cardb);border-radius:14px;padding:16px 16px 18px;background:linear-gradient(180deg,var(--card-a),var(--card-b));box-shadow:0 8px 24px var(--shadow);transition:border-color .2s,box-shadow .2s;scroll-margin-top:76px}
+.card:hover{border-color:rgba(242,184,75,.45);box-shadow:0 10px 30px var(--shadow)}
+@media(min-width:1000px){.card{padding:24px 28px 26px}}
+body.compact .card{padding:12px 14px 14px}
+body.compact #l{gap:14px}
+.card.gone{opacity:.65}
+.card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px var(--shadow)}}
+.card h2{cursor:pointer}
+.card.folded>*:not(h2){display:none}
+h2{position:relative;display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin:0 0 2px;font:700 24px Georgia,serif}
+h2 .row{flex:1 1 0;min-width:0}
+.acts{margin-left:auto;display:flex;gap:4px;align-items:center;flex:none}
 .acts button{padding:2px 8px;font-size:14px}
 .c{color:var(--m);font-size:13px;margin:0 0 6px}
 p{margin:4px 0}ul,ol{margin:0;padding-left:22px}li{margin:2px 0}
 h4{margin:14px 0 4px;color:var(--a);font-size:15px}
-.row{display:flex;gap:6px;align-items:flex-start}
+.row{display:flex;gap:6px;align-items:flex-start;position:relative}
 .tx{flex:1;min-width:0;outline:0;border-radius:3px;white-space:pre-wrap}
 .tx.ed{background:var(--l);box-shadow:0 1px 0 var(--a);cursor:text;padding:0 4px}
 .ct{display:inline-flex;gap:2px;opacity:0;transition:opacity .15s;flex:none}
 .row:hover>.ct,.row:focus-within>.ct{opacity:1}
 @media(hover:none){.ct{opacity:1}}
-.ct button{border:0;padding:0 5px;color:var(--m);font-size:14px;line-height:1.5}
+.ct button{border:0;padding:0 3px;color:var(--m);font-size:14px;line-height:1.5}
 .ct button:hover{color:var(--a);background:none}
-.me{margin-top:16px;padding:6px;background:var(--me);border:1px solid var(--l);border-radius:6px}
-.ml{padding:4px 6px;border-radius:4px;cursor:pointer;color:#cfe0ee}.ml:hover{background:var(--l)}
-.ml small{display:block;padding:2px 4px}
-.ad{margin:6px 0 2px;padding:4px 12px;border-radius:14px;border-color:var(--a);color:var(--a)}
-.form{max-width:760px;display:grid;gap:10px;padding:16px;margin:0 0 24px;background:var(--p);border:1px solid var(--l);border-radius:8px}
-.form h3{margin:0;font:700 20px Georgia,serif}
-.form label{display:grid;gap:4px;color:var(--m);font-size:14px}
-.form input,.form textarea,.form select{padding:8px;border-radius:4px;border:1px solid var(--l);background:var(--bg);color:var(--t);font:inherit}
-.form textarea{min-height:70px}
-.err{margin:0;color:var(--r);font-size:14px}
-.empty{color:var(--m)}
-.tw{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;width:100%}
-th,td{padding:7px 10px;border:1px solid var(--l);text-align:left;vertical-align:top}th{background:var(--l);color:var(--a)}
-select{padding:7px;border-radius:4px;background:var(--p);color:var(--t);border:1px solid var(--l);font:inherit}
-.bo{color:#cfe0ee}
-.okt{color:#9fd3a4}
-#ok{position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:4px;background:var(--a);color:#241a05;opacity:0;transition:opacity .2s;pointer-events:none}#ok.on{opacity:1}
-.lk{color:var(--a)}
-:focus-visible{outline:2px solid var(--a)}
-@media(max-width:700px){body{flex-direction:column;height:auto}nav{width:100%}}
-#f{position:absolute;top:calc(100% - 10px);left:0;right:0;z-index:6}
-#f .form{max-width:none;margin:0;max-height:calc(100vh - 170px);overflow:auto;box-shadow:0 14px 32px #000a}
-.hv{opacity:0;transition:opacity .15s}
-h2:hover .hv,h2:focus-within .hv{opacity:1}
-@media(hover:none){.hv{opacity:1}}
-.card h2{cursor:pointer}
+.row>.ct{position:absolute;right:0;top:50%;transform:translateY(-50%);background:var(--l);border-radius:6px;padding:1px 2px;box-shadow:0 2px 8px var(--shadow)}
+@media(hover:none){.row>.ct{position:static;transform:none;background:none;border-radius:0;padding:0;box-shadow:none}}
+.hv{position:absolute;right:42px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;opacity:0;pointer-events:none;transition:opacity .15s;background:var(--card-b);border:1px solid var(--cardb);border-radius:8px;padding:2px 4px;box-shadow:0 4px 12px var(--shadow)}
+h2:hover .hv,h2:focus-within .hv{opacity:1;pointer-events:auto}
+@media(hover:none){.acts{flex-wrap:wrap;justify-content:flex-end}.hv{position:static;transform:none;opacity:1;pointer-events:auto;background:none;border:0;box-shadow:none;padding:0}}
 .arw{cursor:pointer;color:var(--m);font:400 18px/1.4 system-ui,"Segoe UI",sans-serif;width:20px;flex:none;text-align:center;user-select:none}
 .arw:hover{color:var(--a)}
-.card.folded>*:not(h2){display:none}
-.sep{height:1px;background:var(--l);margin:10px 8px}
-.card{border:1px solid #34475c;border-radius:14px;padding:16px 16px 18px;margin:0 0 28px;background:linear-gradient(180deg,#1b2736,#151e2b);box-shadow:0 8px 24px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s}
-.card:hover{border-color:rgba(242,184,75,.4);box-shadow:0 10px 30px rgba(0,0,0,.36)}
-@media(min-width:700px){.card{padding:20px 26px 22px}}
-.warn{color:var(--r);font-size:13px;margin:14px 4px 0;line-height:1.4}
-.secform{margin:12px 0 0;padding:14px}
 .sec{margin:4px 0 0}
 .sec h4{display:flex;align-items:baseline;gap:6px;cursor:pointer;margin:14px 0 4px}
 .sarw{color:var(--m);width:16px;flex:none;text-align:center;font-size:14px;user-select:none}
 .sarw:hover,.sec h4:hover .sarw{color:var(--a)}
 .sec:not(.open)>.sbody{display:none}
 .smode{background:var(--bg);color:var(--t);border:1px solid var(--l);border-radius:4px;font:inherit;font-size:12px;padding:1px 4px;max-width:160px}
+.me{margin-top:16px;padding:6px;background:var(--me);border:1px solid var(--l);border-radius:6px}
+.ml{padding:4px 6px;border-radius:4px;cursor:pointer;color:var(--t)}.ml:hover{background:var(--l)}
+.ml small{display:block;padding:2px 4px}
 .ml.nt{cursor:default;color:var(--m);font-style:italic}
 .ml.nt:hover{background:none}
+.ad{margin:6px 0 2px;padding:4px 12px;border-radius:14px;border-color:var(--a);color:var(--a)}
+.form{max-width:760px;display:grid;gap:10px;padding:16px;margin:0 0 24px;background:var(--p);border:1px solid var(--l);border-radius:8px}
+.form h3{margin:0;font:700 20px Georgia,serif}
+.form label{display:grid;gap:4px;color:var(--m);font-size:14px}
+.form input,.form textarea,.form select{padding:8px;border-radius:4px;border:1px solid var(--l);background:var(--bg);color:var(--t);font:inherit}
+.form textarea{min-height:70px}
+.secform{margin:12px 0 0;padding:14px}
+.err{margin:0;color:var(--r);font-size:14px}
+.empty{color:var(--m)}
+.tw{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;width:100%}
+th,td{padding:7px 10px;border:1px solid var(--l);text-align:left;vertical-align:top}th{background:var(--l);color:var(--a)}
+select{padding:7px;border-radius:4px;background:var(--p);color:var(--t);border:1px solid var(--l);font:inherit}
+.bo{color:var(--t)}
+.okt{color:var(--ok)}
+.warn{color:var(--r);font-size:13px;margin:14px 4px 0;line-height:1.4}
+.sep{height:1px;background:var(--l);margin:10px 8px}
+.lk{color:var(--a)}
+:focus-visible{outline:2px solid var(--a)}
+#f{position:absolute;top:calc(100% - 10px);left:0;width:min(100%,760px);z-index:6}
+#f .form{max-width:none;margin:0;max-height:calc(100vh - 170px);overflow:auto;box-shadow:0 14px 32px rgba(0,0,0,.35)}
+#ok{position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:4px;background:var(--a);color:var(--on-a);opacity:0;transition:opacity .2s;pointer-events:none;z-index:70}#ok.on{opacity:1}
+#modal{position:fixed;inset:0;background:rgba(5,9,14,.6);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+#modal[hidden]{display:none}
+.mbox{width:min(460px,100%);background:var(--p);border:1px solid var(--l);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.45);padding:18px 20px 12px;max-height:calc(100vh - 32px);overflow:auto}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mhead h3{margin:0;font:700 22px Georgia,serif}
+.srow{padding:12px 0;border-top:1px solid var(--l)}
+.slabel{margin:0 0 8px;font-weight:600}
+.shint{margin:6px 0 0;color:var(--m);font-size:13px;line-height:1.4}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--l);border-radius:8px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:6px 12px;background:none;color:var(--m)}
+.seg button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
+@media(max-width:700px){body{flex-direction:column;height:auto}nav{width:100%}}
+.errbox{grid-column:1/-1;max-width:640px;padding:18px 20px;border:1px solid var(--r);border-radius:12px;background:var(--p);line-height:1.5}
+.errbox h3{margin:0 0 8px;font:700 22px Georgia,serif}
+.errbox p{margin:8px 0}
+.errbox ul{margin:8px 0;padding-left:20px;color:var(--m);font-size:14px}
 </style></head><body>
-<nav id="n"></nav>
+<nav id="n"><h1>Medic-Handbuch</h1></nav>
 <main>
-<div id="sb"><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn" data-act="newform">+ Neue Akte</button><div id="f"></div></div>
+<div id="sb"><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><div id="f"></div></div>
 <div id="l"></div>
 </main>
 <div id="ok"></div>
+<div id="modal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="mtitle"><div class="mhead"><h3 id="mtitle">Einstellungen</h3><button class="ibtn" data-act="closemodal" title="Schließen" aria-label="Schließen">✕</button></div><div id="mbody"></div></div></div>
 <input type="file" id="imp" accept="application/json" hidden>
 <script>
-const SEED = [
-{"id":"Vitalwerte","cat":"v","title":"Vitalwerte","desc":"","kw":"puls blutdruck atmung temperatur spo2 sauerstoff zucker","sections":[],"table":{"h":["Wert","Normbereich"],"r":[["Puls (Ruhe)","60–80 Schläge/min"],["Blutdruck","optimal 120/80 mmHg, normal unter 130/85, hoch-normal max. 139/89"],["Atmung (Ruhe)","14–16 Atemzüge/min"],["Körpertemperatur","36,5–37,4 °C"],["Sauerstoffsättigung (SpO₂)","95–100 %"],["Blutzucker (nüchtern)","70–100 mg/dL"],["Kapillarfüllzeit (Recap)","unter 2 Sekunden"]]},"widget":false,"me":[]},
-{"id":"Amnestika Stufe A–E","cat":"v","title":"Amnestika Stufe A–E","desc":"","kw":"amnesie vergessen löschen injektion spritze","sections":[{"h":"Injektion (intramuskulär, Stufe A/B ab Rang ER)","items":["Hände waschen, Handschuhe; bereitlegen: Desinfektionsspray, sterile Einwegspritze, Tupfer, Pflaster, Amnestikum","Oberarm desinfizieren, trocknen lassen","Nadel zügig in den Muskel, Mittel langsam spritzen","Nadel raus, Pflaster kleben"]}],"table":{"h":["Stufe","Wirkung","Nebenwirkungen","Freigabe"],"r":[["A","Löscht 6 Stunden","Benommenheit, Kopfschmerzen, Übelkeit","Arzt+"],["B","Löscht 24 Stunden","Verlängerte Benommenheit, Parästhesie, Migräne, verschwommene Sicht","Arzt+"],["C","Löscht 7 Tage","Verlängerte Benommenheit, leichtere Lähmung","GA+"],["D","Löscht 4 Wochen","Verlängerte Benommenheit, Lähmung, leichte Hirnschäden","GA+"],["E","Löscht alle Erinnerungen","Stark verlängerte Benommenheit, Langzeitlähmung, Hirnschäden, Katatonie","GA+"]]},"widget":false,"me":[]},
-{"id":"Blutgruppen und Spender","cat":"v","title":"Blutgruppen und Spender","desc":"","kw":"blut transfusion rhesus universalspender empfänger","sections":[{"h":"Grundlagen","items":["A, B, AB, 0 zeigen die Antigene auf den roten Blutkörperchen (0 = keine)","Rhesusfaktor: Rh+ hat das D-Antigen, Rh- nicht"]}],"table":null,"widget":true,"me":[]},
-{"id":"Blutspenden","cat":"v","title":"Blutspenden","desc":"","kw":"spender kanüle beutel","sections":[{"h":"1. Vorgespräch, keine Spende bei","items":["starkem Unter-/Übergewicht","Puls oder Blutdruck außerhalb der Norm","Krankheit in den letzten 2 Wochen","Durchfall, Erbrechen oder Fieber in den letzten 4 Wochen","Vorerkrankungen, zu wenig gegessen oder getrunken"]},{"h":"2. Blutprobe","items":["Blut abnehmen, vom Blut-Tester prüfen lassen"]},{"h":"3. Spende","items":["Arm abbinden und desinfizieren, Kanüle fixieren, Beutel (500 ml) anhängen","Stauschlauch und Kanüle entfernen, Tupfer und Pflaster","Beutel beschriften und kühl lagern"]}],"table":null,"widget":false,"me":[]},
-{"id":"Verstauchung","cat":"b","title":"Verstauchung","desc":"","kw":"gelenk band pech","sections":[{"h":"Erkennung","items":["Gelenk schwillt schnell an, Schmerz bei Bewegung, Blutergüsse, instabil"]},{"h":"Behandlung","items":["Ruhigstellen, Kühlen, Kompression, Hochlagern (PECH), Schmerzmittel; bei starker Schwellung siehe [[Gelenkpunktion]]"]},{"h":"Ablauf","items":["Röntgen (Bruch ausschließen), danach Ultraschall","PECH: Pause, Eis, Compression (Verband), Hochlagern","Bei starker Schwellung: siehe [[Gelenkpunktion]]"]}],"table":null,"widget":false,"me":["/me desinfiziert die Hände und legt einen Kühlakku auf die betroffene Stelle","/me wickelt einen elastischen Verband um das verletzte Gelenk","/me lagert den Fuß oder Arm vorsichtig hoch"]},
-{"id":"Gelenkpunktion","cat":"b","title":"Gelenkpunktion","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Verstauchung mit sehr stark angeschwollenem Gelenk (siehe [[Verstauchung]])"]},{"h":"Behandlung","items":["Flüssigkeit wird steril mit einer Hohlnadel aus dem Gelenk abgesaugt"]},{"h":"Ablauf","items":["Saubere, sterile Umgebung vorbereiten","Gelenk desinfizieren und mit Lochtuch abdecken","Hohlnadel ins Gelenk einführen, Flüssigkeit absaugen","Einstichstelle mit Tupfer und Pflaster versorgen"]}],"table":null,"widget":false,"me":["/me bereitet sterile Materialien vor und desinfiziert die Einstichstelle","/me führt die Hohlnadel vorsichtig ins Gelenk ein und saugt Flüssigkeit ab","/me versorgt die Einstichstelle mit Tupfer und Pflaster"]},
-{"id":"Glatter Bruch","cat":"b","title":"Glatter Bruch","desc":"","kw":"knochen fraktur schiene gips","sections":[{"h":"Erkennung","items":["Starke Schmerzen, Schwellung, Druckempfindlichkeit, Fehlstellung; Röntgen zur Kontrolle"]},{"h":"Behandlung","items":["Ruhigstellung mit Schiene oder Gips, Kühlung, Schmerzmittel"]},{"h":"Ablauf","items":["Ruhigstellen mit Schiene oder Gipsverband","Schmerzmittel, Kühlpack, Hochlagern","Kontrolle per Röntgen, später Physiotherapie","Gesplitterter oder verschobener Bruch: siehe [[Gesplitterter Bruch]]"]}],"table":null,"widget":false,"me":["/me legt vorsichtig eine Schiene oder einen Gipsverband an","/me platziert ein Kühlpack auf der verletzten Stelle","/me hebt die Extremität leicht an und stützt sie"]},
-{"id":"Steckschuss","cat":"b","title":"Steckschuss","desc":"","kw":"schuss kugel schusswunde blutung","sections":[{"h":"Erkennung","items":["Starke Blutung stoppen","Röntgen oder CT (Kugel finden), Ultraschall bei Organschäden, Bluttest auf Infektion"]},{"h":"Behandlung","items":["Blutung stoppen, Kugel entfernen, Wunde verschließen, Schmerzmittel und Antibiotika"]},{"h":"Ablauf","items":["Druckverband","Lidocain zur lokalen Betäubung","Wunde mit Kanüle ausspülen","Kugel mit steriler Pinzette entfernen","Blut absaugen, erneut desinfizieren","Wunde verschließen (Klammern, Nähen, Kleben)","Schmerzmittel und Antibiotikum (z. B. Amoxicillin/Clavulansäure)"]}],"table":null,"widget":false,"me":["/me stillt die Blutung mit einem sterilen Druckverband","/me injiziert Lidocain zur lokalen Betäubung","/me spült die Wunde gründlich mit einer Knopfkanüle aus","/me entfernt vorsichtig die Kugel mit sterilen Pinzetten","/me saugt überschüssiges Blut ab und desinfiziert die Wunde erneut","/me verschließt die Wunde (durch Klammern, Nähen oder Kleben)","/me verabreicht Schmerzmittel und Antibiotika","/me überwacht den Patienten auf Blutungen oder Anzeichen einer Infektion"]},
-{"id":"Platzwunde","cat":"b","title":"Platzwunde","desc":"","kw":"wunde nähen blutung","sections":[{"h":"Erkennung","items":["Blutung stoppen, Alter der Wunde prüfen (über 6 Std.?)","Zeichen: offene Wunde, Schwellung, Rötung oder Eiter"]},{"h":"Behandlung","items":["Wunde säubern und je nach Größe kleben oder nähen, Tetanus prüfen"]},{"h":"Ablauf","items":["Druckverband, mit Kochsalzlösung spülen","Klein: Klammerpflaster, ggf. Tetanus","Größer: Lidocain, nähen, Schmerzmittel, ggf. Antibiotikum","Älter als 6 Std.: nicht nähen, nicht spülen, nur verbinden","Tetanusimpfung prüfen und ggf. auffrischen"]}],"table":null,"widget":false,"me":[]},
-{"id":"Verbrennung 1. Grades","cat":"b","title":"Verbrennung 1. Grades","desc":"","kw":"brandwunde hitze bepanthen","sections":[{"h":"Erkennung","items":["Haut gerötet, warm, schmerzt bei Berührung, keine Blasen"]},{"h":"Behandlung","items":["Kühlen, Bepanthen-Schaumspray, Pflaster, Schmerzmittel"]},{"h":"Ablauf","items":["Sofort unter fließendem Wasser kühlen","Bepanthen-Schaumspray auftragen","Brandwunden-Pflaster, Schmerzmittel bei Bedarf"]}],"table":null,"widget":false,"me":["/me kühlt die verbrannte Stelle unter fließendem Wasser","/me trägt Bepanthen-Schaumspray auf","/me legt Pflaster auf die Brandstelle","/me gibt Schmerzmittel"]},
-{"id":"Prellung","cat":"b","title":"Prellung","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Leichte Verletzung nach Sturz oder Stoß: Schmerz, Schwellung, Bluterguss","Brustbereich: auf Atembeschwerden, Kurzatmigkeit und Brustschmerzen achten und sofort untersuchen"]},{"h":"Behandlung","items":["Kühlen mit Kühlpack, Schmerzmittel bei Bedarf, alternativ PECH-Regel (siehe Verstauchung)","Brustprellung: Brustkorsett oder fester Verband zur Stütze"]},{"h":"Ablauf","items":["Verletzte Stelle prüfen, bei Brustprellung die Atmung kontrollieren","Kühlpack auflegen","Schmerzmittel geben","Bei Brustprellung Verband oder Brustkorsett anlegen"]}],"table":null,"widget":false,"me":[]},
-{"id":"Explosionstrauma","cat":"b","title":"Explosionstrauma","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Laute Explosion (z. B. SCP-066 über 140 dB, Granaten) schädigt das Gehör","Erste Priorität: Blutung im Ohr stoppen, Schmerzen lindern","Zeichen: Blut im Ohr, Hörverlust, starke Ohrenschmerzen","Untersuchung: Otoskop (Trommelfell), Audiometrie (Gehör), CT oder Ultraschall (tiefe Verletzungen), Bluttest (Entzündung)"]},{"h":"Behandlung","items":["Cortison-Infusion gegen Entzündung, schmerzlindernde und antibakterielle Ohrentropfen (z. B. Colistin)","Schwerer Trommelfellriss: operative Reparatur (siehe [[Trommelfellriss]])"]},{"h":"Ablauf","items":["Blutung im Ohr stoppen","Ohr mit Otoskop untersuchen","Blut und Fremdkörper schonend entfernen","Cortison-Infusion verabreichen","Ohrentropfen geben","Auf Hörschäden, Blutungen und Infektionen überwachen"]}],"table":null,"widget":false,"me":["/me untersucht das Ohr mit einem Otoskop","/me reinigt vorsichtig Blut und Fremdkörper aus dem Ohr","/me verabreicht eine Cortison-Infusion","/me gibt schmerzlindernde und antibakterielle Ohrentropfen","/me überwacht den Patienten auf Hörschäden und Blutungen"]},
-{"id":"Streifschuss, Stichwunde, Bisswunde","cat":"b","title":"Streifschuss, Stichwunde, Bisswunde","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Streifschuss: oberflächlich, oft starker Blutverlust. Stichwunde: kleine Öffnung, kann tief reichen. Biss (z. B. SCP-939, SCP-682, Hunde): verschmutzt, hohes Infektionsrisiko","Erste Priorität: starke Blutung stoppen","Zeichen: Rötung, Schwellung, Eiter, Schmerzen","Untersuchung: Ultraschall oder CT bei Verdacht auf Organschaden, Bluttest auf Infektion"]},{"h":"Behandlung","items":["Reinigen, desinfizieren, Fremdkörper und totes Gewebe entfernen, vernähen oder Drainage legen","Antibiotikum (z. B. Amoxicillin/Clavulansäure), bei Tierbiss Tollwut-Impfung, Tetanus auffrischen wenn über 10 Jahre her"]},{"h":"Ablauf","items":["Blutung mit Druckverband stillen","Wunde gründlich reinigen und desinfizieren","Infizierte Wunde unter lokaler Betäubung chirurgisch reinigen, ggf. Eiter entfernen","Fremdkörper und abgestorbenes Gewebe entfernen","Wunde vernähen oder Drainage legen","Antibiotikum geben, Impfstatus prüfen und impfen"]}],"table":null,"widget":false,"me":["/me reinigt die Wunde gründlich und desinfiziert sie","/me injiziert ein Lokalanästhetikum bei chirurgischer Reinigung","/me entfernt Fremdkörper oder abgestorbenes Gewebe","/me legt eine Drainage","/me vernäht die Wunde","/me verabreicht Antibiotika und überprüft Impfstatus","/me führt Tollwut- oder Tetanusimpfung durch"]},
-{"id":"Unterkühlung","cat":"b","title":"Unterkühlung","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Körpertemperatur unter 35 °C (z. B. Kühlkammer): droht Bewusstlosigkeit, Atem- und Kreislaufversagen","Erste Priorität: Atmung und Kreislauf überwachen","Zeichen: Schüttelfrost, blasse oder kalte Haut, langsamer Puls","Untersuchung: Thermometer, Puls, Atmung, Kreislauf, optional Bluttest"]},{"h":"Behandlung","items":["Aktive innere Erwärmung mit erwärmten Infusionen (ca. 43 °C), Rettungsdecke gegen Wärmeverlust"]},{"h":"Ablauf","items":["Puls, Atmung und Kreislauf prüfen","Infusionszugang legen","Erwärmte Infusion (ca. 43 °C) verabreichen","In Rettungsdecke einwickeln","Körpertemperatur laufend messen","Ab über 35 °C und stabilem Kreislauf weiter die Vitalwerte kontrollieren"]}],"table":null,"widget":false,"me":["/me überprüft Puls, Atmung und Kreislauf des Patienten","/me legt einen Zugang für eine erwärmte Infusion","/me verabreicht Infusion bei ca. 43 °C","/me wickelt den Patienten in eine Rettungsdecke","/me überwacht kontinuierlich die Körpertemperatur","/me überprüft, dass Kreislauf und Atmung stabil bleiben"]},
-{"id":"Kontakt mit Gasen und Chemikalien","cat":"b","title":"Kontakt mit Gasen und Chemikalien","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Einatmen giftiger Gase oder Chemikalien: Sauerstoffmangel, Lungenschäden, Husten, Atemnot","Erste Priorität: Atmung und Sauerstoffversorgung sichern","Zeichen: Atemnot, Husten, bläuliche Lippen, Unruhe","Untersuchung: Pulsoximeter, Bluttest (Entzündungswerte), Röntgen oder CT (Lunge)"]},{"h":"Behandlung","items":["Sauerstoff, Bronchodilatatoren und Prednisolon (gegen Lungenentzündung), Infusion, Antibiotika bei Infektionsgefahr","Schwere Atemnot: künstliche Beatmung"]},{"h":"Ablauf","items":["Puls, Atmung und Kreislauf prüfen","Sauerstoffsättigung messen","Sauerstoff über Maske oder Nasensonde geben","Bronchodilatatoren und Prednisolon geben","Infusionszugang legen, Flüssigkeit geben","Antibiotika bei Infektionsrisiko, dauerhaft überwachen"]}],"table":null,"widget":false,"me":["/me überprüft Puls, Atmung und Kreislauf","/me misst Sauerstoffsättigung mit Pulsoximeter","/me verabreicht Sauerstoff über Maske oder Nasensonde","/me gibt Bronchodilatatoren und Prednisolon","/me legt einen Infusionszugang und gibt Flüssigkeit","/me verabreicht Antibiotika bei Infektionsrisiko","/me überwacht den Patienten kontinuierlich"]},
-{"id":"Strahlenkrankheit","cat":"b","title":"Strahlenkrankheit","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Akute Bestrahlung mit ionisierender Strahlung (Röntgen, Gamma, Kernwaffen): Blutbildstörungen, Organprobleme, Schwäche","Erste Priorität: Vitalfunktionen stabilisieren","Zeichen: Übelkeit, Erbrechen, Müdigkeit, Hautrötungen oder Verbrennungen","Untersuchung: EKG, Vitalzeichen, Bluttest (Blutbild, Organwerte)"]},{"h":"Behandlung","items":["Abduschen (Dekontamination), Kaliumiodid schützt die Schilddrüse, Infusionen, Bluttransfusionen, Vitamine"]},{"h":"Ablauf","items":["Patient sofort abduschen (radioaktive Partikel entfernen)","Vitalwerte regelmäßig messen, EKG anschließen","Kaliumiodid-Tabletten geben","Kochsalz-Infusion zur Flüssigkeitszufuhr","Bluttransfusion und Vitaminpräparate geben","Vitalfunktionen laufend überwachen"]}],"table":null,"widget":false,"me":["/me duscht den Patienten gründlich ab","/me misst Puls, Blutdruck und Atmung regelmäßig","/me schließt den Patienten ans EKG an","/me verabreicht Kaliumiodid-Tabletten","/me legt Infusionen zur Flüssigkeitszufuhr an","/me gibt Bluttransfusionen und Vitaminpräparate","/me überwacht die Vitalfunktionen kontinuierlich"]},
-{"id":"Verbrennung 2. Grades","cat":"b","title":"Verbrennung 2. Grades","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Tieferer Hautschaden: sichtbare Blasen (offen oder geschlossen), Rötung, Schmerz, Schwellung","2a: geschlossene Blasen, heilt spontan. 2b: offene Blasen, tiefer Schaden, lokal behandelbar"]},{"h":"Behandlung","items":["2a: lokale Betäubung, antiseptisch spülen, Brandsalbe, Mullbinde","2b: zusätzlich totes Gewebe entfernen, Hauttransplantat, Silbersulfadiazin-Creme"]},{"h":"Ablauf","items":["Wunde lokal betäuben","Wunde antiseptisch spülen (2b: gründlich desinfizieren)","2b: abgestorbenes Gewebe entfernen, Haut transplantieren und einnähen","Brandsalbe auftragen (2b: zusätzlich Silbersulfadiazin)","Mit Mullbinden verbinden, Schmerzmittel geben"]}],"table":null,"widget":false,"me":["/me betäubt die Wunde lokal","/me spült die Wunde antiseptisch aus","/me trägt Brandsalbe auf","/me verbindet die Wunde mit Mullbinden","/me gibt Schmerzmittel","/me desinfiziert die Brandwunde gründlich","/me entfernt abgestorbenes Gewebe","/me transplantiert Haut und näht sie ein","/me trägt Brandsalbe und Silbersulfadiazin auf"]},
-{"id":"SCP-527 und Kopfverletzungen","cat":"b","title":"SCP-527 und Kopfverletzungen","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Sichtbare Wunden oder Blutungen am Kopf, Schmerzen oder Schwellung","Untersuchung: Vitalwerte, Röntgen, Bluttest"]},{"h":"Behandlung","items":["Desinfizieren, mit Lidocain betäuben, Schuppen entfernen, nähen und verbinden"]},{"h":"Ablauf","items":["Wundbereich gründlich desinfizieren","Lokal mit Lidocain betäuben","Schuppen um die Wunde vorsichtig mit Pinzette entfernen","Abgestorbenes Gewebe ausschneiden, Wunde präzise nähen","Sterile Wundkompresse auflegen, mit elastischer Mullbinde fixieren","Vitalwerte kontrollieren, Fäden nach 10–14 Tagen ziehen, bevor neue Schuppen wachsen"]}],"table":null,"widget":false,"me":["/me desinfiziert die Wunde am Kopf","/me betäubt den Bereich lokal mit Lidocain","/me entfernt vorsichtig Schuppen mit Pinzette","/me schneidet abgestorbenes Gewebe aus","/me näht die Wunde präzise","/me legt sterile Wundkompresse auf","/me fixiert die Kompresse mit Mullbinde"]},
-{"id":"SCP-4287","cat":"b","title":"SCP-4287","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Blutende Wunden oder fehlende Federn, Schwellung oder Rötung der Haut","Wichtig: Infektionsgefahr, besonders durch Pasteurellen"]},{"h":"Behandlung","items":["Wunde reinigen und desinfizieren, bei Bedarf Lidocain, Antibiotikum Baytril (Enrofloxacin) gegen Pasteurellen"]},{"h":"Ablauf","items":["Wunde vorsichtig reinigen und desinfizieren","Bei Bedarf lokal betäuben (z. B. Lidocain)","Lose Federn nur vorsichtig entfernen","Bei Bedarf Bandage anlegen","Baytril verabreichen, Heilungsfortschritt beobachten"]}],"table":null,"widget":false,"me":["/me reinigt und desinfiziert die Wunde vorsichtig","/me betäubt die Wunde lokal","/me entfernt vorsichtig lose Federn","/me legt bei Bedarf eine Bandage an","/me verabreicht Baytril"]},
-{"id":"Hunde","cat":"b","title":"Hunde","desc":"","kw":"","sections":[{"h":"Erkennung","items":["Normwerte: Puls 70–100/min, Blutdruck ca. 110/60 bis 140/80 mmHg, Temperatur 38–39 °C, Atmung 16–18/min","Blutgruppen DEA 1.1, 1.2, 3.0, 4.0, 5.0, 7.0 mit Rhesusfaktor, DEA 1.1 negativ ist Universalspender"]},{"h":"Behandlung","items":["Carprofen (Entzündungshemmer, Gelenke), Metamizol (starkes Schmerzmittel), Tepoxalin (Muskeln und Skelett)","Warnung: Colistin niemals bei Hunden, es ist toxisch","Knochenbruch: operative Fixierung oder Gips, oft kombiniert"]},{"h":"Ablauf","items":["Puls, Atmung, Temperatur und Blutdruck prüfen","Fell um die Wunde rasieren","Wunde reinigen, desinfizieren, ggf. nähen","Verband oder Bandage anlegen","Bruch operativ oder mit Gips fixieren","Bei Narkose: Wärmelampe gegen Unterkühlung, Beißschutz, Zunge sichern"]}],"table":null,"widget":false,"me":["/me überprüft Puls, Atmung, Temperatur und Blutdruck","/me rasiert das Fell um die Wunde","/me reinigt und desinfiziert die Wunde","/me legt Verband oder Bandage an","/me fixiert Knochenbruch operativ oder mit Gips"]},
-{"id":"SCPs: Übersicht der Behandlung","cat":"b","title":"SCPs: Übersicht der Behandlung","desc":"","kw":"","sections":[{"h":"Zuordnung","items":["SCP-131: Augentropfen ins Auge träufeln oder Nanobots","SCP-999: reproduziertes Gelee verabreichen","SCP-066: mit reproduziertem Garn behandeln","SCP-527: wie ein Mensch, außer bei Kopfverletzung (eigener Eintrag)","SCP-1048: Füllwatte ausstopfen und wieder zunähen","SCP-4287: gängige Methoden, immer mit Baytril gegen Pasteurellen"]}],"table":null,"widget":false,"me":[]},
-{"id":"Narkose einleiten","cat":"n","title":"Narkose einleiten","desc":"","kw":"fentanyl propofol intubation ekg schlaf","sections":[{"h":"Ablauf","items":["Reiner Sauerstoff als Reserve, venöser Zugang (ggf. zweiter für Bluttransfusion)","Fentanyl (Schmerzmittel), dann Propofol (Schlafmittel)","EKG: Herz und Kreislauf überwachen","Patient schläft nach Sekunden ein, dann intubieren und Atmung sichern"]},{"h":"Überwachung","items":["Puls, Blutdruck, Sauerstoffsättigung, Atmung"]},{"h":"Ende","items":["Narkosemittel absetzen, extubieren, überwachen bis stabil"]}],"table":null,"widget":false,"me":["/me legt vorsichtig einen venösen Zugang","/me verabreicht Fentanyl und Propofol","/me überwacht die Vitalwerte auf dem EKG"]},
-{"id":"Lokalanästhesie","cat":"n","title":"Lokalanästhesie","desc":"","kw":"betäubung lidocain prilocain bupivacain","sections":[{"h":"Wann","items":["Nur eine Stelle (Handrücken, Wunde, Muttermal): Injektion, Creme, Gel oder Spray"]},{"h":"Medikamente","items":["Lidocain, Prilocain, Bupivacain"]},{"h":"Nebenwirkungen","items":["Übelkeit, Schwindel, niedriger Blutdruck; Dosis nach Körpergewicht"]}],"table":null,"widget":false,"me":["/me sprüht die Betäubungscreme auf die Wunde","/me wartet ein paar Minuten, bis die Stelle taub ist"]},
-{"id":"Regional-, Plexus- und Spinalanästhesie","cat":"n","title":"Regional-, Plexus- und Spinalanästhesie","desc":"","kw":"betäubung nervenblockade rückenmark ivra tourniquet","sections":[{"h":"Regional und Plexus (Arm oder Bein, Patient wach)","items":["Haut desinfizieren, Nadel oder Katheter einführen (oft mit Ultraschall), Mittel z. B. Lidocain spritzen"]},{"h":"Spinal (Unterkörper, 1–2 Std.)","items":["Punktionsstelle am Rücken desinfizieren, lokal betäuben, Spinalnadel setzen, Mittel in den Spinalraum"]},{"h":"IVRA (ca. 1 Std.)","items":["Tourniquet anlegen, Extremität blutleer machen, Mittel in die Vene"]}],"table":null,"widget":false,"me":["/me führt vorsichtig die Nadel ein und überprüft die Betäubung","/me bereitet die Punktionsstelle am Rücken vor","/me spritzt das Betäubungsmittel langsam in den Spinalraum","/me wartet, bis der Unterkörper betäubt ist"]},
-{"id":"Herzinfarkt","cat":"o","title":"Herzinfarkt","desc":"","kw":"herz stent katheter lisinopril ballon","sections":[{"h":"Erkennung","items":["Herzmuskel bekommt zu wenig Sauerstoff, weil ein Herzkranzgefäß verengt oder verschlossen ist"]},{"h":"Behandlung","items":["Lisinopril zur Gefäßerweiterung, Katheter mit Ballon und Stent öffnet das verengte Herzgefäß"]},{"h":"Ablauf","items":["Lisinopril-2,5 zur Gefäßerweiterung","Narkose, Katheter über die Armarterie zum verengten Herzgefäß","Kontrastmittel und Röntgen: Position prüfen","Ballon aufblasen, Stent setzen, Arterie offen halten","Katheter entfernen, Wunde versorgen, Überwachung"]},{"h":"Geräte","items":["Katheter, Röntgengerät, Kontrastmittel, Ballon und Stent"]}],"table":null,"widget":false,"me":["/me gibt dem Patienten die Tablette Lisinopril-2,5","/me legt den Patienten für die Narkose bereit","/me führt den Katheter vorsichtig über die Armarterie ein","/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät","/me platziert den Stent und bläst den Miniaturballon auf","/me entfernt den Katheter und versorgt die Wunde","/me überwacht die Vitalwerte, während der Patient aus der Narkose erwacht"]},
-{"id":"Gesplitterter Bruch","cat":"o","title":"Gesplitterter Bruch","desc":"","kw":"knochen osteosynthese platte schrauben heparin","sections":[{"h":"Erkennung","items":["Knochenstücke lassen sich nicht mehr zusammenfügen oder sind verschoben, Röntgen zeigt die genaue Lage"]},{"h":"Behandlung","items":["Operative Fixierung mit Platte und Zugschrauben, dazu Heparin gegen Thrombose"]},{"h":"Ablauf","items":["Röntgen, Heparin gegen Thrombose","Betäuben, Stelle desinfizieren, Knochen mit Skalpell freilegen","Splitter mit Pinzette entfernen, Metallplatte und Zugschrauben setzen, Haut schließen"]},{"h":"Nachsorge","items":["Vitalwerte und Infektionen überwachen, Heparin weitergeben, regelmäßig röntgen"]}],"table":null,"widget":false,"me":["/me erstellt ein Röntgenbild zur Beurteilung des Bruchs","/me desinfiziert die Operationsstelle gründlich","/me fixiert die Bruchfragmente mit Platte und Zugschrauben","/me überwacht die Vitalwerte und verabreicht Heparin"]},
-{"id":"Schädel-Hirn-Trauma","cat":"o","title":"Schädel-Hirn-Trauma","desc":"Verletzung von Schädelknochen oder Gehirn durch Unfall, Sturz oder Gewalt. Gefahr durch Blutungen und erhöhten Hirndruck.","kw":"","sections":[{"h":"Erkennung","items":["CT oder MRT (Blutungen, Brüche, Schwellungen)","Neurotests: Bewusstsein, Sprache, Pupillenreaktion","SpO₂, Blutdruck, Puls und Hirndruck überwachen"]},{"h":"Behandlung","items":["Operation: Schädeldecke öffnen, Fragmente entfernen, Druck senken, Schädelplatte einsetzen"]},{"h":"Ablauf","items":["Narkose einleiten, Bereich rasieren","Kopfhaut desinfizieren, Schädeldecke eröffnen","Bruchstücke entfernen, Schädelplatte zur Stabilisierung anpassen","Dura öffnen, Flüssigkeit absaugen, Druck senken","Dura verschließen, Operationsgebiet spülen","Kopfhaut klammern, sterilen Verband anlegen","Danach Vitalwerte, Hirndruck und Sprache kontrollieren"]},{"h":"Richtwerte","items":["Hirndruck (ICP): normal unter 15 mmHg, kritisch über 20","SpO₂ über 95 %, Blutdruck systolisch über 100 mmHg","GCS (Bewusstsein): 3–15"]}],"table":null,"widget":false,"me":["/me überprüft Bewusstsein und Pupillenreaktion des Patienten","/me legt venösen Zugang und bereitet die Narkoseeinleitung vor","/me desinfiziert den betroffenen Kopfbereich und eröffnet die Schädeldecke","/me entfernt vorsichtig Frakturfragmente und passt die Schädelplatte an","/me saugt überschüssige Flüssigkeit ab und verschließt die Dura","/me klammert die Kopfhaut und legt einen sterilen Verband an"]},
-{"id":"Brustverletzung (Thoraxtrauma)","cat":"o","title":"Brustverletzung (Thoraxtrauma)","desc":"Verletzung von Brustkorb, Organen und angrenzenden Strukturen. Stumpf: keine offene Wunde (Rippen, Sternum, Wirbelsäule, Lunge). Penetrierend: offene Wunde, z. B. Stich oder Schuss, oft mit Gefahr für Lunge und Herz.","kw":"","sections":[{"h":"Behandlung","items":["Thoraxdrainage saugt Blut und Luft aus dem Brustraum"]},{"h":"Ablauf","items":["Narkose einleiten, Patient vorbereiten","Einstich- oder Schnittstelle desinfizieren","Steriles Lochtuch auflegen","Schnitt durch Rippenfell und Lungenfell","Thoraxdrainage einbringen, Blut und Luft absaugen","Vitalwerte während des Eingriffs überwachen","Einschnitt vernähen, Narkose beenden"]},{"h":"Geräte","items":["Röntgen oder CT (Brüche, Pneumothorax)","Thoraxdrainage zur Absaugung von Blut und Luft","Vitalwertmonitor (EKG, Blutdruck, Puls, SpO₂)"]}],"table":null,"widget":false,"me":["/me leitet die Narkose ein und bereitet den Patienten für den Eingriff vor","/me desinfiziert die Einstichstelle und legt das Lochtuch auf","/me führt den Schnitt durch Rippen- und Lungenfell aus","/me bringt die Thoraxdrainage ein und überwacht die Vitalwerte","/me vernäht den Einschnitt und beendet die Narkose"]},
-{"id":"Kollabierte Lunge (Pneumothorax)","cat":"o","title":"Kollabierte Lunge (Pneumothorax)","desc":"Luft gelangt in den Pleuraspalt, die Lunge fällt teilweise oder ganz zusammen. Ursachen: Stich- oder Schussverletzung, Rippenbruch, Lungenerkrankung oder spontan. Symptome: Atemnot, Brustschmerzen, vermindertes Atemgeräusch.","kw":"","sections":[{"h":"Behandlung","items":["Thoraxdrainage entfernt die Luft, die Lunge entfaltet sich wieder"]},{"h":"Ablauf","items":["Einstichstelle am Brustkorb desinfizieren","Kleinen Schnitt zwischen den Rippen setzen","Drainage einführen, an Absaug- oder Wasserballonsystem anschließen","Vitalwerte und Lungenentfaltung per Röntgen oder Ultraschall überwachen","Drainage fixieren, Haut verschließen","Lungenfunktion kontrollieren, Drainage nach vollständiger Entfaltung entfernen"]},{"h":"Geräte","items":["Röntgen oder CT, Thoraxdrainage oder Saugdrainage, steriles OP-Besteck, Vitalwertmonitor"]}],"table":null,"widget":false,"me":["/me desinfiziert die Einstichstelle am Brustkorb","/me führt den Schnitt zwischen den Rippen durch","/me platziert die Thoraxdrainage und verbindet sie mit dem Absaugsystem","/me überwacht die Vitalwerte und kontrolliert die Lungenexpansion","/me fixiert die Drainage und verschließt die Haut"]},
-{"id":"Durchschuss und innere Blutungen","cat":"o","title":"Durchschuss und innere Blutungen","desc":"Penetrierende Verletzung mit schwerer innerer Blutung, wenn eine Arterie getroffen ist. Symptome: Blutdruckabfall, schneller Puls, blasse Haut, Schwindel, Bewusstlosigkeit.","kw":"","sections":[{"h":"Behandlung","items":["Blutung mit Arterienklemmen stoppen, Arterie mit Kunststoffgefäß oder Patch rekonstruieren"]},{"h":"Ablauf","items":["Operationsbereich vorbereiten und steril abdecken","Wunde mit Hautklammern oder Schnitt öffnen","Arterienklemmen setzen, Blutung stoppen","Blut absaugen, Wunde mit Ringerlösung spülen","Kunststoffgefäß oder Patch einnähen, Arterie rekonstruieren","Gefäßnaht fixieren, Wunde schließen","Schmerzmittel geben, Vitalwerte überwachen"]},{"h":"Geräte","items":["Steriles OP-Besteck, Arterienklemmen, Absauggerät, Ringerlösung, Kunststoffgefäß oder Patch, Vitalwertmonitor"]}],"table":null,"widget":false,"me":["/me öffnet die Wunde vorsichtig, um Zugang zur verletzten Arterie zu bekommen","/me setzt Arterienklemmen und stoppt die Blutung","/me saugt Blut ab und spült die Wunde mit Ringerlösung","/me näht ein Kunststoffgefäß ein, um die Arterie zu rekonstruieren","/me schließt die Wunde und überwacht die Vitalwerte"]},
-{"id":"Korrosion durch SCP-106 (Pocket Dimension)","cat":"o","title":"Korrosion durch SCP-106 (Pocket Dimension)","desc":"Der Korrosionseffekt von SCP-106 zerstört Gewebe rasant, ähnlich einer nekrotisierenden Hautinfektion. Symptome: starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbung (blass bis schwarz), Schwellung. Unbehandelt droht Sepsis.","kw":"","sections":[{"h":"Behandlung","items":["Totes Gewebe entfernen, Haut transplantieren, Defekte mit Kunststoffimplantaten füllen, Antibiotika"]},{"h":"Ablauf","items":["Patient vorbereiten, steril abdecken","Kochsalzlösung i.v. zur Kreislaufstabilisierung","Betroffene Bereiche einschneiden, Ausmaß der Nekrose bestimmen","Abgestorbenes Gewebe entfernen, gesundes erhalten","Entscheiden, ob amputiert werden muss","An wichtigen Stellen (Gesicht, Hände, Gelenke) Vollhaut transplantieren","Kunststoffimplantate in verbleibende Defekte einsetzen","Heilsalbe auftragen, sterile Verbände anlegen","Antibiotika (nur im RP), Vitalwerte und Wundheilung kontrollieren"]},{"h":"Geräte","items":["OP-Besteck, Infusion mit Kochsalzlösung, Vollhaut zur Transplantation, Kunststoffimplantate, Vitalwertmonitor"]}],"table":null,"widget":false,"me":["/me prüft die betroffene Stelle auf Ausmaß der Korrosion","/me macht präzise Einschnitte, um totes Gewebe zu identifizieren","/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut","/me setzt Kunststoffimplantate an beschädigten Stellen ein","/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte"]},
-{"id":"Amputation","cat":"o","title":"Amputation","desc":"Chirurgische Entfernung eines Körperteils bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel: Lebensgefahr abwenden und gute Wundheilung ermöglichen.","kw":"","sections":[{"h":"Behandlung","items":["Körperteil unter Narkose und Tourniquet chirurgisch entfernen, Stumpf versorgen"]},{"h":"Ablauf","items":["Narkose einleiten, ggf. Plexusblockade gegen Schmerzen","Tourniquet oberhalb des Bereichs anlegen (verhindert Blutverlust)","Haut zylindrisch ausschneiden, Zugang zu Gelenk oder Knochen schaffen","Gelenk trennen, Knochen abtrennen, kürzen und abstumpfen","Knochen mit Splint fixieren","Blutgefäße mit Kauterpinzette veröden","Haut über dem Knochen sorgfältig vernähen","Aufwachen aus der Narkose, Vitalwerte überwachen"]},{"h":"Geräte","items":["Narkoseausrüstung, Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial, sterile Verbände"]}],"table":null,"widget":false,"me":["/me leitet die Narkose ein und legt das Tourniquet an","/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe","/me fixiert den Knochen mit einem Splint und verödet Gefäße","/me vernäht die Haut und legt sterile Verbände an","/me überwacht den Patienten beim Erwachen aus der Narkose"]},
-{"id":"Schlaganfall","cat":"o","title":"Schlaganfall","desc":"Ein Blutgefäß im Gehirn ist verstopft, das Hirngewebe bekommt zu wenig Sauerstoff. Folgen: Lähmungen, Sprach- und Sinnesstörungen, Koordinationsprobleme, Bewusstlosigkeit.","kw":"","sections":[{"h":"Behandlung","items":["Blutdruck senken, Alteplase löst das Gerinnsel, Stent-Retriever entfernt es mechanisch"]},{"h":"Ablauf","items":["Vitalwerte prüfen, ggf. Sauerstoff über Maske","Blutdruck senken, z. B. 10 mg Esmolol i.v.","Gerinnsel auflösen: 15 mg Alteplase als Infusion über 90 Min.","Katheter über die Leistenarterie einführen","Stent-Retriever einsetzen, Gerinnsel entfernen","Mit Kontrastmittel und Röntgen navigieren","Vitalwerte während und nach dem Eingriff überwachen"]},{"h":"Geräte","items":["CT-Scan (CCT) zur Lage des Gerinnsels, Bluttests, Katheter mit Stent-Retriever, Kontrastmittel und Röntgen"]}],"table":null,"widget":false,"me":["/me überprüft die Vitalwerte des Patienten","/me legt eine Sauerstoffmaske an","/me spritzt Esmolol zur Blutdruckkontrolle","/me verabreicht Alteplase-Infusion über 90 Minuten","/me führt Katheter über die Leistenarterie ein","/me navigiert den Stent-Retriever mithilfe von Kontrastmittel und Röntgenbildern","/me entfernt das Blutgerinnsel und überprüft die Durchblutung"]},
-{"id":"Lebertrauma","cat":"o","title":"Lebertrauma","desc":"Verletzung der Leber durch stumpfe Gewalt (Unfall, Sturz, Schlag) oder penetrierende Gewalt (Messer, Schuss). Die Leber ist stark durchblutet, schon kleine Risse können lebensgefährlich bluten.","kw":"","sections":[{"h":"Erkennung","items":["Ultraschall oder CT, besonders bei Bauchverletzungen, großen Blutergüssen oder Verdacht auf innere Blutung"]},{"h":"Behandlung","items":["Blutung stillen mit Druck und Fibrinkleber, bei schwerer Blutung Gefäße verschließen"]},{"h":"Ablauf","items":["Hautschnitt, Bauch öffnen, vorhandenes Blut absaugen","Leichte Blutung: mit sterilen Tüchern Druck ausüben, dann Fibrinkleber auftragen","Schwere Blutung: verletzte Arterien oder Venen chirurgisch verschließen","Vitalwerte und Leberwerte kontrollieren"]},{"h":"Leberwerte","items":["GOT (AST): normal unter ca. 45 U/l, erhöht bei Leberverletzung","GPT (ALT): normal unter ca. 45 U/l, Marker für Leberzellschäden","Bilirubin gesamt: 0,3–1,2 mg/dl, erhöht bei gestörter Leberfunktion oder Gallenabfluss"]}],"table":null,"widget":false,"me":["/me untersucht den Bauchraum per Ultraschall auf freie Flüssigkeit","/me legt einen venösen Zugang und bereitet Blutabnahme für Leberwerte vor","/me öffnet vorsichtig den Bauchraum und saugt Blut ab","/me trägt Fibrinkleber auf die verletzte Stelle auf","/me kontrolliert abschließend die Vitalwerte und dokumentiert die Leberwerte"]},
-{"id":"Hüftersatz","cat":"o","title":"Hüftersatz","desc":"Chirurgischer Eingriff, bei dem ein beschädigtes oder schmerzhaftes Hüftgelenk durch eine künstliche Prothese ersetzt wird. Ziel: Schmerzen lindern, Beweglichkeit wiederherstellen, Lebensqualität verbessern.","kw":"","sections":[{"h":"Behandlung","items":["Künstliche Hüftprothese einsetzen: beschädigtes Gelenk entfernen, Knochen zuschneiden, Prothese mit Schrauben fixieren"]},{"h":"Ablauf","items":["Narkose einleiten, Schmerzmanagement abstimmen","Operationsstelle reinigen","Haut und Weichgewebe zurückklappen, Hüfte freilegen","Osteotomie: beschädigtes Gelenk entfernen, Knochen für die Prothese zuschneiden","Prothesenkopf in den Oberschenkelknochen einsetzen","Prothesenkörper im Beckenkamm mit Schrauben oder Befestigungsmitteln fixieren","Haut und Weichgewebe vernähen","Danach Vitalwerte und Schmerzmanagement überwachen"]},{"h":"Geräte","items":["Röntgen oder CT zur Planung, chirurgisches Instrumentarium für Osteotomie und Prothesenfixierung, Tupfer und Nahtmaterial"]}],"table":null,"widget":false,"me":["/me bereitet die Operationsstelle vor und desinfiziert sie","/me legt Haut und Weichgewebe zurück","/me entfernt das beschädigte Gelenk und schneidet die Knochen zu","/me setzt die Prothese ein und fixiert sie","/me vernäht die Haut und kontrolliert die Blutung"]},
-{"id":"Trommelfellriss","cat":"o","title":"Trommelfellriss","desc":"Ein geplatztes Trommelfell entsteht durch starken Druck oder laute Geräusche (z. B. Explosionen) und führt zu Schmerzen, Hörverlust oder Blutungen im Ohr.","kw":"","sections":[{"h":"Behandlung","items":["Trommelfell glätten und mit Silikonfolie schienen, Ohrentropfen gegen Schmerz und Entzündung"]},{"h":"Ablauf","items":["Narkose einleiten, um Schmerzen zu vermeiden","Ohr reinigen, Schmutz und Blut entfernen","Eingerollte Ränder des gerissenen Trommelfells glätten","Silikonfolie als Schiene zur Stabilisierung einsetzen","Ohr erneut spülen, um Rückstände zu entfernen","Schmerzlindernde Ohrentropfen verabreichen","Bei Bedarf Hörgerät einsetzen","Narkose beenden und den Patienten engmaschig überwachen"]},{"h":"Geräte","items":["Otoskop, Narkoseausrüstung, Silikonfolie zur Schienung, Ohrenspüllösung und sterile Tupfer"]}],"table":null,"widget":false,"me":["/me überprüft das Trommelfell mithilfe des Otoskops","/me reinigt das Ohr vorsichtig","/me glättet die eingerollten Ränder des Trommelfells","/me legt die Silikonfolie als Schiene ein","/me spült das Ohr erneut aus","/me tropft schmerzlindernde Ohrentropfen ein","/me überwacht den Patienten nach Beendigung der Narkose"]},
-{"id":"Gehirntumor (Wach-OP)","cat":"o","title":"Gehirntumor (Wach-OP)","desc":"Abnorme Zellwucherung im Gehirn, die Druck auf benachbarte Strukturen ausübt und neurologische Funktionen beeinträchtigt. Die Behandlung hängt von Lage, Größe und Art des Tumors ab.","kw":"","sections":[{"h":"Erkennung","items":["MRT oder CT: Tumorgröße, Lage und angrenzendes Gewebe","Fluoreszenzmittel macht den Tumor während der OP sichtbar","Neurologische Tests: Sprache, Bewegung, Sensorik"]},{"h":"Behandlung","items":["Tumor beim wachen Patienten mit Ultraschall oder Laser präzise entfernen, Sprache und Bewegung laufend prüfen"]},{"h":"Ablauf","items":["Wach-OPs werden immer von mindestens zwei Chirurgen durchgeführt","Vorbereitung: lokale Betäubung am Kopf, Kopf in stabiler Halterung fixieren","Zweiter Arzt prüft während der OP regelmäßig Sprache und Funktionen","Zugang: Hautschnitt, Schädelknochen mit Bohrungen und Sägen öffnen","Hirnhaut öffnen, mit Spreizern präzisen Zugang zum Tumor schaffen","Tumor abtrennen, mit Ultraschall- oder Lasersystem präzise entfernen","Blut absaugen, ggf. Kunstgewebe einsetzen","Abschluss: sterilisieren, Dura verschließen, Kopfhaut nähen, sterilen Verband anlegen"]},{"h":"Überwachung","items":["Puls, Blutdruck und Sauerstoffsättigung kontinuierlich, dazu regelmäßige Sprach- und Bewegungschecks"]}],"table":null,"widget":false,"me":["/me überprüft Bewusstsein und Vitalwerte des Patienten vor OP-Beginn","/me fixiert den Kopf in der stabilen Halterung und injiziert lokale Betäubung","/me führt Schnitt durch die Haut und öffnet den Schädelknochen","/me öffnet vorsichtig die Hirnhaut und platziert Spreizer für besseren Zugang","/me entfernt Tumor präzise mit Ultraschall-Laser und saugt Blut ab","/me sterilisiert das Operationsgebiet","/me verschließt die Dura, näht die Kopfhaut und legt sterilen Verband an","/me überprüft fortlaufend neurologische Funktionen während der Wach-OP"]},
-{"id":"Blutvergiftung (Sepsis)","cat":"o","title":"Blutvergiftung (Sepsis)","desc":"Lebensbedrohliche Reaktion des Körpers auf eine Infektion: Bakterien oder Giftstoffe im Blut lösen eine schwere Entzündung aus. Ursachen: infizierte Wunden, Lungenentzündung, Harnwegs- oder Bauchinfektionen. Symptome: Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck, Verwirrtheit.","kw":"","sections":[{"h":"Behandlung","items":["Kreislauf stabilisieren, Breitbandantibiotika, Dialyse, Infektionsquelle operativ entfernen"]},{"h":"Ablauf","items":["Venösen Zugang für Infusionen und Medikamente legen","Kochsalzlösung zur Stabilisierung des Kreislaufs geben","Breitbandantibiotika gegen die Infektion verabreichen","Dialyse einleiten (entfernt giftige Substanzen und überschüssige Flüssigkeit)","Infektionsquelle operativ entfernen, falls möglich","Bei starkem Blutverlust Bluttransfusion durchführen"]},{"h":"Geräte","items":["Venöser Zugang (z. B. Shaldon-Katheter), Infusionssysteme für Kochsalzlösung und Heparin, Blutkulturen und Labor, Dialysegerät, EKG, Blutdruck- und Sauerstoffmonitor, OP-Besteck"]}],"table":null,"widget":false,"me":["/me legt einen venösen Zugang für Infusionen und Medikamente","/me verabreicht Kochsalzlösung und Antibiotika","/me platziert einen Shaldon-Katheter und startet die Dialyse","/me entfernt operativ die Infektionsquelle, falls erforderlich","/me überwacht die Vitalwerte und passt die Therapie an"]},
-{"id":"Unterschenkelprothese","cat":"o","title":"Unterschenkelprothese","desc":"Ersetzt nach einer Amputation das entfernte Bein, ermöglicht Mobilität und verteilt den Druck auf den Stumpf.","kw":"","sections":[{"h":"Behandlung","items":["Prothese über Silikonhaftschaft am Stumpf befestigen, Druckverteilung und Sitz prüfen"]},{"h":"Ablauf","items":["Silikongel auf Stumpf und Haftschaft auftragen","Silikonhaftschaft am Stumpf anlegen","Prothese am Schaft über den Haftschaft befestigen","Auf Druckstellen und korrekte Sitzposition kontrollieren"]},{"h":"Geräte","items":["Silikonhaftschaft als Verbindung zwischen Stumpf und Prothese, Prothesenschaft mit Schraubverbindungen, Gel zur Druckverteilung"]}],"table":null,"widget":false,"me":["/me trägt Gel auf den Stumpf auf und setzt den Silikonhaftschaft","/me befestigt die Prothese am Schaft und prüft den Sitz","/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten"]},
-{"id":"Verätzungen","cat":"o","title":"Verätzungen","desc":"Direkter Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen (Laborunfälle, industrielle Chemikalien, gefährliche SCPs). Symptome: starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden, bei großen Flächen auch Reaktionen im ganzen Körper.","kw":"","sections":[{"h":"Behandlung","items":["Sofort lange spülen, Kleidung entfernen, je nach Grad Salbe, Wundversorgung oder chirurgische Entfernung, Antibiotika"]},{"h":"Ablauf","items":["Betroffene Haut sofort mindestens 15–20 Minuten mit viel Wasser oder NaCl spülen","Kontaminierte Kleidung und Rückstände vorsichtig entfernen","1. Grad: Reinigung, Kühlung, schmerzlindernde Salbe","2. Grad: abgestorbenes Gewebe entfernen, steril abdecken, Schmerzmittel und Antibiotika","3. und 4. Grad: Nekrosen chirurgisch entfernen, ggf. Hauttransplantation, engmaschig überwachen","Verbände fixieren, Heilungsverlauf regelmäßig kontrollieren","Antibiotika gegen Infektionen bei offenen Wunden"]},{"h":"Geräte","items":["Steriles Spülset (NaCl oder Wasser), Wundverbände und Brandwundenauflagen, Pinzette und Skalpell, Schmerzmittel und Antibiotika, Vitalwertmonitor, bei schweren Fällen Transplantationsbesteck"]}],"table":null,"widget":false,"me":["/me spült die betroffene Hautpartie gründlich mit sterilem Wasser","/me entfernt kontaminierte Kleidung und Rückstände vorsichtig","/me trägt Salbe oder Gel auf und deckt die Wunde steril ab","/me entfernt abgestorbenes Gewebe bei tieferen Verätzungen","/me legt neue sterile Verbände an und überwacht die Vitalwerte"]},
-{"id":"Paracetamol","cat":"m","title":"Paracetamol","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **10–15 mg pro kg KG**","Tageshöchstdosis: **4000 mg**"]},{"h":"Wirkung","items":["Leichte bis mittlere Schmerzen, Fieber; oral oder i.v. Selten Thrombozytopenie, Agranulozytose."]}],"table":null,"widget":false,"me":[]},
-{"id":"Ibuprofen","cat":"m","title":"Ibuprofen","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **200–400 mg**","Tageshöchstdosis: **1200 mg (unter ärztlicher Begleitung bis 2400 mg)**"]},{"h":"Wirkung","items":["Leichte bis mittlere Schmerzen, Entzündung, Fieber. Nebenwirkungen: Bauchschmerzen, Übelkeit, Erbrechen."]}],"table":null,"widget":false,"me":[]},
-{"id":"Metamizol","cat":"m","title":"Metamizol","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **500–1000 mg**","Tageshöchstdosis: **5000 mg**"]},{"h":"Wirkung","items":["Mittlere Schmerzen, Fieber, krampflösend; oral oder i.v. Nebenwirkungen: Benommenheit, Übelkeit, Erbrechen."]}],"table":null,"widget":false,"me":[]},
-{"id":"Tramadol","cat":"m","title":"Tramadol","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **50–100 mg**","Tageshöchstdosis: **400 mg**"]},{"h":"Wirkung","items":["Opioid gegen mäßige bis starke Schmerzen; oral oder i.v. Nebenwirkungen: Übelkeit, Schweißausbrüche, Sedierung."]}],"table":null,"widget":false,"me":[]},
-{"id":"Morphin","cat":"m","title":"Morphin","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **5–10 mg (subkutan meist 10 mg, i.v. max. 5 mg)**","Tageshöchstdosis: **keine Angabe**"]},{"h":"Wirkung","items":["Opiat gegen starke Schmerzen; subkutan (hält länger an) oder i.v. (wirkt in ca. 2 Min.). Nebenwirkungen: Übelkeit, Erbrechen, Schläfrigkeit."]}],"table":null,"widget":false,"me":[]},
-{"id":"Fentanyl","cat":"m","title":"Fentanyl","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **0,14–0,35 mg**","Tageshöchstdosis: **keine Angabe**"]},{"h":"Wirkung","items":["Opioid, ca. 100-fach stärker als Morphin; Schmerzmittel und Narkose, i.v. Nebenwirkungen: Kopfschmerzen, Übelkeit, Verwirrtheit."]}],"table":null,"widget":false,"me":[]},
-{"id":"Propofol","cat":"m","title":"Propofol","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **4–12 mg pro kg KG und Stunde (Erwachsene: 560 mg pro Stunde)**","Tageshöchstdosis: **keine Angabe**"]},{"h":"Wirkung","items":["Beruhigungs- und Narkosemittel, i.v. Nebenwirkungen: Schmerz an der Einstichstelle, Blutdruckabfall, Muskelzucken."]}],"table":null,"widget":false,"me":[]},
-{"id":"Dexpanthenol (Bepanthen)","cat":"m","title":"Dexpanthenol (Bepanthen)","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **keine Angabe**","Tageshöchstdosis: **keine Höchstdosis**"]},{"h":"Wirkung","items":["Wundheilung der Haut, z. B. leichte Verbrennungen; Salbe oder Spray."]}],"table":null,"widget":false,"me":[]},
-{"id":"Diclofenac (Voltaren)","cat":"m","title":"Diclofenac (Voltaren)","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **25 mg**","Tageshöchstdosis: **75 mg**"]},{"h":"Wirkung","items":["Schmerz und Entzündung, Hämatome; oral oder als Salbe. Nebenwirkungen: Magen-Darm-Beschwerden, Übelkeit."]}],"table":null,"widget":false,"me":[]},
-{"id":"Dimenhydrinat (Vomex)","cat":"m","title":"Dimenhydrinat (Vomex)","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **50 mg**","Tageshöchstdosis: **400 mg (i.v. bis 180 mg)**"]},{"h":"Wirkung","items":["Übelkeit und Erbrechen; oral oder i.v. Nebenwirkungen: Benommenheit, Konzentrationsstörungen."]}],"table":null,"widget":false,"me":[]},
-{"id":"Etilefrin","cat":"m","title":"Etilefrin","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **5 mg**","Tageshöchstdosis: **30 mg**"]},{"h":"Wirkung","items":["Erhöht niedrigen Blutdruck (Hypotonie); Tablette. Nebenwirkungen: Schweißausbrüche, Kopfschmerzen, Herzklopfen."]}],"table":null,"widget":false,"me":[]},
-{"id":"Nitroglycerin (Nitrolingualspray)","cat":"m","title":"Nitroglycerin (Nitrolingualspray)","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **1–3 Sprühstöße sublingual**","Tageshöchstdosis: **i.v. max. 8 mg pro Stunde (selten 10)**"]},{"h":"Wirkung","items":["Senkt hohen Blutdruck; Spray unter die Zunge, auch als Infusion. Nebenwirkungen: Kopfschmerzen, Hautrötung, Schweißausbrüche."]}],"table":null,"widget":false,"me":[]},
-{"id":"Epinephrin (Adrenalin)","cat":"m","title":"Epinephrin (Adrenalin)","desc":"","kw":"","sections":[{"h":"Dosis","items":["Einzeldosis: **ca. 0,35–0,7 mg (Erwachsene, Schock)**","Tageshöchstdosis: **keine Angabe**"]},{"h":"Wirkung","items":["Anaphylaktischer Schock, Herzstillstand. Nebenwirkungen: Herzklopfen, Angst, selten Herzinfarkt oder Herzstillstand."]}],"table":null,"widget":false,"me":[]}
-];
-/* Neue Akten unter Operationen, aufgebaut wie die Behandlungen (Erkennung, Behandlung, Ablauf, /me-Zeilen) */
-(() => {
-  const at = SEED.map(r => r.cat).lastIndexOf('o') + 1;
-  SEED.splice(at, 0,
-    {id: 'Verbrennung 3./4. Grades', cat: 'o', title: 'Verbrennung 3./4. Grades',
-     kw: 'brand verbrennung haut transplantat nekrose hautlappen',
-     desc: 'Tiefe Verbrennung, die alle Hautschichten zerstört, bei Grad 4 auch Unterhaut, Muskeln oder Knochen. Die Haut wirkt weiß, braun oder schwarz und ledrig. Im Zentrum fehlt oft das Schmerzempfinden. Die Wunde heilt nicht von selbst, deshalb ist eine Operation nötig.',
-     sections: [
-       {h: 'Erkennung', items: ['Haut weiß, braun oder schwarz, trocken und ledrig', 'Im Zentrum oft kaum Schmerz, am Rand starke Schmerzen', 'Meist keine Blasen, die Hautschicht ist zerstört']},
-       {h: 'Behandlung', items: ['Atemwege, Atmung und Kreislauf zuerst sichern', 'Bei großen Flächen Flüssigkeitsersatz nach ärztlicher Anordnung', 'Schmerzmittel und Antibiotika nach ärztlicher Anordnung', 'Verbrannte Kleidung und Schmuck entfernen, keine Fette oder Salben auf die frische Wunde']},
-       {h: 'Ablauf', items: ['Vitalwerte überwachen, Flüssigkeitsgabe nach Anordnung', 'Narkose einleiten, Wunde großzügig desinfizieren', 'Abgestorbenes Gewebe bis auf gesunde Schicht abtragen', 'Blutung stillen (Druck oder Koagulation)', 'Spalthaut oder Vollhaut vom Spenderbereich entnehmen und auf die Wunde auflegen', 'Transplantat fixieren, Spender- und Empfangsstelle steril verbinden', 'Nachsorge: Vitalwerte, Durchblutung des Transplantats und Infektionszeichen kontrollieren']}
-     ],
-     table: null, widget: false,
-     me: ['/me desinfiziert die Brandwunde und legt sterile Abdeckungen an', '/me entfernt vorsichtig abgestorbenes Gewebe', '/me entnimmt Hautlappen vom Spenderbereich', '/me fixiert das Transplantat und verbindet die Wunde steril', '/me überwacht die Vitalwerte des Patienten']},
-    {id: 'Untersuchungsgeräte und Laborwerte', cat: 'o', title: 'Untersuchungsgeräte und Laborwerte',
-     kw: 'labor blut untersuchung geräte ultraschall röntgen ct ekg',
-     desc: 'Überblick über die gängigen Untersuchungsgeräte und die wichtigsten Laborwerte. Richtwerte gelten für Erwachsene und können je nach Labor abweichen.',
-     sections: [
-       {h: 'Geräte', items: ['Pulsoximeter: Sauerstoffsättigung (SpO₂) und Puls am Finger', 'Blutdruckmessgerät und Thermometer', 'EKG: Herzrhythmus über Elektroden', 'Otoskop: Trommelfell und Gehörgang', 'Ultraschall: Flüssigkeit im Bauchraum, Organe, Gefäße', 'Röntgen und CT: Brüche, Blutungen, Lage von Fremdkörpern']},
-       {h: 'Laborwerte', items: ['Leukozyten (weiße Blutkörperchen): 4–10 Tsd./µl, erhöht bei Infektion', 'Hämoglobin: Männer 13,5–17,5 g/dl, Frauen 12–16 g/dl, erniedrigt bei Blutverlust', 'Thrombozyten (Blutplättchen): 150–400 Tsd./µl, erniedrigt bei Blutungsneigung', 'CRP (Entzündungswert): unter 5 mg/l, erhöht bei Entzündung', 'Quick und INR: Hinweis auf die Blutgerinnung, bei Blutverdünnern wichtig']},
-       {h: 'Ablauf', items: ['Vitalwerte messen, dann die passende Untersuchung wählen', 'Blutprobe steril abnehmen und beschriften', 'Befunde mit den Richtwerten vergleichen und dokumentieren']}
-     ],
-     table: null, widget: false,
-     me: ['/me legt das Pulsoximeter am Finger an und liest die Sättigung ab', '/me misst Blutdruck und Puls des Patienten', '/me nimmt eine Blutprobe ab und beschriftet das Röhrchen', '/me wertet die Laborwerte aus und dokumentiert sie']}
-  );
-})();
-/* Inhaltliche Überarbeitung (Pilot). Abschnitte: Darstellung je Abschnitt wählbar.
-   /me-Zeilen: nur Zeilen mit /me sind kopierbar, Zeilen ohne /me sind Notizen. */
-const PILOT = {
-  'Platzwunde': {
-    sections: [
-      {h: 'Erkennung', mode: 'bullet', items: ['Offene Wunde mit klaffenden Wundrändern', 'Blutung je nach Gefäßbeteiligung, meist gut kontrollierbar', 'Verschmutzung und Fremdkörper prüfen']},
-      {h: 'Behandlung', mode: 'bullet', items: ['Blutung mit Druckverband stillen', 'Wunde gründlich spülen, Fremdkörper und abgestorbenes Gewebe entfernen', 'Lokale Betäubung mit Lidocain, anschließend Naht mit Einzelknopfnähten']},
-      {h: 'Ablauf', mode: 'number', items: ['Vitalwerte prüfen und Blutung kontrollieren', 'Wunde spülen und großzügig desinfizieren', 'Wundrand mit Lidocain betäuben', 'Wunde mit Einzelknopfnähten verschließen', 'Steriler Verband, Nachsorge erklären']}
-    ],
-    me: [
-      '/me spült die Wunde gründlich mit steriler Lösung',
-      '/me desinfiziert die Wunde und die umliegende Haut',
-      '/me betäubt den Wundrand mit Lidocain',
-      '/me verschließt die Wunde mit Einzelknopfnähten',
-      '/me legt einen sterilen Wundverband an',
-      'Notiz: Lidocain nach Körpergewicht dosieren, Höchstmenge beachten',
-      'Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen'
-    ]
-  },
-  'Hüftersatz': {
-    sections: [
-      {h: 'Erkennung', mode: 'bullet', items: ['Hüftgelenk stark verschlissen oder nach Bruch nicht mehr belastbar', 'Starke Schmerzen, Gehunfähigkeit, eingeschränkte Beweglichkeit', 'Diagnose über Röntgen oder CT bestätigen']},
-      {h: 'Behandlung', mode: 'bullet', items: ['Gelenkersatz durch Totalendoprothese (TEP) nach ärztlicher Indikation', 'Antibiose und Thromboseprophylaxe nach Anordnung', 'Schmerztherapie und frühe Mobilisation']},
-      {h: 'Ablauf', mode: 'number', items: ['Patient in Narkose bringen und in Seitenlage lagern', 'Hautschnitt setzen, Muskulatur schichtweise darstellen', 'Gelenkkopf entfernen, Pfanne vorbereiten', 'Pfanne und Schaft einsetzen, Gelenkstabilität prüfen', 'Redon-Drainage einlegen, schichtweise verschließen', 'Hautnaht, steriler Verband, Nachsorge']}
-    ],
-    me: [
-      '/me desinfiziert das Operationsfeld großflächig und deckt es steril ab',
-      '/me lagert den Patienten in Seitenlage und fixiert ihn',
-      '/me setzt den Hautschnitt und präpariert schichtweise bis zum Gelenk',
-      '/me entfernt den Gelenkkopf und bereitet die Pfanne vor',
-      '/me setzt die Prothese ein und prüft die Gelenkstabilität',
-      '/me legt eine Redon-Drainage ein und verschließt die Wunde schichtweise',
-      'Notiz: Antibiose und Thromboseprophylaxe nach ärztlicher Anordnung',
-      'Notiz: Redon-Drainage entfernen, sobald die Sekretmenge gering ist'
-    ]
-  }
-};
-SEED.forEach(r => { if (PILOT[r.id]) Object.assign(r, PILOT[r.id]); });
 /* ===== Grundlagen ===== */
 const $ = s => document.querySelector(s);
 const TEST = /[?&]test\b/.test(location.search);
@@ -217,6 +129,7 @@ const FORM = {m: ['Dosis', 'Wirkung']};             // Formularabschnitte je Kat
 const DEFAULT_FORM = ['Erkennung', 'Behandlung', 'Ablauf'];
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 const KEY = 'medic-handbuch-v2';
+const SETKEY = 'medic-handbuch-einstellungen';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const nf = s => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const clone = x => JSON.parse(JSON.stringify(x));
@@ -224,13 +137,43 @@ const lines = t => String(t || '').split('\n').map(s => s.replace(/\s+/g, ' ').t
 const memStore = () => { const m = {}; return {getItem: k => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, removeItem: k => { delete m[k]; }}; };
 const PERSIST = (() => { try { localStorage.setItem('_t', '1'); localStorage.removeItem('_t'); return true; } catch (e) { return false; } })();
 let store = (TEST || !PERSIST) ? memStore() : localStorage;
-const BASE = {};
-SEED.forEach(r => { BASE[r.id] = r; });
-let S, view = 'a', query = '', opened = new Set(), folded = new Set(), openSec = new Set(), editing = null, pending = null, formState = null, sectionForm = null;
+let SEED = [], BASE = {};   // werden beim Start aus akten.json geladen
+let S, view = 'a', query = '', opened = new Set(), folded = new Set(), secOv = new Map(), editing = null, pending = null, formState = null, sectionForm = null;
+let undoStack = [], redoStack = [], lastSaved = null, mergeNext = false;
+let SET = {theme: 'dark', grid: 'auto', sec: 'closed', compact: false};
 
-/* ===== Speicher: eine Datei, eine Form ===== */
+/* ===== Einstellungen (nur Darstellung, getrennt von den Akten) ===== */
+function loadSet(){
+  let x = {};
+  try { x = JSON.parse(store.getItem(SETKEY)) || {}; } catch (e) {}
+  SET = {theme: x.theme === 'light' ? 'light' : 'dark', grid: x.grid === 'one' ? 'one' : 'auto', sec: x.sec === 'open' ? 'open' : 'closed', compact: x.compact === true};
+}
+function saveSet(){ try { store.setItem(SETKEY, JSON.stringify(SET)); } catch (e) {} }
+function applySet(){
+  document.documentElement.dataset.theme = SET.theme;
+  document.body.classList.toggle('one-col', SET.grid === 'one');
+  document.body.classList.toggle('compact', SET.compact);
+}
+
+/* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
 const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: []});
-function save(){ try { store.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('Speichern nicht möglich'); } }
+function save(){
+  const now = JSON.stringify(S);
+  if (lastSaved !== null && now !== lastSaved) {
+    if (mergeNext) { if (undoStack.length && undoStack[undoStack.length - 1] === now) undoStack.pop(); }   // Eintippen nach „Zeile hinzufügen“ zählt zum selben Schritt
+    else { undoStack.push(lastSaved); if (undoStack.length > 60) undoStack.shift(); }
+    redoStack = [];
+  }
+  mergeNext = false;
+  lastSaved = now;
+  try { store.setItem(KEY, now); } catch (e) { toast('Speichern nicht möglich'); }
+}
+function applyState(json){
+  S = JSON.parse(json);
+  S.order = orderFix(S.order);
+  lastSaved = JSON.stringify(S);
+  try { store.setItem(KEY, lastSaved); } catch (e) {}
+}
 function orderFix(saved, made = S.made){
   const ids = SEED.map(r => r.id).concat(made.map(r => r.id)), seen = new Set(), out = [];
   (saved || []).concat(ids).forEach(id => { if (ids.includes(id) && !seen.has(id)) { seen.add(id); out.push(id); } });
@@ -246,6 +189,8 @@ function load(){
     try { const me = JSON.parse(store.getItem('me')) || {}; Object.keys(me).forEach(t => { if (BASE[t]) S.ov[t] = {me: me[t]}; }); } catch (e) {}
   }
   S.order = orderFix(S.order);
+  lastSaved = JSON.stringify(S);
+  undoStack = []; redoStack = []; mergeNext = false;
 }
 
 /* ===== Akten lesen und ändern (immer kopierend, nie die Grunddaten verändern) ===== */
@@ -298,9 +243,10 @@ function removeLine(id, s, i){
   patch(id, 'sections', secs.filter(x => x.items.length));
 }
 function addLine(id, s, start){
-  if (s === 'm') { const me = get(id).me.concat(start || '/me '); patch(id, 'me', me); return 'm:' + (me.length - 1); }
+  if (s === 'm') { const me = get(id).me.concat(start || '/me '); patch(id, 'me', me); mergeNext = true; return 'm:' + (me.length - 1); }
   const secs = clone(get(id).sections), n = secs[s].items.push('Neue Zeile') - 1;
   patch(id, 'sections', secs);
+  mergeNext = true;
   return 'i:' + s + ':' + n;
 }
 function delSection(id, s){ const secs = clone(get(id).sections); secs.splice(s, 1); patch(id, 'sections', secs); }
@@ -349,11 +295,57 @@ function fmt(s){   // gespeicherter Klartext -> sicheres HTML
 }
 const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', r.me.join(' ')].join(' '));
 
+/* ===== Akten-Daten aus akten.json: prüfen und in die feste Form bringen ===== */
+let DATA_PROBLEMS = [];
+function checkRecord(x){   // null = gültig, sonst der Grund
+  if (!x || typeof x !== 'object' || Array.isArray(x)) return 'kein Objekt';
+  if (typeof x.id !== 'string' || !x.id.trim()) return 'Kennung (id) fehlt';
+  if (typeof x.title !== 'string' || !x.title.trim()) return 'Titel fehlt';
+  if (!own(C, x.cat)) return 'Kategorie „' + x.cat + '“ ist unbekannt (erlaubt: v, b, n, o, m)';
+  if (x.sections !== undefined && !Array.isArray(x.sections)) return 'sections ist keine Liste';
+  for (const s of (x.sections || [])) {
+    if (!s || typeof s !== 'object' || typeof s.h !== 'string' || !s.h.trim()) return 'ein Abschnitt hat keine Überschrift';
+    if (!Array.isArray(s.items) || s.items.some(t => typeof t !== 'string')) return 'Abschnitt „' + s.h + '“: Zeilen müssen Texte sein';
+  }
+  if (x.me !== undefined && (!Array.isArray(x.me) || x.me.some(t => typeof t !== 'string'))) return 'me muss eine Liste von Texten sein';
+  if (x.desc !== undefined && typeof x.desc !== 'string') return 'desc muss ein Text sein';
+  if (x.kw !== undefined && typeof x.kw !== 'string') return 'kw muss ein Text sein';
+  if (x.widget !== undefined && typeof x.widget !== 'boolean') return 'widget muss true oder false sein';
+  if (x.table !== undefined && x.table !== null && (!x.table || !Array.isArray(x.table.h) || !Array.isArray(x.table.r))) return 'table hat kein gültiges Format';
+  return null;
+}
+function normalizeRecord(x){   // feste Form, die die Anzeige erwartet
+  return {id: x.id.trim(), cat: x.cat, title: x.title.trim(), desc: x.desc || '', kw: x.kw || '',
+    sections: (x.sections || []).map(s => { const o = {h: s.h.trim(), items: s.items.slice()}; if (own(MODES, s.mode)) o.mode = s.mode; return o; }),
+    me: (x.me || []).slice(), table: x.table || null, widget: x.widget === true};
+}
+function parseData(raw){   // reine Prüfung, ändert nichts
+  if (!Array.isArray(raw)) return {records: [], problems: ['akten.json muss eine Liste (Array) von Akten enthalten.']};
+  const records = [], problems = [], ids = new Set(), titles = new Set();
+  raw.forEach((x, i) => {
+    const label = (x && typeof x === 'object' && typeof x.id === 'string' && x.id.trim()) ? '„' + x.id + '“' : 'Eintrag ' + (i + 1);
+    const why = checkRecord(x);
+    if (why) { problems.push(label + ': ' + why); return; }
+    const id = x.id.trim(), t = nf(x.title.trim());
+    if (ids.has(id)) { problems.push(label + ': Kennung kommt doppelt vor'); return; }
+    if (titles.has(t)) { problems.push(label + ': Titel kommt doppelt vor'); return; }
+    ids.add(id); titles.add(t); records.push(normalizeRecord(x));
+  });
+  return {records, problems};
+}
+function applyData(res){   // übernimmt die geprüften Akten
+  SEED = res.records;
+  BASE = {};
+  SEED.forEach(r => { BASE[r.id] = r; });
+  DATA_PROBLEMS = res.problems;
+}
+
 /* ===== Anzeige ===== */
 let formRendered = null;
 const MODES = {bullet: 'Stichpunkte', number: 'Zahlenfolge (1., 2., 3.)', text: 'Einfacher Text'};
 const modeOf = s => (s.mode && own(MODES, s.mode)) ? s.mode : (s.h === 'Ablauf' ? 'number' : 'bullet');
-const secOpen = (id, k) => openSec.has(id + '|' + k);
+// Abschnitt offen? Ein einzelner Klick hat Vorrang, sonst gilt die Einstellung.
+const secOpen = (id, k) => secOv.has(id + '|' + k) ? secOv.get(id + '|' + k) : SET.sec === 'open';
 function card(r){
   const id = esc(r.id), ro = !!RO[r.cat], starred = S.fav.includes(r.id), shut = folded.has(r.id);
   const b = (act, sym, label, extra) => ro ? '' : `<button data-act="${act}" data-id="${id}" ${extra || ''} title="${label}" aria-label="${label}">${sym}</button>`;
@@ -362,7 +354,8 @@ function card(r){
   const ord = (s, i) => b('move', '▲', 'Nach oben', `data-s="${s}" data-i="${i}" data-d="-1"`) + b('move', '▼', 'Nach unten', `data-s="${s}" data-i="${i}" data-d="1"`) + b('remove', '✕', 'Entfernen', `data-s="${s}" data-i="${i}"`);
   const arrow = `<span class="arw" data-act="fold" data-id="${id}" title="Ein- und ausklappen" aria-label="Ein- und ausklappen">${shut ? '▸' : '▾'}</span>`;
   const head = `<h2>${arrow}<span class="row" data-hold>${tx('title', r.title, esc(r.title))}<span class="ct">${ed}</span></span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button><span class="hv">${b('recmove', '▲', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼', 'Akte nach unten', 'data-d="1"')}${b('trash', 'Papierkorb', 'In den Papierkorb legen')}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}</span></span></h2>`;
-  const cat = view === 'a' ? `<p class="c">${C[r.cat]}</p>` : '';
+  // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar
+  const cat = (view === 'a' || view === 'fav') ? `<p class="c">${C[r.cat]}</p>` : '';
   const desc = (r.desc || !ro) ? `<p><span class="row" data-hold>${r.desc ? tx('desc', r.desc, fmt(r.desc)) : tx('desc', '', '<em class="c">Beschreibung hinzufügen</em>')}<span class="ct">${ed}</span></span></p>` : '';
   const tbl = r.table ? `<div class="tw"><table><tr>${r.table.h.map(x => `<th>${esc(x)}</th>`).join('')}</tr>${r.table.r.map(w => `<tr>${w.map(x => `<td>${fmt(x)}</td>`).join('')}</tr>`).join('')}</table></div>` : '';
   const secs = r.sections.map((s, si) => {
@@ -392,7 +385,22 @@ function renderNav(){
     if (on) h += `<div class="gl">${rs.map(r => `<a href="#" data-act="go" data-id="${esc(r.id)}">${esc(r.title)}</a>`).join('')}</div>`;
   });
   h += '<div class="sep"></div>' + item('trash', 'Papierkorb', trashed().length);
+  if (DATA_PROBLEMS.length) h += '<p class="warn" title="' + esc(DATA_PROBLEMS.join(' | ')) + '">Hinweis: ' + DATA_PROBLEMS.length + ' Einträge in akten.json wurden übersprungen.</p>';
   $('#n').innerHTML = h + (PERSIST || TEST ? '' : '<p class="warn">Dein Browser speichert hier nichts dauerhaft. Änderungen gehen beim Schließen verloren. Bitte exportiere sie vorher.</p>') + '<div class="foot"><button data-act="export" title="Enthält deine Änderungen, aber keine Favoriten">Exportieren</button><button data-act="import">Importieren</button></div>';
+  const u = $('#undo'), rd = $('#redo');
+  if (u) u.disabled = !undoStack.length;
+  if (rd) rd.disabled = !redoStack.length;
+}
+function segRow(label, hint, k, opts){
+  const sel = v => k === 'compact' ? SET.compact === (v === 'on') : SET[k] === v;
+  return `<div class="srow"><p class="slabel">${label}</p><div class="seg">${opts.map(([v, t]) => `<button data-act="set" data-k="${k}" data-v="${v}" aria-pressed="${sel(v) ? 'true' : 'false'}">${t}</button>`).join('')}</div><p class="shint">${hint}</p></div>`;
+}
+function renderSettings(){
+  $('#mbody').innerHTML =
+    segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
+    segRow('Akten-Raster', 'Automatisch passt die Spaltenzahl an die Fensterbreite an, bis zu drei Spalten.', 'grid', [['auto', 'Automatisch'], ['one', 'Eine Spalte']]) +
+    segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['closed', 'Eingeklappt'], ['open', 'Ausgeklappt']]) +
+    segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['off', 'Aus'], ['on', 'An']]);
 }
 function secFormHTML(sf, id){
   const err = k => (sf.errors && sf.errors[k]) ? `<p class="err">${esc(sf.errors[k])}</p>` : '';
@@ -410,6 +418,7 @@ function readForm(){
   return {cat: $('#fcat').value, title: $('#ftitle').value, desc: $('#fdesc').value, text: [...document.querySelectorAll('.fsec')].map(t => t.value)};
 }
 function render(){
+  if (!S) return;   // vor dem Laden der Daten nichts zeichnen
   renderNav();
   const t = query.trim();
   let list, empty = 'Hier gibt es noch keine Akten.';
@@ -418,7 +427,7 @@ function render(){
   else if (view === 'fav') { list = live().filter(r => S.fav.includes(r.id)); empty = 'Noch keine Favoriten. Mit ☆ merkst du dir eine Akte.'; }
   else list = live().filter(r => view === 'a' || r.cat === view);
   const fh = formHTML();
-  if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }
+  if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }   // das Formular bleibt beim Tippen in der Suche erhalten
   $('#l').innerHTML = list.length ? list.map(r => (view === 'trash' && !t) ? trashCard(r) : card(r)).join('') : `<p class="empty">${empty}</p>`;
   if (pending) {
     const p = pending; pending = null;
@@ -450,16 +459,16 @@ function openRec(id){
   const r = get(id);
   if (!r) return;
   const next = S.del[id] ? 'trash' : r.cat;
-  if (next !== view) { folded.clear(); openSec.clear(); }
+  if (next !== view) { folded.clear(); secOv.clear(); }
   folded.delete(id); clearSecs(id);
   view = next; query = ''; $('#q').value = ''; opened.add(r.cat); sectionForm = null;
   pending = {id}; render();
 }
 function setQuery(v){ query = v; folded.clear(); render(); }
 function toggleFold(id){ if (folded.has(id)) { folded.delete(id); clearSecs(id); } else folded.add(id); }
-function toggleSec(id, k){ const key = id + '|' + k; if (openSec.has(key)) openSec.delete(key); else openSec.add(key); }
-function openSecAt(id, si){ const r = get(id), s = r && r.sections[si]; if (s) openSec.add(id + '|' + s.k); }
-function clearSecs(id){ [...openSec].forEach(k => { if (k.startsWith(id + '|')) openSec.delete(k); }); }
+function toggleSec(id, k){ secOv.set(id + '|' + k, !secOpen(id, k)); }
+function openSecAt(id, si){ const r = get(id), s = r && r.sections[si]; if (s) secOv.set(id + '|' + s.k, true); }
+function clearSecs(id){ [...secOv.keys()].forEach(k => { if (k.startsWith(id + '|')) secOv.delete(k); }); }
 function focusField(sel){ const t = document.querySelector(sel); if (t) t.focus(); }
 function newKey(){ return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 function moveSection(id, si, d){
@@ -479,9 +488,38 @@ function submit(){
   const v = readForm(), secs = FORM[v.cat] || DEFAULT_FORM;
   const r = create({cat: v.cat, title: v.title, desc: v.desc, sections: secs.map((h, i) => ({h, text: v.text[i] || ''}))});
   if (r.errors) { formState = Object.assign(v, {errors: r.errors}); return render(); }
-  formState = null; view = v.cat; query = ''; opened.add(v.cat); $('#q').value = ''; folded.clear(); openSec.clear(); sectionForm = null;
+  formState = null; view = v.cat; query = ''; opened.add(v.cat); $('#q').value = ''; folded.clear(); secOv.clear(); sectionForm = null;
   pending = {id: r.id}; render(); toast('Akte angelegt');
 }
+
+/* ===== Einstellungen ===== */
+function setOpt(k, v){
+  if (k === 'theme') SET.theme = v === 'light' ? 'light' : 'dark';
+  else if (k === 'grid') SET.grid = v === 'one' ? 'one' : 'auto';
+  else if (k === 'sec') { SET.sec = v === 'open' ? 'open' : 'closed'; secOv.clear(); }
+  else if (k === 'compact') SET.compact = v === 'on';
+  else return;
+  saveSet(); applySet(); renderSettings(); render();
+}
+function openModal(){ renderSettings(); $('#modal').hidden = false; focusField('#modal [data-act="closemodal"]'); }
+function closeModal(){ $('#modal').hidden = true; }
+
+/* ===== Rückgängig und Wiederholen ===== */
+function undo(){
+  if (editing) finishEdit();
+  if (!undoStack.length) return render();
+  redoStack.push(lastSaved);
+  applyState(undoStack.pop());
+  render(); toast('Rückgängig gemacht');
+}
+function redo(){
+  if (editing) finishEdit();
+  if (!redoStack.length) return render();
+  undoStack.push(lastSaved);
+  applyState(redoStack.pop());
+  render(); toast('Wiederholt');
+}
+
 function act(name, b){
   const d = b.dataset, id = d.id;
   if (name === 'edit') return startEdit(b.closest('[data-hold]').querySelector('.tx'));
@@ -492,7 +530,12 @@ function act(name, b){
   if (name === 'import') return $('#imp').click();
   if (name === 'fold') { toggleFold(id); return render(); }
   if (name === 'secopen') { toggleSec(id, d.sk); return render(); }
-  if (name === 'view') { view = d.v; query = ''; $('#q').value = ''; folded.clear(); openSec.clear(); sectionForm = null; if (C[d.v]) opened.add(d.v); }
+  if (name === 'undo') return undo();
+  if (name === 'redo') return redo();
+  if (name === 'settings') return openModal();
+  if (name === 'closemodal') return closeModal();
+  if (name === 'set') return setOpt(d.k, d.v);
+  if (name === 'view') { view = d.v; query = ''; $('#q').value = ''; folded.clear(); secOv.clear(); sectionForm = null; if (C[d.v]) opened.add(d.v); }
   else if (name === 'fav') fav(id);
   else if (name === 'move') move(id, d.s, +d.i, +d.d);
   else if (name === 'secmove') moveSection(id, +d.s, +d.d);
@@ -511,7 +554,7 @@ function act(name, b){
     if (sectionForm) {
       const res = addSection(id, sectionForm.name, sectionForm.text, sectionForm.mode);
       if (res.errors) sectionForm.errors = res.errors;
-      else { openSec.add(id + '|' + res.k); sectionForm = null; toast('Abschnitt hinzugefügt'); }
+      else { secOv.set(id + '|' + res.k, true); sectionForm = null; toast('Abschnitt hinzugefügt'); }
     }
   }
   else if (name === 'seccancel') sectionForm = null;
@@ -617,7 +660,7 @@ function importFile(file){
     if (!looksLikeExport(d)) return toast('Das ist keine Export-Datei dieses Handbuchs');
     if (!confirm('Deine Änderungen werden durch die Datei ersetzt. Favoriten bleiben, wenn die Datei keine enthält. Fortfahren?')) return;
     const res = importedState(d);
-    S = res.data; openSec.clear(); save(); render();
+    S = res.data; secOv.clear(); save(); render();
     toast(res.skipped ? 'Importiert, ' + res.skipped + ' ungültige Einträge übersprungen' : 'Importiert');
   };
   rd.onerror = () => toast('Die Datei konnte nicht gelesen werden');
@@ -634,6 +677,7 @@ function toast(m){ const o = $('#ok'); o.textContent = m; o.classList.add('on');
 
 /* ===== Ereignisse: je eine Stelle pro Art, keine Inline-Handler ===== */
 document.addEventListener('click', e => {
+  if (e.target.id === 'modal') return closeModal();          // Klick auf den Hintergrund schließt das Fenster
   const b = e.target.closest('[data-act]');
   if (b) { if (b.tagName === 'A') e.preventDefault(); return act(b.dataset.act, b); }
   const sh = e.target.closest('h4[data-sk]');
@@ -645,12 +689,20 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('focusout', e => { if (editing && e.target === editing.el) finishEdit(); });
 document.addEventListener('keydown', e => {
+  const mo = $('#modal');
+  if (mo && mo.hidden === false) { if (e.key === 'Escape') closeModal(); return; }
   if (editing && e.target === editing.el) {
     if (e.key === 'Enter') { e.preventDefault(); editing.el.blur(); }
     else if (e.key === 'Escape') { editing.cancel = true; editing.el.blur(); }
     return;
   }
-  if (e.key === 'Escape' && !editing && (formState || sectionForm)) { formState = null; sectionForm = null; render(); }
+  const typing = e.target.matches && e.target.matches('input,textarea,select,[contenteditable="true"]');
+  if ((e.ctrlKey || e.metaKey) && !typing) {
+    const k = e.key.toLowerCase();
+    if (k === 'z' && !e.shiftKey) { e.preventDefault(); return undo(); }
+    if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); return redo(); }
+  }
+  if (e.key === 'Escape' && (formState || sectionForm)) { formState = null; sectionForm = null; render(); }
 });
 document.addEventListener('input', e => {
   const t = e.target;
@@ -664,102 +716,146 @@ document.addEventListener('change', e => {
   else if (t.dataset && t.dataset.sf && sectionForm) sectionForm[t.dataset.sf] = t.value;
   else if (t.id === 'fcat') { formState = Object.assign(readForm(), {text: [], errors: null}); render(); }
   else if (t.id === 'imp') { const f = t.files[0]; t.value = ''; if (f) importFile(f); }   // Auswahl leeren, damit dieselbe Datei erneut gewählt werden kann
+  else if (t.id === 'datafile') { const f = t.files[0]; if (f) loadDataFile(f); }          // akten.json von Hand auswählen (Fallback)
 });
 
-/* ===== Tests: im Browser mit ?test öffnen. Nutzt einen Probespeicher, deine Daten bleiben unberührt. ===== */
+/* ===== Start: akten.json laden, prüfen, dann anzeigen ===== */
+async function boot(){
+  loadSet(); applySet();
+  $('#l').innerHTML = '<p class="empty">Akten werden geladen …</p>';
+  let text;
+  try {
+    const r = await fetch('akten.json', {cache: 'no-cache'});
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' – die Datei fehlt oder liegt nicht im selben Ordner wie index.html.');
+    text = await r.text();
+  } catch (e) { return dataError(location.protocol === 'file:' ? 'Die Datei akten.json fehlt oder kann nicht geladen werden.' : 'akten.json konnte nicht geladen werden: ' + e.message, true); }
+  parseAndStart(text);
+}
+function parseAndStart(text){
+  let raw;
+  try { raw = JSON.parse(text); }
+  catch (e) { return dataError('akten.json ist kein gültiges JSON: ' + e.message, true); }
+  startWith(parseData(raw));
+}
+function startWith(res){
+  if (!res.records.length) return dataError('Es wurde keine gültige Akte gefunden.', true, res.problems);
+  applyData(res);
+  load(); render();
+  if (TEST) runTests();
+}
+function dataError(msg, offerFile, problems = []){
+  $('#n').innerHTML = '<h1>Medic-Handbuch</h1>';
+  const local = location.protocol === 'file:' ? '<p>Du öffnest die Seite direkt von der Festplatte. Dabei darf der Browser akten.json nicht laden. Lade die Datei unten hoch, oder öffne die Seite über einen Webserver, zum Beispiel GitHub Pages.</p>' : '';
+  const list = problems.length ? `<ul>${problems.slice(0, 12).map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : '';
+  const pick = offerFile ? '<p><label>akten.json auswählen <input type="file" id="datafile" accept=".json,application/json"></label></p>' : '';
+  $('#l').innerHTML = `<div class="errbox"><h3>Die Akten konnten nicht geladen werden</h3><p>${esc(msg)}</p>${local}${list}${pick}</div>`;
+}
+function loadDataFile(file){
+  const rd = new FileReader();
+  rd.onload = () => parseAndStart(String(rd.result));
+  rd.onerror = () => dataError('Die Datei konnte nicht gelesen werden.', true);
+  rd.readAsText(file);
+}
+
+/* ===== Suchleiste: wird beim Scrollen fester, der Übergang bleibt dabei weich ===== */
+const mainEl = document.querySelector('main');
+const sbScroll = () => { const s = document.querySelector('#sb'); if (s) s.classList.toggle('scrolled', mainEl.scrollTop > 8 || window.scrollY > 8); };
+mainEl.addEventListener('scroll', sbScroll, {passive: true});
+window.addEventListener('scroll', sbScroll, {passive: true});
+
+/* ===== Tests: im Browser mit ?test öffnen. Probespeicher, deine Daten bleiben unberührt. ===== */
 function runTests(){
   const res = [];
   const T = (name, fn) => { try { fn(); res.push([true, name]); } catch (e) { res.push([false, name + ': ' + e.message]); } };
   const ok = (c, m) => { if (!c) throw new Error(m || 'nicht erfüllt'); };
-  const reset0 = () => { S = fresh(); S.order = orderFix([]); folded.clear(); openSec.clear(); save(); };
-  const cats = () => S.order.map(x => get(x).cat).join('');
+  const reset0 = () => { S = fresh(); S.order = orderFix([]); folded.clear(); secOv.clear(); save(); undoStack = []; redoStack = []; };
   const walk = (x, out) => { if (typeof x === 'string') out.push(x); else if (x && typeof x === 'object') Object.values(x).forEach(v => walk(v, out)); return out; };
+  // Die Tests suchen sich ihre Akten selbst, damit Änderungen in akten.json sie nicht brechen.
+  const E = () => all().find(r => !RO[r.cat] && r.sections.length && r.sections[0].items.length);   // bearbeitbare Akte mit Inhalt
+  const E2 = () => all().find(r => !RO[r.cat] && r.sections.length >= 2);                          // bearbeitbare Akte mit zwei Abschnitten
+  const V = () => all().find(r => RO[r.cat]);                                                        // schreibgeschützte Akte
+  const id = () => E().id;
   T('Kennungen sind eindeutig', () => ok(new Set(SEED.map(r => r.id)).size === SEED.length));
-  T('Zwei neue Operationen-Akten sind vorhanden', () => ok(['Verbrennung 3./4. Grades', 'Untersuchungsgeräte und Laborwerte'].every(x => BASE[x] && BASE[x].cat === 'o')));
+  T('Alle Akten haben eine gültige Kategorie und einen Titel', () => ok(SEED.every(r => own(C, r.cat) && r.title)));
   T('Alle Verweise zeigen auf vorhandene Akten', () => walk(SEED, []).forEach(t => (t.match(/\[\[.+?\]\]/g) || []).forEach(l => ok(resolve(l.slice(2, -2)), 'ohne Ziel: ' + l))));
-  T('Schreibgeschützte Akten zeigen keine Bearbeiten-Schaltflächen', () => ok(!card(get('Vitalwerte')).includes('data-act="edit"')));
-  T('Bearbeitbare Akten zeigen Bearbeiten-Schaltflächen', () => ok(card(get('Verstauchung')).includes('data-act="edit"')));
+  T('Schreibgeschützte Akten zeigen keine Bearbeiten-Schaltflächen', () => ok(!card(V()).includes('data-act="edit"')));
+  T('Bearbeitbare Akten zeigen Bearbeiten-Schaltflächen', () => ok(card(E()).includes('data-act="edit"')));
   T('Schreibgeschützte Kategorie nimmt keine neuen Akten an', () => ok(create({cat: 'v', title: 'Test', sections: [{h: 'Erkennung', text: 'x'}]}).errors.cat));
   T('Pflichtfelder werden geprüft', () => { const e = create({cat: 'b', title: '', sections: []}).errors; ok(e.title && e.sections); });
-  T('Doppelter Titel wird abgelehnt', () => ok(create({cat: 'b', title: 'verstauchung', sections: [{h: 'Erkennung', text: 'x'}]}).errors.title));
-  T('Zeile bearbeiten und Original wiederherstellen', () => {
-    reset0(); const orig = BASE.Verstauchung.sections[0].items[0];
-    setText('Verstauchung', 'i:0:0', 'Testzeile'); ok(get('Verstauchung').sections[0].items[0] === 'Testzeile');
-    reset('Verstauchung'); ok(get('Verstauchung').sections[0].items[0] === orig);
-  });
-  T('Leere Zeile wird entfernt', () => { reset0(); const orig = get('Verstauchung').sections[0].items[0]; setText('Verstauchung', 'i:0:0', ''); ok(!get('Verstauchung').sections.flatMap(s => s.items).includes(orig)); });
-  T('Me-Zeilen hinzufügen, verschieben, entfernen', () => {
-    reset0(); const n = get('Verstauchung').me.length;
-    const path = addLine('Verstauchung', 'm'); ok(get('Verstauchung').me.length === n + 1 && path === 'm:' + n);
-    move('Verstauchung', 'm', n, -1); ok(get('Verstauchung').me[n - 1] === '/me ');
-    removeLine('Verstauchung', 'm', n - 1); ok(get('Verstauchung').me.length === n);
-  });
-  T('Weiches Löschen und Wiederherstellen', () => {
-    reset0(); trash('Verstauchung');
-    ok(!live().some(r => r.id === 'Verstauchung') && trashed().some(r => r.id === 'Verstauchung'));
-    restore('Verstauchung'); ok(live().some(r => r.id === 'Verstauchung'));
-  });
-  T('Mitgelieferte Akten lassen sich nicht endgültig löschen', () => { reset0(); purge('Verstauchung'); ok(get('Verstauchung')); });
-  T('Neue Akte landet am Ende ihrer Kategorie', () => {
-    reset0(); const r = create({cat: 'n', title: 'Test Narkose', sections: [{h: 'Ablauf', text: 'Schritt'}]});
-    ok(S.order[S.order.map(x => get(x).cat).lastIndexOf('n')] === r.id);
-  });
-  T('Sortieren bleibt innerhalb der Kategorie', () => { reset0(); const before = cats(); moveRec(S.order.find(x => get(x).cat === 'b'), 1); ok(cats() === before); });
-  T('Speichern und Laden ergeben denselben Stand', () => { reset0(); setText('Verstauchung', 'i:0:0', 'X'); const a = JSON.stringify(S); load(); ok(JSON.stringify(S) === a); });
-  T('Bisherige Version wird übernommen (Kennung = Titel)', () => {
-    store.removeItem(KEY); store.setItem('f', JSON.stringify(['Verstauchung'])); store.setItem('me', JSON.stringify({Verstauchung: ['/me Test']}));
-    load(); ok(S.fav.includes('Verstauchung') && get('Verstauchung').me[0] === '/me Test');
-    store.removeItem('f'); store.removeItem('me');
-  });
+  T('Doppelter Titel wird abgelehnt', () => ok(create({cat: 'b', title: E().title.toLowerCase(), sections: [{h: 'Erkennung', text: 'x'}]}).errors.title));
+  T('Zeile bearbeiten und Original wiederherstellen', () => { reset0(); const i = id(), orig = BASE[i].sections[0].items[0]; setText(i, 'i:0:0', 'Testzeile'); ok(get(i).sections[0].items[0] === 'Testzeile'); reset(i); ok(get(i).sections[0].items[0] === orig); });
+  T('Leere Zeile wird entfernt', () => { reset0(); const i = id(), n = get(i).sections.reduce((a, s) => a + s.items.length, 0); setText(i, 'i:0:0', ''); ok(get(i).sections.reduce((a, s) => a + s.items.length, 0) === n - 1, 'Zeile nicht entfernt'); });
+  T('Me-Zeilen hinzufügen, verschieben, entfernen', () => { reset0(); const i = id(), n0 = get(i).me.length; addLine(i, 'm'); const path = addLine(i, 'm'); ok(get(i).me.length === n0 + 2 && path === 'm:' + (n0 + 1), 'nicht hinzugefügt'); const me = get(i).me; move(i, 'm', n0 + 1, -1); const me2 = get(i).me; ok(me2[n0] === me[n0 + 1] && me2[n0 + 1] === me[n0], 'nicht verschoben'); removeLine(i, 'm', n0); ok(get(i).me.length === n0 + 1, 'nicht entfernt'); });
+  T('Weiches Löschen und Wiederherstellen', () => { reset0(); const i = id(); trash(i); ok(!live().some(r => r.id === i) && trashed().some(r => r.id === i)); restore(i); ok(live().some(r => r.id === i)); });
+  T('Mitgelieferte Akten lassen sich nicht endgültig löschen', () => { reset0(); purge(id()); ok(get(id())); });
+  T('Neue Akte landet am Ende ihrer Kategorie', () => { reset0(); const r = create({cat: 'n', title: 'Test Narkose', sections: [{h: 'Ablauf', text: 'Schritt'}]}); ok(S.order[S.order.map(x => get(x).cat).lastIndexOf('n')] === r.id); });
+  T('Sortieren bleibt innerhalb der Kategorie', () => { reset0(); const cats = () => S.order.map(x => get(x).cat).join(''); const before = cats(); moveRec(S.order.find(x => get(x).cat === 'b'), 1); ok(cats() === before); });
+  T('Speichern und Laden ergeben denselben Stand', () => { reset0(); setText(id(), 'i:0:0', 'X'); const a = JSON.stringify(S); load(); ok(JSON.stringify(S) === a); });
+  T('Bisherige Version wird übernommen (Kennung = Titel)', () => { const i = id(); store.removeItem(KEY); store.setItem('f', JSON.stringify([i])); store.setItem('me', JSON.stringify({[i]: ['/me Test']})); load(); ok(S.fav.includes(i) && get(i).me[0] === '/me Test'); store.removeItem('f'); store.removeItem('me'); });
   T('Eingaben werden nicht als HTML ausgeführt', () => ok(!fmt('<img src=x onerror=1>').includes('<img')));
-  T('Verweise werden zu Links', () => ok(fmt('[[Gelenkpunktion]]').includes('data-id="Gelenkpunktion"')));
+  T('Verweise werden zu Links', () => { const r = E(); ok(fmt('[[' + r.title + ']]').includes('data-id="' + esc(r.id) + '"')); });
   T('Fettschrift mit ** wird dargestellt', () => ok(fmt('**10 mg**') === '<b>10 mg</b>'));
-  T('Suche ignoriert Groß-/Kleinschreibung und Umlaute', () => ok(haystack(BASE.Verstauchung).includes(nf('BLUTERGÜSSE'))));
-  T('Testlauf mit gespeicherten Beispieldaten je Kategorie', () => {
-    reset0(); const ks = Object.keys(C).filter(k => !RO[k]);
-    ks.forEach(k => create({cat: k, title: 'Beispiel ' + C[k], sections: [{h: 'Ablauf', text: 'Schritt 1'}]}));
-    load(); ks.forEach(k => ok(live().some(r => r.cat === k && r.title === 'Beispiel ' + C[k]), k));
-  });
+  T('Suche ignoriert Groß-/Kleinschreibung und Umlaute', () => { const r = E(); const w = (r.sections[0].items[0].split(' ')[0] || '').replace(/[^\p{L}]/gu, ''); ok(w && haystack(r).includes(nf(w.toUpperCase())), 'Wort nicht gefunden: ' + w); });
+  T('Testlauf mit Beispieldaten je Kategorie', () => { reset0(); const ks = Object.keys(C).filter(k => !RO[k]); ks.forEach(k => create({cat: k, title: 'Beispiel ' + C[k], sections: [{h: 'Ablauf', text: 'Schritt 1'}]})); load(); ks.forEach(k => ok(live().some(r => r.cat === k && r.title === 'Beispiel ' + C[k]), k)); });
   T('Papierkorb steht unter den Kategorien', () => { const h = $('#n').innerHTML; ok(h.indexOf('Papierkorb') > h.indexOf('Medikamente'), 'Papierkorb nicht ganz unten'); });
-  T('Akte einklappen blendet nur diese Akte ein und aus', () => { reset0(); act('fold', {dataset: {id: 'Verstauchung'}}); ok(folded.has('Verstauchung') && card(get('Verstauchung')).includes('folded')); act('fold', {dataset: {id: 'Verstauchung'}}); ok(!folded.has('Verstauchung')); });
-  T('Kategoriewechsel klappt alle Akten wieder auf', () => { reset0(); folded.add('Verstauchung'); act('view', {dataset: {v: 'b'}}); ok(folded.size === 0); });
-  T('Suche klappt alle Akten wieder auf', () => { reset0(); folded.add('Verstauchung'); setQuery('verstauchung'); ok(folded.size === 0); setQuery(''); });
-  T('Löschen und Reihenfolge liegen im Überfahren-Bereich', () => { const c = card(get('Verstauchung')); ok(c.indexOf('class="hv"') > c.indexOf('data-act="fav"'), 'Bereich falsch'); ok(c.indexOf('data-act="trash"') > c.indexOf('class="hv"'), 'Papierkorb außerhalb'); });
+  T('Akte einklappen blendet nur diese Akte ein und aus', () => { reset0(); const i = id(); act('fold', {dataset: {id: i}}); ok(folded.has(i) && card(get(i)).includes('folded')); act('fold', {dataset: {id: i}}); ok(!folded.has(i)); });
+  T('Kategoriewechsel klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); act('view', {dataset: {v: 'b'}}); ok(folded.size === 0); });
+  T('Suche klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); setQuery('x'); ok(folded.size === 0); setQuery(''); });
+  T('Löschen und Reihenfolge liegen im Überfahren-Bereich', () => { const c = card(get(id())); ok(c.indexOf('class="hv"') > c.indexOf('data-act="fav"'), 'Bereich falsch'); ok(c.indexOf('data-act="trash"') > c.indexOf('class="hv"'), 'Papierkorb außerhalb'); });
   T('Export-Datei wird erkannt, fremde Datei nicht', () => { ok(looksLikeExport(JSON.parse(exportText()))); ok(!looksLikeExport({foo: 1})); ok(!looksLikeExport([1, 2])); });
-  T('Export und Import ergeben denselben Stand', () => { reset0(); setText('Verstauchung', 'i:0:0', 'Export-Test'); fav('Verstauchung'); const r = sanitize(JSON.parse(exportText())); ok(JSON.stringify(r.data.ov) === JSON.stringify(S.ov), 'Änderungen fehlen'); ok(!('fav' in JSON.parse(exportText())), 'Favoriten im Export'); ok(r.skipped === 0, 'unerwartet übersprungen'); });
+  T('Export und Import ergeben denselben Stand', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Export-Test'); fav(i); const d = JSON.parse(exportText()); ok(!('fav' in d), 'Favoriten im Export'); const r = sanitize(d); ok(JSON.stringify(r.data.ov) === JSON.stringify(S.ov), 'Änderungen fehlen'); ok(r.skipped === 0, 'unerwartet übersprungen'); });
+  T('Export enthält keine Favoriten, Import behält die eigenen', () => { reset0(); const i = id(); fav(i); ok(!('fav' in JSON.parse(exportText()))); const r = importedState({ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.includes(i), 'eigener Favorit verloren'); });
+  T('Favoriten aus einer Datei ersetzen die eigenen', () => { reset0(); fav(id()); const other = SEED[SEED.length - 1].id; const r = importedState({fav: [other], ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.length === 1 && r.data.fav[0] === other, 'falsch'); });
   T('Ungültige Einträge beim Import werden übersprungen', () => {
+    const i = id();
     const r = sanitize({made: [{id: 'x', cat: 'v', title: '', sections: 'kaputt'}, {id: 'gut', cat: 'b', title: 'Test Import', sections: [{h: 'Ablauf', items: ['Schritt']}], me: ['/me test']}],
-      ov: {Verstauchung: {title: 'Neu', sections: 'kaputt'}, Unbekannt: {title: 'x'}}, fav: ['Verstauchung', 'gibtesnicht'], del: {Verstauchung: 1, nichtda: 1}, order: ['gibtesnicht']});
+      ov: {[i]: {title: 'Neu', sections: 'kaputt'}, Unbekannt: {title: 'x'}}, fav: [i, 'gibtesnicht'], del: {[i]: 1, nichtda: 1}, order: ['gibtesnicht']});
     ok(r.data.made.length === 1 && r.data.made[0].id === 'gut', 'Akten');
-    ok(r.data.ov.Verstauchung.title === 'Neu' && !('sections' in r.data.ov.Verstauchung), 'Änderungen');
-    ok(r.data.fav.length === 1 && r.data.fav[0] === 'Verstauchung', 'Favoriten');
-    ok(r.data.del.Verstauchung === 1 && !('nichtda' in r.data.del), 'Papierkorb');
+    ok(r.data.ov[i].title === 'Neu' && !('sections' in r.data.ov[i]), 'Änderungen');
+    ok(r.data.fav.length === 1 && r.data.fav[0] === i, 'Favoriten');
+    ok(r.data.del[i] === 1 && !('nichtda' in r.data.del), 'Papierkorb');
     ok(r.data.order.length === SEED.length + 1, 'Reihenfolge');
     ok(r.skipped >= 3, 'Zählung ' + r.skipped);
   });
   T('Kaputte Importdaten stürzen nicht ab', () => { const e = sanitize({}); ok(e.data.made.length === 0 && e.skipped === 0, 'leer'); sanitize({ov: 'x', made: 5, fav: {}, order: null, del: []}); });
-  T('Export enthält keine Favoriten, Import behält die eigenen', () => { reset0(); fav('Verstauchung'); ok(!('fav' in JSON.parse(exportText()))); const r = importedState({ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.includes('Verstauchung'), 'eigener Favorit verloren'); });
-  T('Favoriten aus einer Datei ersetzen die eigenen', () => { reset0(); fav('Verstauchung'); const r = importedState({fav: ['Gelenkpunktion'], ov: {}, del: {}, made: [], order: []}); ok(r.data.fav.length === 1 && r.data.fav[0] === 'Gelenkpunktion', 'falsch'); });
-  T('Abschnitt mit frei gewähltem Namen hinzufügen', () => { reset0(); const res = addSection('Verstauchung', 'Komplikationen', 'Blutung\nSchmerzen'); ok(res.ok, 'nicht angenommen'); const secs = get('Verstauchung').sections; const last = secs[secs.length - 1]; ok(last.h === 'Komplikationen' && last.items.length === 2, 'falsch gespeichert'); });
-  T('Abschnitt ohne Name oder Zeile wird abgelehnt', () => { reset0(); ok(addSection('Verstauchung', '', 'x').errors.name, 'Name fehlt'); ok(addSection('Verstauchung', 'Neu', '  ').errors.text, 'Zeile fehlt'); });
-  T('Doppelter Abschnittsname wird abgelehnt', () => { reset0(); ok(addSection('Verstauchung', 'erkennung', 'x').errors.name, 'Duplikat erlaubt'); });
-  T('Abschnitt hinzufügen nur bei bearbeitbaren Akten', () => { ok(card(get('Verstauchung')).includes('data-act="secform"'), 'Button fehlt'); ok(!card(get('Vitalwerte')).includes('data-act="secform"'), 'Button bei schreibgeschützter Akte'); });
-  T('Abschnitt-Formular öffnet und schließt', () => { reset0(); act('secform', {dataset: {id: 'Verstauchung'}}); ok(sectionForm && card(get('Verstauchung')).includes('data-sf="name"'), 'Formular nicht offen'); act('seccancel', {dataset: {}}); ok(sectionForm === null, 'nicht geschlossen'); });
-  T('Abschnitte sind beim Öffnen einer Akte eingeklappt', () => { reset0(); const c = card(get('Verstauchung')); ok(c.includes('class="sec"') && !c.includes('class="sec open"'), 'nicht eingeklappt'); });
-  T('Abschnitt lässt sich einzeln öffnen und schließen', () => { reset0(); const k = get('Verstauchung').sections[0].k; act('secopen', {dataset: {id: 'Verstauchung', sk: k}}); ok(card(get('Verstauchung')).includes('class="sec open"'), 'nicht geöffnet'); act('secopen', {dataset: {id: 'Verstauchung', sk: k}}); ok(!card(get('Verstauchung')).includes('class="sec open"'), 'nicht wieder zu'); });
-  T('Abschnitte lassen sich verschieben', () => { reset0(); const before = get('Verstauchung').sections.map(s => s.h); act('secmove', {dataset: {id: 'Verstauchung', s: '0', d: '1'}}); const after = get('Verstauchung').sections.map(s => s.h); ok(after[0] === before[1] && after[1] === before[0], 'nicht verschoben'); });
-  T('Darstellung: Ablauf als Zahlenfolge, sonst Stichpunkte', () => { ok(modeOf({h: 'Ablauf'}) === 'number' && modeOf({h: 'Erkennung'}) === 'bullet', 'Standard falsch'); });
-  T('Neuer Abschnitt mit Einfachem Text', () => { reset0(); const res = addSection('Verstauchung', 'Hinweis', 'Ruhe bewahren', 'text'); ok(res.ok, 'nicht angenommen'); ok(modeOf(get('Verstauchung').sections.slice(-1)[0]) === 'text', 'Darstellung falsch'); });
-  T('Darstellung eines Abschnitts nachträglich ändern', () => { reset0(); setSecMode('Verstauchung', 0, 'number'); ok(modeOf(get('Verstauchung').sections[0]) === 'number', 'nicht geändert'); });
-  T('Nur Zeilen mit /me sind kopierbar, Notizen nicht', () => { reset0(); addLine('Verstauchung', 'm', 'Notiz: '); const c = card(get('Verstauchung')); ok(c.includes('class="ml cp"'), 'kein kopierbarer Eintrag'); ok(c.includes('class="ml nt"'), 'keine Notiz'); });
-  T('Kategoriename wird nur in Alle angezeigt', () => { reset0(); act('view', {dataset: {v: 'a'}}); ok(card(get('Verstauchung')).includes('<p class="c">Behandlungen</p>'), 'in Alle fehlt'); act('view', {dataset: {v: 'b'}}); ok(!card(get('Verstauchung')).includes('<p class="c">Behandlungen</p>'), 'in Kategorie sichtbar'); act('view', {dataset: {v: 'a'}}); });
-  T('Überarbeitete Akten: Abschnitte mit Inhalt und Notizen ohne /me', () => { ['Platzwunde', 'Hüftersatz'].forEach(id => { const r = BASE[id]; ok(r.sections.length >= 2 && r.sections.every(s => s.items.length > 0), id + ': Abschnitte'); ok(r.me.some(t => t.startsWith('Notiz:')) && r.me.some(t => t.includes('/me')), id + ': Notizen'); }); });
+  T('Abschnitt mit frei gewähltem Namen hinzufügen', () => { reset0(); const i = id(); const res = addSection(i, 'Komplikationen', 'Blutung\nSchmerzen'); ok(res.ok, 'nicht angenommen'); const secs = get(i).sections; const last = secs[secs.length - 1]; ok(last.h === 'Komplikationen' && last.items.length === 2, 'falsch gespeichert'); });
+  T('Abschnitt ohne Name oder Zeile wird abgelehnt', () => { reset0(); const i = id(); ok(addSection(i, '', 'x').errors.name, 'Name fehlt'); ok(addSection(i, 'Neu', '  ').errors.text, 'Zeile fehlt'); });
+  T('Doppelter Abschnittsname wird abgelehnt', () => { reset0(); const i = id(); ok(addSection(i, get(i).sections[0].h.toLowerCase(), 'x').errors.name, 'Duplikat erlaubt'); });
+  T('Abschnitt hinzufügen nur bei bearbeitbaren Akten', () => { ok(card(get(id())).includes('data-act="secform"'), 'Button fehlt'); ok(!card(V()).includes('data-act="secform"'), 'Button bei schreibgeschützter Akte'); });
+  T('Abschnitt-Formular öffnet und schließt', () => { reset0(); const i = id(); act('secform', {dataset: {id: i}}); ok(sectionForm && card(get(i)).includes('data-sf="name"'), 'Formular nicht offen'); act('seccancel', {dataset: {}}); ok(sectionForm === null, 'nicht geschlossen'); });
+  T('Abschnitte sind im Standard eingeklappt', () => { reset0(); const c = card(get(id())); ok(c.includes('class="sec"') && !c.includes('class="sec open"'), 'nicht eingeklappt'); });
+  T('Abschnitt lässt sich einzeln öffnen und schließen', () => { reset0(); const i = id(), k = get(i).sections[0].k; act('secopen', {dataset: {id: i, sk: k}}); ok(card(get(i)).includes('class="sec open"'), 'nicht geöffnet'); act('secopen', {dataset: {id: i, sk: k}}); ok(!card(get(i)).includes('class="sec open"'), 'nicht wieder zu'); });
+  T('Abschnitte lassen sich verschieben', () => { reset0(); const i = E2().id; const before = get(i).sections.map(s => s.h); act('secmove', {dataset: {id: i, s: '0', d: '1'}}); const after = get(i).sections.map(s => s.h); ok(after[0] === before[1] && after[1] === before[0], 'nicht verschoben'); });
+  T('Darstellung: Ablauf als Zahlenfolge, sonst Stichpunkte', () => ok(modeOf({h: 'Ablauf'}) === 'number' && modeOf({h: 'Erkennung'}) === 'bullet', 'Standard falsch'));
+  T('Neuer Abschnitt mit Einfachem Text', () => { reset0(); const i = id(); const res = addSection(i, 'Hinweis', 'Ruhe bewahren', 'text'); ok(res.ok, 'nicht angenommen'); ok(modeOf(get(i).sections.slice(-1)[0]) === 'text', 'Darstellung falsch'); });
+  T('Darstellung eines Abschnitts nachträglich ändern', () => { reset0(); const i = id(); setSecMode(i, 0, 'number'); ok(modeOf(get(i).sections[0]) === 'number', 'nicht geändert'); });
+  T('Nur Zeilen mit /me sind kopierbar, Notizen nicht', () => { reset0(); const i = id(); addLine(i, 'm', '/me Test'); addLine(i, 'm', 'Notiz: '); const c = card(get(i)); ok(c.includes('class="ml cp"'), 'kein kopierbarer Eintrag'); ok(c.includes('class="ml nt"'), 'keine Notiz'); });
+  T('Kategorie-Untertitel nur in Alle und Favoriten', () => { reset0(); const r = E(), tag = '<p class="c">' + C[r.cat] + '</p>'; act('view', {dataset: {v: 'a'}}); ok(card(get(r.id)).includes(tag), 'in Alle fehlt'); act('view', {dataset: {v: 'fav'}}); ok(card(get(r.id)).includes(tag), 'in Favoriten fehlt'); act('view', {dataset: {v: r.cat}}); ok(!card(get(r.id)).includes(tag), 'in Kategorie sichtbar'); act('view', {dataset: {v: 'a'}}); });
+  T('Alle bearbeitbaren Akten haben Inhalt, Notizen ohne /me sind möglich', () => { ok(all().filter(r => !RO[r.cat]).every(r => r.sections.some(s => s.items.length > 0)), 'leere Akte'); ok(all().some(r => r.me.some(t => !t.includes('/me'))), 'keine Notizen vorhanden'); });
+  T('Rückgängig macht die letzte Änderung', () => { reset0(); const i = id(), orig = get(i).sections[0].items[0]; setText(i, 'i:0:0', 'Undo-Test'); ok(get(i).sections[0].items[0] === 'Undo-Test', 'Änderung fehlt'); undo(); ok(get(i).sections[0].items[0] === orig, 'nicht zurückgesetzt'); });
+  T('Wiederholen stellt die Änderung wieder her', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Redo-Test'); undo(); redo(); ok(get(i).sections[0].items[0] === 'Redo-Test', 'nicht wiederhergestellt'); });
+  T('Neue Änderung verwirft den Wiederholen-Verlauf', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'A'); undo(); setText(i, 'i:0:0', 'B'); ok(redoStack.length === 0, 'Wiederholen nicht geleert'); });
+  T('Zeile hinzufügen und Text sind ein Rückgängig-Schritt', () => { reset0(); const i = id(), n = get(i).me.length; const path = addLine(i, 'm'); setText(i, path, '/me Test'); ok(get(i).me.length === n + 1, 'Zeile fehlt'); undo(); ok(get(i).me.length === n, 'Zeile nicht komplett zurückgenommen'); });
+  T('Nach Rückgängig stimmt der Speicher mit dem Stand überein', () => { reset0(); setText(id(), 'i:0:0', 'C'); undo(); ok(store.getItem(KEY) === lastSaved, 'Speicher weicht ab'); });
+  T('Design und Abschnitts-Standard werden gespeichert und geladen', () => { setOpt('theme', 'light'); setOpt('sec', 'open'); SET = {theme: 'dark', grid: 'auto', sec: 'closed', compact: false}; loadSet(); ok(SET.theme === 'light' && SET.sec === 'open', 'nicht geladen'); setOpt('theme', 'dark'); setOpt('sec', 'closed'); });
+  T('Hell-Modus setzt das Design-Attribut', () => { setOpt('theme', 'light'); ok(document.documentElement.dataset.theme === 'light', 'kein Attribut'); setOpt('theme', 'dark'); ok(document.documentElement.dataset.theme === 'dark', 'nicht zurückgesetzt'); });
+  T('Abschnitte sind bei ausgeklappter Einstellung offen', () => { reset0(); setOpt('sec', 'open'); ok(card(get(id())).includes('class="sec open"'), 'nicht offen'); setOpt('sec', 'closed'); });
+  T('Einzelnes Umschalten überschreibt den Standard', () => { reset0(); setOpt('sec', 'open'); const i = E2().id, k = get(i).sections[0].k; act('secopen', {dataset: {id: i, sk: k}}); const c = card(get(i)); ok(c.includes('<div class="sec">'), 'erster Abschnitt nicht zu'); ok(c.includes('class="sec open"'), 'andere nicht offen'); setOpt('sec', 'closed'); });
+  T('Kompakt und Einspalten-Raster wirken auf die Ansicht', () => { setOpt('compact', 'on'); setOpt('grid', 'one'); ok(document.body.classList.contains('compact') && document.body.classList.contains('one-col'), 'Klassen fehlen'); setOpt('compact', 'off'); setOpt('grid', 'auto'); ok(!document.body.classList.contains('compact') && !document.body.classList.contains('one-col'), 'nicht zurückgesetzt'); });
+  T('Einstellungsfenster öffnet und schließt', () => { act('settings', {dataset: {}}); ok($('#modal').hidden === false, 'nicht offen'); ok($('#mbody').innerHTML.includes('Design'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); });
+  T('Akten-Daten: fehlerhafte Einträge werden erkannt', () => {
+    const p = parseData([{id: 'a', cat: 'b', title: 'A', sections: []}, {id: '', cat: 'b', title: 'x'}, {id: 'c', cat: 'zz', title: 'C'}, {id: 'a', cat: 'b', title: 'doppelt'}]);
+    ok(p.records.length === 1 && p.problems.length === 3, 'Ergebnis: ' + p.records.length + ' gültig, ' + p.problems.length + ' Fehler');
+  });
+  T('Gültige Akte bekommt eine feste Form', () => { const q = parseData([{id: 'z', cat: 'b', title: 'Z', sections: [{h: 'Erkennung', items: ['x']}]}]).records[0]; ok(q.me.length === 0 && q.table === null && q.desc === '' && q.sections[0].h === 'Erkennung' && q.widget === false, 'Form falsch'); });
+  T('Abschnitte ohne Überschrift werden erkannt', () => ok(parseData([{id: 'y', cat: 'b', title: 'Y', sections: [{h: '', items: []}]}]).problems.length === 1, 'nicht erkannt'));
+  // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
+  SET = {theme: 'dark', grid: 'auto', sec: 'closed', compact: false}; saveSet(); applySet(); closeModal();
   $('#f').innerHTML = '';
   $('#l').innerHTML = `<h2>Tests</h2><p>${res.filter(r => r[0]).length} von ${res.length} bestanden</p>` + res.map(([good, m]) => `<p class="${good ? 'okt' : 'err'}">${good ? '✓' : '✗'} ${esc(m)}</p>`).join('');
 }
 
 /* ===== Start ===== */
-function init(){ load(); render(); if (TEST) runTests(); }
-init();
+boot();
 </script></body></html>
