@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title> SCP-RP Medic Handbuch</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iI2QzMmYyZiIgZD0iTTIyIDRoMjB2MThoMTh2MjBINDJ2MThIMjJWNDJINFYyMmgxOHoiLz48L3N2Zz4="><link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAlElEQVR4nOzawQmAMBTG4AiuI+4/hjiQ3vVqwZJ8I4S+y09X5FbkCoDcsADnvl98aDuOhQF6AcgVALkCIFcA5AqAXAGQKwByBUBOH+C1sny95PzNc1nqBJArAHIFQK4AyBUAuQIgVwDkCoBcAZBrE2SQfolNogDIFQC5AiBXAOQKgFwBkCsAcgVAbtgiNItOADl9gBsAAP//W2rMdAAAAAZJREFUAwBMqAz4rxi1EQAAAABJRU5ErkJggg==">
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCP-RP Medic Handbuch</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iI2QzMmYyZiIgZD0iTTIyIDRoMjB2MThoMTh2MjBINDJ2MThIMjJWNDJINFYyMmgxOHoiLz48L3N2Zz4="><link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAlElEQVR4nOzawQmAMBTG4AiuI+4/hjiQ3vVqwZJ8I4S+y09X5FbkCoDcsADnvl98aDuOhQF6AcgVALkCIFcA5AqAXAGQKwByBUBOH+C1sny95PzNc1nqBJArAHIFQK4AyBUAuQIgVwDkCoBcAZBrE2SQfolNogDIFQC5AiBXAOQKgFwBkCsAcgVAbtgiNItOADl9gBsAAP//W2rMdAAAAAZJREFUAwBMqAz4rxi1EQAAAABJRU5ErkJggg==">
 <style>
-:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;--karte-min:450px;--grid-max:1600px;color-scheme:dark}
+:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;color-scheme:dark}
 :root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;display:flex;height:100vh;background:var(--bg);color:var(--t);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
@@ -14,7 +14,7 @@ nav h1{font:700 22px Georgia,serif;margin:0 8px 18px}
 .gl a{display:block;padding:4px 10px;color:var(--m);border-radius:4px;text-decoration:none}.gl a:hover{background:var(--l);color:var(--t)}
 .foot{margin-top:auto;padding-top:16px;display:flex;gap:6px;flex-wrap:wrap}
 main{flex:1;overflow:auto;padding:22px clamp(16px,4vw,48px)}
-#sb{position:sticky;top:0;z-index:5;background:none;border:0;box-shadow:none;padding:6px 0 14px;display:flex;align-items:center;gap:8px;max-width:var(--grid-max);pointer-events:none}
+#sb{position:sticky;top:0;z-index:5;background:none;border:0;box-shadow:none;padding:6px 0 14px;display:flex;align-items:center;gap:8px;pointer-events:none}
 #sb>*{pointer-events:auto}
 #sb .ibtn{background:var(--p)}
 #q{flex:1;min-width:0;padding:13px 16px;border:1px solid var(--l);border-radius:24px;background:var(--p);color:var(--t);font:inherit}
@@ -27,8 +27,9 @@ button:hover{border-color:var(--a)}
 .ibtn:hover:not(:disabled){color:var(--a);border-color:var(--a)}
 .ibtn:disabled{opacity:.35;cursor:default}
 @media(max-width:560px){.lbl{display:none}}
-#l{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--karte-min),100%),1fr));gap:26px;max-width:var(--grid-max);align-items:start;padding-bottom:20px}
-body.one-col #l{grid-template-columns:minmax(0,1fr)}
+#l{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:26px;align-items:start;padding-bottom:20px}
+@media(max-width:700px){#l{grid-template-columns:minmax(0,1fr)}}
+body.nav-off nav{display:none}
 #l>.empty{grid-column:1/-1}
 .card{min-width:0;border:1px solid var(--cardb);border-radius:14px;padding:16px 16px 18px;background:linear-gradient(180deg,var(--card-a),var(--card-b));box-shadow:0 8px 24px var(--shadow);transition:border-color .2s,box-shadow .2s;scroll-margin-top:76px}
 .card:hover{border-color:rgba(242,184,75,.45);box-shadow:0 10px 30px var(--shadow)}
@@ -128,7 +129,7 @@ body:not(.edit) .only-edit{display:none!important}
 </style></head><body>
 <nav id="n"><h1 class="brand"><svg class="cross" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:var(--r)" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg><span>Medic Handbuch</span></h1></nav>
 <main>
-<div id="sb"><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
+<div id="sb"><button class="ibtn" id="navbtn" data-act="navtoggle" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden">☰</button><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
 <div id="l"></div>
 </main>
 <div id="ok"></div>
@@ -160,20 +161,25 @@ let SEED = [], BASE = {};   // werden beim Start aus akten.json geladen
 let S, view = 'a', query = '', opened = new Set(), folded = new Set(), secOv = new Map(), editing = null, pending = null, formState = null, sectionForm = null;
 let undoStack = [], redoStack = [], lastSaved = null, mergeNext = false;
 let EDIT = false;   // Bearbeitungsmodus: im Standard aus, also Zuschauermodus
-let SET = {theme: 'dark', grid: 'auto', sec: 'open', compact: true};
+let SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'};
 
 /* ===== Einstellungen (nur Darstellung, getrennt von den Akten) ===== */
 function loadSet(){
   let x = {};
   try { x = JSON.parse(store.getItem(SETKEY)) || {}; } catch (e) {}
-  // Standardwerte, solange noch nichts gespeichert ist: Dunkel, Automatisch, Abschnitte ausgeklappt, Kompakte Karten an
-  SET = {theme: x.theme === 'light' ? 'light' : 'dark', grid: x.grid === 'one' ? 'one' : 'auto', sec: x.sec === 'closed' ? 'closed' : 'open', compact: x.compact !== false};
+  // Standardwerte, solange noch nichts gespeichert ist: Dunkel, 2 Spalten, Abschnitte ausgeklappt, Kompakte Karten an, Seitenleiste offen
+  // Eine frühere Einstellung „Eine Spalte“ bleibt eine Spalte, „Automatisch“ wird zu den Standard-2 Spalten.
+  const cols = [1, 2, 3, 4].includes(+x.cols) ? +x.cols : (x.grid === 'one' ? 1 : 2);
+  SET = {theme: x.theme === 'light' ? 'light' : 'dark', cols, sec: x.sec === 'closed' ? 'closed' : 'open', compact: x.compact !== false, nav: x.nav === 'closed' ? 'closed' : 'open'};
 }
 function saveSet(){ try { store.setItem(SETKEY, JSON.stringify(SET)); } catch (e) {} }
 function applySet(){
   document.documentElement.dataset.theme = SET.theme;
-  document.body.classList.toggle('one-col', SET.grid === 'one');
+  document.body.style.setProperty('--cols', String(SET.cols));   // Spalten pro Reihe
   document.body.classList.toggle('compact', SET.compact);
+  document.body.classList.toggle('nav-off', SET.nav === 'closed');   // Seitenleiste eingeklappt
+  const nb = $('#navbtn');
+  if (nb) nb.setAttribute('aria-expanded', String(SET.nav === 'open'));
 }
 
 /* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
@@ -507,13 +513,13 @@ function renderNav(){
   if (rd) rd.disabled = !redoStack.length;
 }
 function segRow(label, hint, k, opts){
-  const sel = v => k === 'compact' ? SET.compact === (v === 'on') : SET[k] === v;
+  const sel = v => k === 'compact' ? SET.compact === (v === 'on') : String(SET[k]) === String(v);
   return `<div class="srow"><p class="slabel">${label}</p><div class="seg">${opts.map(([v, t]) => `<button data-act="set" data-k="${k}" data-v="${v}" aria-pressed="${sel(v) ? 'true' : 'false'}">${t}</button>`).join('')}</div><p class="shint">${hint}</p></div>`;
 }
 function renderSettings(){
   $('#mbody').innerHTML =
     segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
-    segRow('Akten-Raster', 'Automatisch passt die Spaltenzahl an die Fensterbreite an, bis zu drei Spalten.', 'grid', [['auto', 'Automatisch'], ['one', 'Eine Spalte']]) +
+    segRow('Spalten pro Reihe', 'Wie viele Akten-Karten nebeneinander stehen, bis zu vier. Auf dem Handy ist immer eine Spalte.', 'cols', [['2', '2 Spalten'], ['1', '1 Spalte'], ['3', '3 Spalten'], ['4', '4 Spalten']]) +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]);
 }
@@ -628,7 +634,7 @@ function setMode(on){   // Zuschauermodus (im Standard) oder Bearbeitungsmodus
 }
 function setOpt(k, v){
   if (k === 'theme') SET.theme = v === 'light' ? 'light' : 'dark';
-  else if (k === 'grid') SET.grid = v === 'one' ? 'one' : 'auto';
+  else if (k === 'cols') SET.cols = [1, 2, 3, 4].includes(+v) ? +v : 2;
   else if (k === 'sec') { SET.sec = v === 'open' ? 'open' : 'closed'; secOv.clear(); }
   else if (k === 'compact') SET.compact = v === 'on';
   else return;
@@ -664,6 +670,7 @@ function act(name, b){
   if (name === 'export') return exportData();
   if (name === 'import') return $('#imp').click();
   if (name === 'mode') return setMode(!EDIT);
+  if (name === 'navtoggle') { SET.nav = SET.nav === 'open' ? 'closed' : 'open'; saveSet(); return applySet(); }
   if (name === 'exportrec') return exportAkte(id);
   if (name === 'importakte') return $('#impakte').click();
   if (name === 'fold') { toggleFold(id); return render(); }
@@ -1008,11 +1015,11 @@ function runTests(){
   T('Neue Änderung verwirft den Wiederholen-Verlauf', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'A'); undo(); setText(i, 'i:0:0', 'B'); ok(redoStack.length === 0, 'Wiederholen nicht geleert'); });
   T('Zeile hinzufügen und Text sind ein Rückgängig-Schritt', () => { reset0(); const i = id(), n = get(i).me.length; const path = addLine(i, 'm'); setText(i, path, '/me Test'); ok(get(i).me.length === n + 1, 'Zeile fehlt'); undo(); ok(get(i).me.length === n, 'Zeile nicht komplett zurückgenommen'); });
   T('Nach Rückgängig stimmt der Speicher mit dem Stand überein', () => { reset0(); setText(id(), 'i:0:0', 'C'); undo(); ok(store.getItem(KEY) === lastSaved, 'Speicher weicht ab'); });
-  T('Design und Abschnitts-Standard werden gespeichert und geladen', () => { setOpt('theme', 'light'); setOpt('sec', 'closed'); SET = {theme: 'dark', grid: 'auto', sec: 'open', compact: true}; loadSet(); ok(SET.theme === 'light' && SET.sec === 'closed', 'nicht geladen'); setOpt('theme', 'dark'); setOpt('sec', 'open'); });
+  T('Design und Abschnitts-Standard werden gespeichert und geladen', () => { setOpt('theme', 'light'); setOpt('sec', 'closed'); SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; loadSet(); ok(SET.theme === 'light' && SET.sec === 'closed', 'nicht geladen'); setOpt('theme', 'dark'); setOpt('sec', 'open'); });
   T('Hell-Modus setzt das Design-Attribut', () => { setOpt('theme', 'light'); ok(document.documentElement.dataset.theme === 'light', 'kein Attribut'); setOpt('theme', 'dark'); ok(document.documentElement.dataset.theme === 'dark', 'nicht zurückgesetzt'); });
   T('Abschnitte sind bei ausgeklappter Einstellung offen', () => { reset0(); setOpt('sec', 'open'); ok(card(get(id())).includes('class="sec open"'), 'nicht offen'); setOpt('sec', 'closed'); ok(!card(get(id())).includes('class="sec open"'), 'nicht eingeklappt'); setOpt('sec', 'open'); });
   T('Einzelnes Umschalten überschreibt den Standard', () => { reset0(); setOpt('sec', 'open'); const i = E2().id, k = get(i).sections[0].k; act('secopen', {dataset: {id: i, sk: k}}); const c = card(get(i)); ok(c.includes('<div class="sec">'), 'erster Abschnitt nicht zu'); ok(c.includes('class="sec open"'), 'andere nicht offen'); setOpt('sec', 'open'); });
-  T('Kompakt und Einspalten-Raster wirken auf die Ansicht', () => { setOpt('compact', 'on'); setOpt('grid', 'one'); ok(document.body.classList.contains('compact') && document.body.classList.contains('one-col'), 'Klassen fehlen'); setOpt('compact', 'off'); setOpt('grid', 'auto'); ok(!document.body.classList.contains('compact') && !document.body.classList.contains('one-col'), 'nicht zurückgesetzt'); setOpt('compact', 'on'); });
+  T('Kompakt und Spalten wirken auf die Ansicht', () => { setOpt('compact', 'on'); setOpt('cols', '3'); ok(document.body.classList.contains('compact') && document.body.style.getPropertyValue('--cols').trim() === '3', 'Einstellung fehlt'); setOpt('compact', 'off'); ok(!document.body.classList.contains('compact'), 'Kompakt nicht zurückgesetzt'); setOpt('cols', '2'); setOpt('compact', 'on'); });
   T('Einstellungsfenster öffnet und schließt', () => { act('settings', {dataset: {}}); ok($('#modal').hidden === false, 'nicht offen'); ok($('#mbody').innerHTML.includes('Design'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); });
   T('Akten-Daten: fehlerhafte Einträge werden erkannt', () => {
     const p = parseData([{id: 'a', cat: 'b', title: 'A', sections: []}, {id: '', cat: 'b', title: 'x'}, {id: 'c', cat: 'zz', title: 'C'}, {id: 'a', cat: 'b', title: 'doppelt'}]);
@@ -1021,7 +1028,7 @@ function runTests(){
   T('Gültige Akte bekommt eine feste Form', () => { const q = parseData([{id: 'z', cat: 'b', title: 'Z', sections: [{h: 'Erkennung', items: ['x']}]}]).records[0]; ok(q.me.length === 0 && q.table === null && q.desc === '' && q.sections[0].h === 'Erkennung' && q.widget === false, 'Form falsch'); });
   T('Abschnitte ohne Überschrift werden erkannt', () => ok(parseData([{id: 'y', cat: 'b', title: 'Y', sections: [{h: '', items: []}]}]).problems.length === 1, 'nicht erkannt'));
   T('Tabellen mit falschem Format werden erkannt', () => ok(parseData([{id: 't', cat: 'v', title: 'T', table: {h: ['a'], r: ['flach']}}]).problems.length === 1, 'nicht erkannt'));
-  T('Standard-Einstellungen: Dunkel, Automatisch, Ausgeklappt, Kompakt an', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.grid === 'auto' && SET.sec === 'open' && SET.compact === true, 'Standard falsch: ' + JSON.stringify(SET)); });
+  T('Standard-Einstellungen: Dunkel, 2 Spalten, Ausgeklappt, Kompakt an, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.sec === 'open' && SET.compact === true && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
   T('Hinweis an den /me-Zeilen nennt nur das Kopieren', () => { reset0(); const c = card(get(id())); ok(c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis fehlt'); ok(!c.includes('Zeilen ohne /me'), 'alter Zusatz steht noch da'); });
   T('Papierkorb hat ein Symbol und eine Trennlinie davor', () => { render(); const h = $('#n').innerHTML, s = h.lastIndexOf('class="sep"'); ok(h.includes('class="ic"'), 'Symbol fehlt'); ok(s > h.indexOf('Medikamente') && s < h.indexOf('Papierkorb'), 'Trennlinie an falscher Stelle'); });
   T('KI-Hinweis steht unten rechts und blockiert keine Klicks', () => { const w = $('#wm'); ok(w && w.textContent.includes('Mit KI erstellt'), 'Hinweis fehlt'); ok(getComputedStyle(w).pointerEvents === 'none', 'Hinweis fängt Klicks ab'); });
@@ -1033,7 +1040,7 @@ function runTests(){
   T('Alte und neue Box-Form werden übernommen', () => { const a = parseData([{id: 'by', cat: 'b', title: 'BY', boxes: [['/me a']]}]).records[0], n = parseData([{id: 'bz', cat: 'b', title: 'BZ', boxes: [{t: 'Nachsorge', me: ['/me b']}]}]).records[0]; ok(a.boxes[0].me[0] === '/me a' && a.boxes[0].t === '', 'alte Form'); ok(n.boxes[0].t === 'Nachsorge' && n.boxes[0].me[0] === '/me b', 'neue Form'); });
   T('Boxen mit falschem Format werden erkannt', () => ok(parseData([{id: 'bx', cat: 'b', title: 'BX', boxes: 'kaputt'}]).problems.length === 1, 'kaputte Box nicht erkannt'));
   T('Titel in der Seitenleiste ohne Bindestrich, mit rotem Kreuz', () => { const h = $('#n').innerHTML; ok(h.includes('Medic Handbuch') && !h.includes('Medic-Handbuch'), 'Titel falsch'); ok(h.includes('<svg'), 'Kreuz fehlt'); });
-  T('Browser-Titel mit Kreuz und Name, Symbol im Reiter', () => { ok(document.title === '✚ SCP-RP Medic Handbuch', document.title); ok(!!document.querySelector('link[rel="icon"]'), 'Symbol im Reiter fehlt'); });
+  T('Browser-Titel ohne Textsymbol, Symbol im Reiter', () => { ok(document.title === 'SCP-RP Medic Handbuch', document.title); ok(!document.title.includes('✚'), 'Textsymbol im Titel'); ok(!!document.querySelector('link[rel="icon"]'), 'Symbol im Reiter fehlt'); });
   T('Angepasste Akten bekommen einen dezenten Punkt, Originale nicht', () => { reset0(); const i = id(); ok(!card(get(i)).includes('class="dot"'), 'Punkt ohne Änderung'); setText(i, 'i:0:0', 'Punkt-Test'); ok(card(get(i)).includes('class="dot"'), 'kein Punkt nach Änderung'); reset(i); ok(!card(get(i)).includes('class="dot"'), 'Punkt nach dem Zurücksetzen'); });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
   T('Ungültige Akten-Dateien werden abgelehnt', () => { ok(akteImport({format: 'medic-handbuch'}).errors, 'falsches Format angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'v', title: 'X', sections: [{h: 'A', items: ['x']}]}}).errors.cat, 'schreibgeschützte Kategorie angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Leer', sections: []}}).errors.sections, 'Akte ohne Abschnitte angenommen'); });
@@ -1059,10 +1066,15 @@ function runTests(){
   T('Die Hauptbox heißt Durchführung, neue Boxen bekommen einen Titel', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel der Hauptbox fehlt'); addBox(i); ok(get(i).boxes[0].t === 'Zusätzliche Box' && card(get(i)).includes('Zusätzliche Box'), 'Titel der neuen Box fehlt'); });
   T('Titel einer zusätzlichen Box lässt sich ändern', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'Nachsorge'); ok(get(i).boxes[0].t === 'Nachsorge' && card(get(i)).includes('Nachsorge'), 'Titel nicht geändert'); });
   T('Kein Alle-kopieren-Knopf in den /me-Boxen', () => { reset0(); const c = card(get(id())); ok(!c.includes('Alle kopieren') && !c.includes('data-act="copyall"'), 'Knopf noch da'); });
-  T('Einstellungen: der Standard steht immer links', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; ok(erster('theme') === 'dark' && erster('grid') === 'auto' && erster('sec') === 'open' && erster('compact') === 'on', 'Standard nicht links'); });
+  T('Einstellungen: der Standard steht immer links', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; ok(erster('theme') === 'dark' && erster('cols') === '2' && erster('sec') === 'open' && erster('compact') === 'on', 'Standard nicht links'); });
+  T('Spalten pro Reihe: 1 bis 4, ungültige Werte fallen auf 2 zurück', () => { setOpt('cols', '4'); ok(SET.cols === 4 && document.body.style.getPropertyValue('--cols').trim() === '4', 'vier Spalten nicht gesetzt'); setOpt('cols', '9'); ok(SET.cols === 2, 'ungültiger Wert nicht abgefangen'); setOpt('cols', '2'); });
+  T('Volle Breite: die Kartenreihe hat keine Breitenbegrenzung mehr', () => ok(getComputedStyle(document.getElementById('l')).maxWidth === 'none', 'Breitenbegrenzung noch da'));
+  T('Seitenleiste ein- und ausklappen', () => { SET.nav = 'open'; applySet(); act('navtoggle', {dataset: {}}); const zu = SET.nav === 'closed' && document.body.classList.contains('nav-off') && getComputedStyle(document.querySelector('nav')).display === 'none'; act('navtoggle', {dataset: {}}); ok(zu && SET.nav === 'open' && !document.body.classList.contains('nav-off'), 'Seitenleiste reagiert nicht'); });
+  T('Spalten und Seitenleiste werden gespeichert', () => { setOpt('cols', '3'); act('navtoggle', {dataset: {}}); SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; loadSet(); const gemerkt = SET.cols === 3 && SET.nav === 'closed'; setOpt('cols', '2'); act('navtoggle', {dataset: {}}); ok(gemerkt, 'nicht gespeichert'); });
+  T('Gespeicherte Einstellung „Eine Spalte“ wird zu einer Spalte', () => { store.setItem(SETKEY, JSON.stringify({grid: 'one'})); loadSet(); const eine = SET.cols === 1; store.removeItem(SETKEY); ok(eine, 'alte Einstellung nicht übernommen'); });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
-  SET = {theme: 'dark', grid: 'auto', sec: 'open', compact: true}; saveSet(); applySet(); closeModal(); setMode(false);
+  SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
   $('#f').innerHTML = '';
   $('#l').innerHTML = `<h2>Tests</h2><p>${res.filter(r => r[0]).length} von ${res.length} bestanden</p>` + res.map(([good, m]) => `<p class="${good ? 'okt' : 'err'}">${good ? '✓' : '✗'} ${esc(m)}</p>`).join('');
 }
