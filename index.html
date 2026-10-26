@@ -187,7 +187,7 @@ function applySet(){
 }
 
 /* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
-const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], v: 3});   // v: Stand der Umstellungen
+const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], v: 4});   // v: Stand der Umstellungen (4: Operationen umbenannt)
 function save(){
   const now = JSON.stringify(S);
   if (lastSaved !== null && now !== lastSaved) {
@@ -210,27 +210,37 @@ function orderFix(saved, made = S.made){
   (saved || []).concat(ids).forEach(id => { if (ids.includes(id) && !seen.has(id)) { seen.add(id); out.push(id); } });
   return out;
 }
-// Einmalige Umstellung: den Abschnitt „Behandlung“ gibt es nicht mehr, auch nicht in früher gespeicherten Änderungen
+// Umbenennungen (Stand 4): alte Kennung → neue Kennung. Gespeicherte Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit.
+const RENAMED = {'Narkose einleiten': 'Narkose richtig einleiten', 'Verätzungen': 'Behandlung von Verätzungen', 'Gehirntumor (Wach-OP)': 'Gehirntumor – Wach-OP', 'Korrosion durch SCP-106 (Pocket Dimension)': 'Korrosion - Pocket Dimension (SCP-106)'};
 function migrate(){
-  if (S.v >= 3) return;
-  const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
-  Object.keys(S.ov || {}).forEach(k => { if (S.ov[k] && Array.isArray(S.ov[k].sections)) S.ov[k].sections = ohneBeh(S.ov[k].sections); });
-  (S.made || []).forEach(m => { m.sections = ohneBeh(m.sections); });
-  S.v = 3;
+  if (S.v >= 4) return;
+  if (!(S.v >= 3)) {   // Stand 3: den Abschnitt „Behandlung“ entfernen, auch aus früher gespeicherten Änderungen
+    const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
+    Object.keys(S.ov || {}).forEach(k => { if (S.ov[k] && Array.isArray(S.ov[k].sections)) S.ov[k].sections = ohneBeh(S.ov[k].sections); });
+    (S.made || []).forEach(m => { m.sections = ohneBeh(m.sections); });
+  }
+  if (!S.ov) S.ov = {};
+  if (!S.del) S.del = {};
+  Object.keys(RENAMED).forEach(alt => {   // Stand 4: umbenannte Operationen
+    const neu = RENAMED[alt], has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+    if (has(S.ov, alt)) { if (!has(S.ov, neu)) S.ov[neu] = S.ov[alt]; delete S.ov[alt]; }
+    if (has(S.del, alt)) { if (!has(S.del, neu)) S.del[neu] = S.del[alt]; delete S.del[alt]; }
+    S.fav = (S.fav || []).map(x => (x === alt ? neu : x)).filter((x, i, a) => a.indexOf(x) === i);
+    S.order = (S.order || []).map(x => (x === alt ? neu : x));
+  });
+  S.v = 4;
   try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {}
 }
-function load(){ loadRaw(); migrate(); }
+function load(){ loadRaw(); migrate(); S.order = orderFix(S.order); lastSaved = JSON.stringify(S); }
 function loadRaw(){
   S = fresh();
   let raw = null;
   try { raw = store.getItem(KEY); } catch (e) {}
-  if (raw) { try { Object.assign(S, JSON.parse(raw)); } catch (e) { S = fresh(); } }
+  if (raw) { try { const p = JSON.parse(raw); Object.assign(S, p); if (!p || typeof p.v !== 'number') S.v = 0; } catch (e) { S = fresh(); } }   // ohne Stand: alle Umstellungen prüfen
   else { // bisherige Version: Kennung = Titel, daher keine Umwandlung nötig
     try { S.fav = JSON.parse(store.getItem('f')) || []; } catch (e) {}
     try { const me = JSON.parse(store.getItem('me')) || {}; Object.keys(me).forEach(t => { if (BASE[t]) S.ov[t] = {me: me[t]}; }); } catch (e) {}
   }
-  S.order = orderFix(S.order);
-  lastSaved = JSON.stringify(S);
   undoStack = []; redoStack = []; mergeNext = false;
 }
 
@@ -1104,8 +1114,15 @@ function runTests(){
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
   T('Den Abschnitt Behandlung gibt es in keiner Akte mehr', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung')), 'Behandlung noch in einer Akte'));
-  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 3 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
+  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 4 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
   T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
+  T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
+    reset0(); S.v = 3; S.ov['Verätzungen'] = {me: ['/me Test']}; S.del['Gehirntumor (Wach-OP)'] = true; S.fav = ['Verätzungen']; S.order = ['Verätzungen', 'Schlaganfall'];
+    migrate();
+    const ok1 = S.v === 4 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order[0] === 'Behandlung von Verätzungen' && S.order[1] === 'Schlaganfall';
+    reset0(); ok(ok1, 'Umbenennung fehlgeschlagen');
+  });
+  T('Die umbenannten Operationen sind Akten in der Kategorie Operationen', () => ok(Object.values(RENAMED).every(t => { const r = SEED.find(x => x.id === t); return !!r && r.cat === 'o'; }) && !SEED.some(r => r.id === 'Narkose einleiten'), 'Umbenennung und akten.json stimmen nicht überein'));
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
   SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);

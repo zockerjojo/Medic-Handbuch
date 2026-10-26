@@ -753,46 +753,6 @@
     ]
   },
   {
-    "id": "Narkose einleiten",
-    "cat": "n",
-    "title": "Narkose einleiten",
-    "kw": "fentanyl propofol intubation ekg schlaf",
-    "sections": [
-      {
-        "h": "Ablauf",
-        "items": [
-          "Reiner Sauerstoff als Reserve, venöser Zugang (ggf. zweiter für Bluttransfusion)",
-          "Fentanyl (Schmerzmittel), dann Propofol (Schlafmittel)",
-          "EKG: Herz und Kreislauf überwachen",
-          "Patient schläft nach Sekunden ein, dann intubieren und Atmung sichern"
-        ],
-        "mode": "number"
-      },
-      {
-        "h": "Überwachung",
-        "items": [
-          "Puls, Blutdruck, Sauerstoffsättigung, Atmung"
-        ]
-      },
-      {
-        "h": "Ende",
-        "items": [
-          "Narkosemittel absetzen, extubieren, überwachen bis stabil"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Narkosemittel, Beatmungsbeutel, Intubationsbesteck, Sauerstoff und EKG-Elektroden aus dem Narkosewagen",
-      "/me legt vorsichtig einen venösen Zugang",
-      "/me bereitet reinen Sauerstoff als Reserve vor",
-      "/me verabreicht Fentanyl und Propofol",
-      "/me intubiert den Patienten und sichert die Atmung",
-      "/me überwacht die Vitalwerte auf dem EKG",
-      "/me beendet die Narkose und extubiert den Patienten, sobald er stabil ist",
-      "Notiz: Bei Bedarf zweiten venösen Zugang für eine Bluttransfusion legen"
-    ]
-  },
-  {
     "id": "Lokalanästhesie",
     "cat": "n",
     "title": "Lokalanästhesie",
@@ -862,77 +822,130 @@
     ]
   },
   {
+    "id": "Narkose richtig einleiten",
+    "cat": "o",
+    "title": "Narkose richtig einleiten",
+    "desc": "Die Narkoseeinleitung dient dazu, den Patienten für eine Operation schmerzfrei und bewusstlos zu machen. Sie gewährleistet, dass während des Eingriffs keine Schmerzen wahrgenommen werden und die Vitalfunktionen stabil bleiben.",
+    "sections": [
+      {
+        "h": "Ablauf",
+        "mode": "text",
+        "items": [
+          "Die Einleitung beginnt mit der Gabe von reinem Sauerstoff, um eine Reserve vor der Intubation aufzubauen. Anschließend wird ein venöser Zugang gelegt, über den Medikamente verabreicht werden:",
+          "Fentanyl → starkes Schmerzmittel",
+          "Propofol → hochdosiertes Schlafmittel",
+          "Der Patient wird über ein EKG überwacht, um Herzaktivität und Kreislauf kontinuierlich im Blick zu behalten. Bei Bedarf wird ein zusätzlicher Zugang für Bluttransfusionen eingerichtet. Nach der Medikamentengabe schläft der Patient innerhalb weniger Sekunden ein und wird intubiert, um die Atmung während der Operation zu sichern."
+        ]
+      },
+      {
+        "h": "Überwachung",
+        "mode": "bullet",
+        "items": [
+          "Puls → Kontrolle der Herzfrequenz",
+          "Blutdruck → Stabilität des Kreislaufs",
+          "Sauerstoffsättigung → Überprüfung der Atemfunktion",
+          "Atmung → Sicherstellung einer ausreichenden Beatmung"
+        ]
+      },
+      {
+        "h": "Ende",
+        "mode": "text",
+        "items": [
+          "Nach der Operation wird die Narkose schrittweise beendet. Der Patient wacht auf, der Beatmungsschlauch wird entfernt (Extubation) und die Überwachung wird bis zur vollständigen Stabilisierung fortgeführt."
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Narkosemittel, Beatmungsbeutel, Intubationsbesteck, Sauerstoff und EKG-Elektroden aus dem Narkosewagen",
+      "/me legt vorsichtig einen venösen Zugang",
+      "/me verabreicht Fentanyl und Propofol",
+      "/me überwacht die Vitalwerte auf dem EKG",
+      "Notiz: Anschließend kann die Narkosespritze im RP verabreicht werden. Bitte beachtet auch die Narkose-Aufklärung, die im Dokument zum OP-Bericht zu finden ist."
+    ]
+  },
+  {
     "id": "Herzinfarkt",
     "cat": "o",
     "title": "Herzinfarkt",
-    "kw": "herz stent katheter lisinopril ballon",
+    "desc": "Ein Herzinfarkt entsteht, wenn ein Herzmuskelbereich nicht mehr ausreichend mit Sauerstoff versorgt wird, weil ein Blutgefäß verengt oder verschlossen ist. Dies kann zu bleibenden Schäden am Herzmuskel führen, wenn nicht schnell gehandelt wird. Die Behandlung zielt darauf ab, das verschlossene Gefäß zu öffnen und die Durchblutung wiederherzustellen.",
     "sections": [
       {
-        "h": "Erkennung",
+        "h": "Geräte",
         "mode": "bullet",
         "items": [
-          "Herzmuskel bekommt zu wenig Sauerstoff",
-          "Ursache: ein Herzkranzgefäß ist verengt oder verschlossen"
+          "Katheter zur Einführung in die Arterie",
+          "Röntgengerät zur Lokalisierung des verengten Gefäßes",
+          "Kontrastmittel zur Darstellung der Blutgefäße",
+          "Miniaturballon + Stent für die Gefäßstütze"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Gefäßerweiternde Medikation geben (z. B. Lisinopril)",
-          "Narkose, Katheter über die Armarterie zum verengten Herzgefäß führen",
-          "Kontrastmittel und Röntgen: Position prüfen",
-          "Ballon aufblasen, Stent setzen, Arterie offen halten",
-          "Katheter entfernen, Wunde versorgen, überwachen"
+          "Patient erhält Medikament zur Gefäßerweiterung (z. B. Lisinopril-2,5)",
+          "Einleitung der Narkose, um schmerzfreie Durchführung zu ermöglichen",
+          "Katheter über die Armarterie bis zum verengten Herzgefäß einführen",
+          "Kontrastmittel spritzen und Position durch Röntgen überprüfen",
+          "Miniaturballon aufblähen und Stent platzieren, um die Arterie offen zu halten",
+          "Katheter entfernen, Wunde versorgen mit Tupfern/Pflaster",
+          "Narkose beenden, Patient überwachen auf Stabilität und Herzfunktion"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Katheter, Röntgengerät, Kontrastmittel, Ballon und Stent"
+          "Röntgen + Kontrastmittel: exakte Positionierung des Stents",
+          "Überwachung der Vitalwerte während Narkose: Puls, Blutdruck, Atmung, Sauerstoffsättigung",
+          "Stent und Ballon: Öffnen des Gefäßes und Sicherstellung der Durchblutung"
         ]
       }
     ],
     "me": [
       "/me nimmt Katheter, Ballon, Stent, Kontrastmittel, Röntgengerät und Gefäßmedikation aus dem Herzkatheterlabor",
-      "/me gibt dem Patienten die verordnete Gefäßmedikation",
+      "/me gibt dem Patienten die Tablette Lisinopril-2,5",
+      "/me legt den Patienten für die Narkose bereit",
       "/me führt den Katheter vorsichtig über die Armarterie ein",
       "/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät",
       "/me platziert den Stent und bläst den Miniaturballon auf",
       "/me entfernt den Katheter und versorgt die Wunde",
-      "/me überwacht die Vitalwerte, während der Patient aus der Narkose erwacht",
-      "Notiz: Vitalwerte bis zum Aufwachen aus der Narkose engmaschig kontrollieren"
+      "/me überwacht die Vitalwerte, während der Patient aus der Narkose erwacht"
     ]
   },
   {
     "id": "Gesplitterter Bruch",
     "cat": "o",
     "title": "Gesplitterter Bruch",
-    "kw": "knochen osteosynthese platte schrauben heparin",
+    "desc": "Ein gesplitterter oder verschobener Bruch muss oft operativ behandelt werden, da die Knochensplitter nicht mehr von selbst richtig zusammenpassen. Dabei wird eine Osteosynthese durchgeführt: Die Knochenfragmente werden genau ausgerichtet und mit Platten und Zugschrauben stabil fixiert. So kann der Knochen besser heilen und die betroffene Stelle schneller wieder belastet werden.",
     "sections": [
       {
-        "h": "Erkennung",
-        "mode": "bullet",
+        "h": "Geräte",
+        "mode": "text",
         "items": [
-          "Knochenstücke lassen sich nicht mehr zusammenfügen oder sind verschoben",
-          "Röntgen zeigt die genaue Lage"
+          "Vor dem Eingriff wird ein Röntgenbild erstellt, um die genaue Lage und Ausprägung des Bruchs zu beurteilen. Zudem wird das Risiko von Thrombosen durch die Gabe von gerinnungshemmenden Medikamenten wie Heparin reduziert."
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Röntgenbild zur Beurteilung anfertigen",
-          "Betäuben und Operationsstelle desinfizieren",
-          "Knochen mit Skalpell freilegen",
-          "Splitter mit Pinzette entfernen, Metallplatte und Zugschrauben setzen",
-          "Haut schließen und Heparin gegen Thrombose geben"
+          "Lokale Betäubung der betroffenen Region",
+          "Gründliche Desinfektion der Operationsstelle",
+          "Freilegung des Knochens mithilfe eines Skalpells",
+          "Entfernen von Knochensplittern mit sterilen Pinzetten",
+          "Platzierung einer Metallplatte über der Bruchlinie",
+          "Fixierung der Platte mit Zugschrauben zur Stabilisierung",
+          "Sorgfältiges Schließen der Haut"
         ]
       },
       {
         "h": "Nachsorge",
+        "mode": "bullet",
         "items": [
-          "Vitalwerte und Infektionen überwachen, Heparin weitergeben, regelmäßig röntgen"
+          "Die übliche Überwachung von Vitalwerten und Infektionen",
+          "Weitergabe von Heparin zur Vorbeugung von Blutgerinnseln",
+          "Regelmäßige Röntgenkontrollen zur Überprüfung des Heilungsverlaufs"
         ]
       }
     ],
@@ -941,42 +954,45 @@
       "/me erstellt ein Röntgenbild zur Beurteilung des Bruchs",
       "/me desinfiziert die Operationsstelle gründlich",
       "/me fixiert die Bruchfragmente mit Platte und Zugschrauben",
-      "/me überwacht die Vitalwerte und verabreicht Heparin",
-      "Notiz: Nachsorge und regelmäßige Röntgenkontrollen einplanen"
+      "/me überwacht die Vitalwerte und verabreicht Heparin"
     ]
   },
   {
     "id": "Schädel-Hirn-Trauma",
     "cat": "o",
     "title": "Schädel-Hirn-Trauma",
-    "desc": "Verletzung von Schädelknochen oder Gehirn durch Unfall, Sturz oder Gewalt. Gefahr durch Blutungen und erhöhten Hirndruck.",
+    "desc": "Ein Schädel-Hirn-Trauma ist eine Verletzung von Schädelknochen und/oder Gehirn, die durch Unfälle, Stürze oder Gewalteinwirkung entstehen kann. Es reicht von leichten Gehirnerschütterungen bis zu schweren Verletzungen mit Knochenbrüchen und erhöhter intrakranieller Druckgefahr. Eine schnelle Diagnose und Behandlung sind entscheidend, um Folgeschäden zu verhindern.",
     "sections": [
       {
         "h": "Erkennung",
+        "mode": "bullet",
         "items": [
-          "CT oder MRT (Blutungen, Brüche, Schwellungen)",
-          "Neurotests: Bewusstsein, Sprache, Pupillenreaktion",
-          "SpO₂, Blutdruck, Puls und Hirndruck überwachen"
+          "CT oder MRT: Darstellung von Blutungen, Frakturen, Schwellungen.",
+          "Neurologische Tests: Überprüfung von Bewusstsein, Sprache, Pupillenreaktion.",
+          "Vitalparameter & Hirndruckkontrolle: Überwachung von Sauerstoffsättigung, Blutdruck, Puls und intrakraniellem Druck."
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Narkose einleiten, Bereich rasieren",
-          "Kopfhaut desinfizieren, Schädeldecke eröffnen",
-          "Bruchstücke entfernen, Schädelplatte zur Stabilisierung anpassen",
-          "Dura öffnen, Flüssigkeit absaugen, Druck senken",
-          "Dura verschließen, Operationsgebiet spülen, Kopfhaut klammern",
-          "Sterilen Verband anlegen, danach Vitalwerte, Hirndruck und Sprache kontrollieren"
+          "Narkoseeinleitung und Rasur des betroffenen Bereichs.",
+          "Sterile Desinfektion der Kopfhaut und Eröffnung der Schädeldecke.",
+          "Entfernung von Frakturfragmenten und Anpassung einer Schädelplatte zur Stabilisierung.",
+          "Öffnen der Dura bei Bedarf, um Flüssigkeit abzusaugen und Druck zu senken.",
+          "Verschließen der Dura und sorgfältiges Spülen des Operationsgebiets.",
+          "Kopfhautklammerung und Anlegen eines sterilen Verbandes.",
+          "Postoperative Überwachung, inklusive Sprachtests und neurologischer Kontrolle."
         ]
       },
       {
-        "h": "Richtwerte",
+        "h": "Wichtige Werte",
+        "mode": "bullet",
         "items": [
-          "Hirndruck (ICP): normal unter 15 mmHg, kritisch über 20",
-          "SpO₂ über 95 %, Blutdruck systolisch über 100 mmHg",
-          "GCS (Bewusstsein): 3–15"
+          "ICP (intrakranieller Druck): Normalwert < 15 mmHg, kritisch ab > 20 mmHg.",
+          "Sauerstoffsättigung (SpO₂): Normalwert > 95 %",
+          "Blutdruck: Zielwert systolisch > 100 mmHg",
+          "GCS (Glasgow Coma Scale): Bewertung der Bewusstseinslage (Skala 3–15)."
         ]
       }
     ],
@@ -988,33 +1004,52 @@
       "/me entfernt vorsichtig Frakturfragmente und passt die Schädelplatte an",
       "/me saugt überschüssige Flüssigkeit ab und verschließt die Dura",
       "/me klammert die Kopfhaut und legt einen sterilen Verband an",
-      "Notiz: Hirndruck und Bewusstsein während der Nachsorge engmaschig kontrollieren"
+      "Notiz: Anschließend werden Vitalwerte, ICP und Sprachfunktion kontrolliert."
     ]
   },
   {
     "id": "Brustverletzung (Thoraxtrauma)",
     "cat": "o",
     "title": "Brustverletzung (Thoraxtrauma)",
-    "desc": "Verletzung von Brustkorb, Organen und angrenzenden Strukturen. Stumpf: keine offene Wunde (Rippen, Sternum, Wirbelsäule, Lunge). Penetrierend: offene Wunde, z. B. Stich oder Schuss, oft mit Gefahr für Lunge und Herz.",
+    "desc": "Ein Thoraxtrauma bezeichnet Verletzungen des Brustkorbs, der inneren Organe und angrenzender Strukturen durch äußere oder innere Einwirkung. Es wird unterschieden in:",
     "sections": [
       {
-        "h": "Ablauf",
-        "mode": "number",
+        "h": "Arten",
+        "mode": "bullet",
         "items": [
-          "Narkose einleiten und Patienten vorbereiten",
-          "Einstich- oder Schnittstelle desinfizieren, steriles Lochtuch auflegen",
-          "Schnitt durch Rippen- und Lungenfell setzen",
-          "Thoraxdrainage einbringen, Blut und Luft absaugen",
-          "Vitalwerte während des Eingriffs überwachen",
-          "Einschnitt vernähen, Narkose beenden"
+          "Stumpfe Thoraxtrauma: ohne offene Wunde kann Rippen, Sternum, Wirbelsäule oder Lunge verletzen, z. B. Rippenfraktur oder Lungenkontusion.",
+          "Penetrierendes Thoraxtrauma: offene Verletzungen, z. B. durch Stich- oder Schussverletzungen, oft mit direkter Gefahr für Lunge oder Herz."
         ]
       },
       {
         "h": "Geräte",
+        "mode": "bullet",
         "items": [
-          "Röntgen oder CT (Brüche, Pneumothorax)",
-          "Thoraxdrainage zur Absaugung von Blut und Luft",
-          "Vitalwertmonitor (EKG, Blutdruck, Puls, SpO₂)"
+          "Röntgen oder CT zur Diagnose von Frakturen oder Pneumothorax",
+          "Thoraxdrainage zur Blut- oder Luftabsaugung",
+          "Vitalwertmonitor (EKG, Blutdruck, Puls, Sauerstoffsättigung)"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Einleitung der Narkose und Vorbereitung des Patienten",
+          "Desinfektion der Einstich- oder Schnittstelle",
+          "Auflegen eines sterilen Lochtuchs",
+          "Durchführung eines Schnitts durch Rippenfell und Lungenfell",
+          "Einbringen einer Thoraxdrainage zur Absaugung von Blut und Luft",
+          "Überwachung der Vitalwerte während des gesamten Eingriffs",
+          "Verschluss des Einschnitts und Beendigung der Narkose"
+        ]
+      },
+      {
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
+        "items": [
+          "Vitalwerte: Überwachung von Herz, Blutdruck und Sauerstoffversorgung",
+          "Thoraxdrainage: verhindert Luft- oder Blutansammlungen im Pleuraspalt",
+          "Narkose: ermöglicht schmerzfreien Eingriff und Stabilisation"
         ]
       }
     ],
@@ -1024,32 +1059,43 @@
       "/me desinfiziert die Einstichstelle und legt das Lochtuch auf",
       "/me führt den Schnitt durch Rippen- und Lungenfell aus",
       "/me bringt die Thoraxdrainage ein und überwacht die Vitalwerte",
-      "/me vernäht den Einschnitt und beendet die Narkose",
-      "Notiz: Atmung und Kreislauf nach dem Eingriff engmaschig überwachen"
+      "/me vernäht den Einschnitt und beendet die Narkose"
     ]
   },
   {
     "id": "Kollabierte Lunge (Pneumothorax)",
     "cat": "o",
     "title": "Kollabierte Lunge (Pneumothorax)",
-    "desc": "Luft gelangt in den Pleuraspalt, die Lunge fällt teilweise oder ganz zusammen. Ursachen: Stich- oder Schussverletzung, Rippenbruch, Lungenerkrankung oder spontan. Symptome: Atemnot, Brustschmerzen, vermindertes Atemgeräusch.",
+    "desc": "Ein Pneumothorax entsteht, wenn Luft in den Pleuraspalt gelangt und die Lunge teilweise oder vollständig kollabiert. Ursachen können Verletzungen (Stich- oder Schusswunden), Rippenbrüche, Lungenerkrankungen oder spontane Ereignisse sein. Typische Symptome sind Atemnot, Brustschmerzen und ein vermindertes Atemgeräusch auf der betroffenen Seite.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Röntgen oder CT zur Diagnose und Abschätzung der Lungenkollapsgröße",
+          "Thoraxdrainage oder Saugdrainage zur Entfernung der Luft",
+          "Steriles Operationsbesteck für Schnitt und Fixierung",
+          "Vitalwertmonitor (EKG, Blutdruck, Puls, Sauerstoffsättigung)"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Einstichstelle am Brustkorb desinfizieren",
-          "Kleinen Schnitt zwischen den Rippen setzen",
-          "Drainage einführen und an Absaug- oder Wasserballonsystem anschließen",
-          "Vitalwerte und Lungenentfaltung per Röntgen oder Ultraschall überwachen",
-          "Drainage fixieren, Haut verschließen",
-          "Lungenfunktion kontrollieren, Drainage nach vollständiger Entfaltung entfernen"
+          "Desinfektion der Einstichstelle im Bereich des betroffenen Brustkorbs",
+          "Durchführung eines kleinen Schnitts zwischen den Rippen zur Einbringung der Drainage",
+          "Einführen einer Thoraxdrainage in den Pleuraspalt, Anschluss an ein Absaug- oder Wasserballonsystem",
+          "Kontinuierliche Überwachung der Vitalwerte und Lungenexpansion per Röntgen oder Ultraschall",
+          "Fixierung der Drainage und Verschluss der Haut am Einstich",
+          "Nachsorge: Kontrolle der Lungenfunktion, Entfernung der Drainage nach vollständiger Entfaltung der Lunge"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Röntgen oder CT, Thoraxdrainage oder Saugdrainage, steriles OP-Besteck, Vitalwertmonitor"
+          "Vitalwertmonitor: Überwachung von Herz, Blutdruck und Sauerstoffversorgung",
+          "Thoraxdrainage: entfernt Luft und stellt den Unterdruck wieder her, damit die Lunge sich entfalten kann"
         ]
       }
     ],
@@ -1059,32 +1105,48 @@
       "/me führt den Schnitt zwischen den Rippen durch",
       "/me platziert die Thoraxdrainage und verbindet sie mit dem Absaugsystem",
       "/me überwacht die Vitalwerte und kontrolliert die Lungenexpansion",
-      "/me fixiert die Drainage und verschließt die Haut",
-      "Notiz: Lungenfunktion nach dem Entfernen der Drainage kontrollieren"
+      "/me fixiert die Drainage und verschließt die Haut"
     ]
   },
   {
     "id": "Durchschuss und innere Blutungen",
     "cat": "o",
     "title": "Durchschuss und innere Blutungen",
-    "desc": "Penetrierende Verletzung mit schwerer innerer Blutung, wenn eine Arterie getroffen ist. Symptome: Blutdruckabfall, schneller Puls, blasse Haut, Schwindel, Bewusstlosigkeit.",
+    "desc": "Ein Durchschuss oder eine andere penetrierende Verletzung kann zu schweren inneren Blutungen führen, insbesondere wenn eine Arterie betroffen ist. Dabei tritt Blut ins Körperinnere aus, was unbehandelt zu Schock, Organversagen oder Tod führen kann. Typische Symptome sind Blutdruckabfall, schneller Puls, blasse Haut, Schwindel und Bewusstseinsschwäche.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Steriles OP-Besteck zur Öffnung und Versorgung der Wunde",
+          "Arterienklemmen zum Stoppen der Blutung",
+          "Absauggerät zur Entfernung von Blut",
+          "Ringerlösung zum Spülen der Wunde",
+          "Kunststoffgefäß oder Patch zur Rekonstruktion der Arterie",
+          "Vitalwertmonitor (EKG, Blutdruck, Puls, Sauerstoffsättigung)"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Operationsbereich vorbereiten und steril abdecken",
-          "Wunde mit Hautklammern oder Schnitt öffnen",
-          "Arterienklemmen setzen und Blutung stoppen",
-          "Blut absaugen, Wunde mit Ringerlösung spülen",
-          "Kunststoffgefäß oder Patch einnähen und Arterie rekonstruieren",
-          "Gefäßnaht fixieren, Wunde schließen, Schmerzmittel geben, Vitalwerte überwachen"
+          "Vorbereitung und sterile Abdeckung des Operationsbereichs",
+          "Öffnen der Wunde mit Hautklammern oder Schnitt zur besseren Sicht",
+          "Setzen von Arterienklemmen, um die Blutung zu stoppen",
+          "Absaugen des Blutes zur Freilegung der verletzten Gefäße",
+          "Spülen der Wunde mit Ringerlösung, um Verunreinigungen zu entfernen. Einnähen eines Kunststoffgefäßes oder plastischen Patches zur Wiederherstellung der Arterie",
+          "Fixieren der Gefäßnaht und Schließen der Wunde",
+          "Gabe von Schmerzmitteln und kontinuierliche Überwachung der Vitalwerte"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Steriles OP-Besteck, Arterienklemmen, Absauggerät, Ringerlösung, Kunststoffgefäß oder Patch, Vitalwertmonitor"
+          "Vitalwertmonitor: Überwacht Blutdruck, Puls und Sauerstoffversorgung",
+          "Arterienklemmen: Stoppen die akute Blutung vorübergehend",
+          "Absauggerät: Ermöglicht klare Sicht und präzises Arbeiten",
+          "Ringerlösung: Reinigt die Wunde und beugt Infektionen vor"
         ]
       }
     ],
@@ -1094,102 +1156,141 @@
       "/me setzt Arterienklemmen und stoppt die Blutung",
       "/me saugt Blut ab und spült die Wunde mit Ringerlösung",
       "/me näht ein Kunststoffgefäß ein, um die Arterie zu rekonstruieren",
-      "/me schließt die Wunde und überwacht die Vitalwerte",
-      "Notiz: Durchblutung der betroffenen Extremität nach dem Eingriff kontrollieren"
+      "/me schließt die Wunde und überwacht die Vitalwerte"
     ]
   },
   {
-    "id": "Korrosion durch SCP-106 (Pocket Dimension)",
+    "id": "Korrosion - Pocket Dimension (SCP-106)",
     "cat": "o",
-    "title": "Korrosion durch SCP-106 (Pocket Dimension)",
-    "desc": "Der Korrosionseffekt von SCP-106 zerstört Gewebe rasant, ähnlich einer nekrotisierenden Hautinfektion. Symptome: starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbung (blass bis schwarz), Schwellung. Unbehandelt droht Sepsis.",
+    "title": "Korrosion - Pocket Dimension (SCP-106)",
+    "desc": "Der Korrosionseffekt von SCP-106 verursacht eine rapide Gewebebeschädigung, die einer nekrotisierenden Hautinfektion ähnelt. Er betrifft vor allem lebendes Gewebe und führt bei schweren Komplikationen. Typische Symptome sind starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbungen (von blass zu rötlich bis bräunlich/schwarz) sowie Schwellungen. Unbehandelt kann der Zustand schnell zu einer Sepsis führen.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Steriles OP-Besteck (Skalpell, Klemmen, Pinzetten)",
+          "Infusionssystem mit Kochsalzlösung",
+          "Material für Hauttransplantationen (Vollhautlappen)",
+          "Kunststoffimplantate für größere Defekte",
+          "Vitalwertmonitor (EKG, Blutdruck, Puls)"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Patienten vorbereiten, steril abdecken und Kochsalzlösung i.v. zur Kreislaufstabilisierung geben",
-          "Betroffene Bereiche einschneiden und das Ausmaß der Nekrose bestimmen",
-          "Abgestorbenes Gewebe entfernen, gesundes erhalten und über eine Amputation entscheiden",
-          "An wichtigen Stellen (Gesicht, Hände, Gelenke) Vollhaut transplantieren",
-          "Kunststoffimplantate in verbleibende Defekte einsetzen",
-          "Heilsalbe auftragen, sterile Verbände anlegen, Antibiotika geben und Wundheilung kontrollieren"
-        ]
-      },
-      {
-        "h": "Geräte",
-        "items": [
-          "OP-Besteck, Infusion mit Kochsalzlösung, Vollhaut zur Transplantation, Kunststoffimplantate, Vitalwertmonitor"
+          "Vorbereitung des Patienten und sterile Abdeckung des betroffenen Bereichs",
+          "Intravenöse Gabe von Kochsalzlösung zur Stabilisierung des Kreislaufs",
+          "Präzises Einschneiden der betroffenen Bereiche, um das Ausmaß der Nekrose festzustellen",
+          "Entfernen des abgestorbenen Gewebes, um gesundes Gewebe zu erhalten",
+          "Entscheidung, ob eine Amputation notwendig ist",
+          "Transplantation von Vollhaut an besonders wichtigen Stellen (z. B. Gesicht, Hände, Gelenke)",
+          "Einsetzen von Kunststoffimplantaten an den verbleibenden Bereichen",
+          "Auftragen von heilungsfördernder Salbe und Anlegen steriler Verbände",
+          "Gabe von Antibiotika zur Infektionsprophylaxe (nur RP)",
+          "Überwachung der Vitalwerte und Kontrolle der Wundheilung"
         ]
       }
     ],
     "me": [
       "/me nimmt Kochsalzlösung, Vollhaut, Kunststoffimplantate, Heilsalbe und Verbandmaterial aus dem OP-Set",
       "/me prüft die betroffene Stelle auf Ausmaß der Korrosion",
-      "/me macht präzise Einschnitte, um totes Gewebe zu identifizieren",
+      "/me macht präzise Einschnitte, um totes Gewebe zu entfernen",
       "/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut",
-      "/me setzt Kunststoffimplantate an beschädigten Stellen ein",
-      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte",
-      "Notiz: Wundheilung und Vitalwerte in den Folgetagen kontrollieren"
+      "/me setzt Kunststoffimplantate an den betroffenen Stellen ein",
+      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte und Kontrolle der Wundheilung"
     ]
   },
   {
     "id": "Amputation",
     "cat": "o",
     "title": "Amputation",
-    "desc": "Chirurgische Entfernung eines Körperteils bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel: Lebensgefahr abwenden und gute Wundheilung ermöglichen.",
+    "desc": "Eine Amputation ist die chirurgische Entfernung eines Körperteils, notwendig bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel ist es, Lebensgefahr abzuwenden und eine gesunde Wundheilung zu ermöglichen.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Narkoseausrüstung für sichere Sedierung",
+          "Tourniquet zur Blutstillung",
+          "Chirurgische Instrumente (Skalpell, Kauterpinzette)",
+          "Splint oder Fixationsmaterial zur Stabilität",
+          "Nahtmaterial und sterile Verbände"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Narkose einleiten, ggf. Plexusblockade gegen Schmerzen",
-          "Tourniquet oberhalb des Bereichs anlegen (verhindert Blutverlust)",
-          "Haut zylindrisch ausschneiden und Zugang zu Gelenk oder Knochen schaffen",
-          "Gelenk trennen, Knochen abtrennen, kürzen und abstumpfen, mit Splint fixieren",
-          "Blutgefäße mit Kauterpinzette veröden und Haut über dem Knochen sorgfältig vernähen",
-          "Aufwachen aus der Narkose, Vitalwerte überwachen"
+          "Einleitung der Narkose und ggf. Plexusblockade zur Schmerzreduktion",
+          "Anlegen eines Tourniquets oberhalb des amputierenden Bereichs",
+          "Zylindrisches Ausschneiden der Haut für Zugang zum Gelenk oder Knochen",
+          "Trennung des Gelenks und Abtrennung der Knochen, Kürzen und Abstumpfen",
+          "Fixierung des Knochens mit einem Splint",
+          "Veröden von Blutgefäßen mit Kauterpinzette",
+          "Verschluss der Haut über dem Knochen durch sorgfältiges Vernähen",
+          "Aufwachen aus der Narkose und Überwachung der Vitalwerte"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Narkoseausrüstung, Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial, sterile Verbände"
+          "Tourniquet: verhindert Blutverlust während der Operation",
+          "Kauterpinzette: kontrolliert Blutungen durch gezieltes Veröden von Gefäßen",
+          "Splint: stabilisiert den Stumpf für Heilung und spätere Prothesenversorgung",
+          "Narkose: ermöglicht schmerzfreien Eingriff"
         ]
       }
     ],
     "me": [
       "/me nimmt Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial und sterile Verbände aus dem OP-Set",
-      "/me leitet die Narkose ein und legt das Tourniquet an",
+      "/me leitet die Narkose ein und legt den Tourniquet an",
       "/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe",
       "/me fixiert den Knochen mit einem Splint und verödet Gefäße",
       "/me vernäht die Haut und legt sterile Verbände an",
-      "/me überwacht den Patienten beim Erwachen aus der Narkose",
-      "Notiz: Stumpf nach dem Eingriff regelmäßig auf Wundheilung prüfen"
+      "/me überwacht den Patienten beim Erwachen aus der Narkose"
     ]
   },
   {
     "id": "Schlaganfall",
     "cat": "o",
     "title": "Schlaganfall",
-    "desc": "Ein Blutgefäß im Gehirn ist verstopft, das Hirngewebe bekommt zu wenig Sauerstoff. Folgen: Lähmungen, Sprach- und Sinnesstörungen, Koordinationsprobleme, Bewusstlosigkeit.",
+    "desc": "Ein Schlaganfall entsteht, wenn ein Blutgefäß im Gehirn verstopft wird und das betroffene Hirngewebe nicht mehr ausreichend mit Sauerstoff versorgt wird. Dies kann zu bleibenden Lähmungen, Sprachstörungen, Sinnesstörungen, Koordinationsproblemen und Bewusstlosigkeit führen.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "CT-Scan (CCT) des Kopfes zur Identifizierung des Blutgerinnsels",
+          "Bluttests zur Unterstützung der Diagnose",
+          "Katheter + Stent-Retriever für mechanische Entfernung des Gerinnsels",
+          "Kontrastmittel + Röntgen zur Navigation des Katheters"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Vitalwerte prüfen, ggf. Sauerstoff über Maske geben",
-          "Blutdruck senken (z. B. mit Esmolol)",
-          "Gerinnsel auflösen (Alteplase als Infusion)",
-          "Katheter über die Leistenarterie einführen",
+          "Überprüfung der Vitalparameter",
+          "Gegebenenfalls Sauerstoffgabe über Maske",
+          "Blutdrucknormalisierung, z. B. mit 10 mg Esmolol intravenös",
+          "Medikamentöse Auflösung des Gerinnsels: 15 mg Alteplase über 90 Minuten Infusion",
+          "Katheter über Leistenarterie einführen",
           "Stent-Retriever einsetzen und Gerinnsel entfernen",
-          "Mit Kontrastmittel und Röntgen navigieren, Vitalwerte während und nach dem Eingriff überwachen"
+          "Kontrastmittel + Röntgen zur exakten Navigation",
+          "Überwachung der Vitalwerte während und nach dem Eingriff"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "CT-Scan (CCT) zur Lage des Gerinnsels, Bluttests, Katheter mit Stent-Retriever, Kontrastmittel und Röntgen"
+          "CT-Scan: zeigt Lage und Größe des Blutgerinnsels",
+          "Bluttests: Hinweise auf Gerinnungsstörungen und Risikofaktoren",
+          "Vitalparameter: sichert die Stabilität des Patienten während der Behandlung",
+          "Katheter + Stent: physische Entfernung des Gerinnsels zur Wiederherstellung der Durchblutung"
         ]
       }
     ],
@@ -1198,42 +1299,41 @@
       "/me überprüft die Vitalwerte des Patienten",
       "/me legt eine Sauerstoffmaske an",
       "/me spritzt Esmolol zur Blutdruckkontrolle",
-      "/me verabreicht die Alteplase-Infusion",
-      "/me führt den Katheter über die Leistenarterie ein",
+      "/me verabreicht Alteplase-Infusion über 90 Minuten",
+      "/me führt Katheter über die Leistenarterie ein",
       "/me navigiert den Stent-Retriever mithilfe von Kontrastmittel und Röntgenbildern",
-      "Notiz: Durchblutung nach dem Eingriff überprüfen"
+      "/me entfernt das Blutgerinnsel und überprüft die Durchblutung"
     ]
   },
   {
     "id": "Lebertrauma",
     "cat": "o",
     "title": "Lebertrauma",
-    "desc": "Verletzung der Leber durch stumpfe Gewalt (Unfall, Sturz, Schlag) oder penetrierende Gewalt (Messer, Schuss). Die Leber ist stark durchblutet, schon kleine Risse können lebensgefährlich bluten.",
+    "desc": "Ein Lebertrauma ist eine Verletzung der Leber, die durch stumpfe Gewalt (z. B. Unfall, Sturz, Schlag) oder penetrierende Gewalt (z. B. Messerstich, Schusswunde) verursacht wird. Da die Leber sehr stark durchblutet ist, können selbst kleine Risse lebensgefährliche innere Blutungen auslösen.",
     "sections": [
       {
         "h": "Erkennung",
-        "mode": "bullet",
+        "mode": "text",
         "items": [
-          "Ultraschall oder CT bei Bauchverletzungen oder großen Blutergüssen",
-          "Verdacht auf innere Blutung"
+          "Die Diagnose erfolgt meist durch Ultraschall oder CT, besonders bei sichtbaren Bauchverletzungen, großflächigen Blutergüssen oder Verdacht auf innere Blutungen."
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Hautschnitt setzen, Bauch öffnen, vorhandenes Blut absaugen",
-          "Leichte Blutung: mit sterilen Tüchern Druck ausüben, dann Fibrinkleber auftragen",
-          "Schwere Blutung: verletzte Arterien oder Venen chirurgisch verschließen",
-          "Vitalwerte und Leberwerte kontrollieren"
+          "Blutabsaugung: Nach Hautschnitt und Eröffnung des Bauches wird vorhandenes Blut abgesaugt.",
+          "Leichte Blutungen: Auf die verletzte Stelle wird vorsichtig Druck mit sterilen Tüchern ausgeübt, anschließend Fibrinkleber aufgetragen, um die Blutung zu stoppen.",
+          "Schwere Blutungen: Verletzte Arterien oder Venen werden chirurgisch verschlossen."
         ]
       },
       {
-        "h": "Leberwerte",
+        "h": "Wichtige Werte",
+        "mode": "bullet",
         "items": [
-          "GOT (AST): normal unter ca. 45 U/l, erhöht bei Leberverletzung",
-          "GPT (ALT): normal unter ca. 45 U/l, Marker für Leberzellschäden",
-          "Bilirubin gesamt: 0,3–1,2 mg/dl, erhöht bei gestörter Leberfunktion oder Gallenabfluss"
+          "GOT (AST): Normalwert ca. < 35 U/l → Erhöht bei Leberverletzungen",
+          "GPT (ALT): Normalwert ca. < 45 U/l → Marker für Leberzellschäden",
+          "Bilirubin gesamt: Normalwert ca. 0,3 – 1,2 mg/dl → Erhöht bei gestörter Leberfunktion oder Gallenabbau"
         ]
       }
     ],
@@ -1244,71 +1344,95 @@
       "/me öffnet vorsichtig den Bauchraum und saugt Blut ab",
       "/me trägt Fibrinkleber auf die verletzte Stelle auf",
       "/me kontrolliert abschließend die Vitalwerte und dokumentiert die Leberwerte",
-      "Notiz: Leberwerte im Verlauf wiederholt bestimmen"
+      "Notiz: Eine schnelle Versorgung ist entscheidend, um Schock, Organversagen oder lebensbedrohlichen Blutverlust zu verhindern."
     ]
   },
   {
     "id": "Hüftersatz",
     "cat": "o",
     "title": "Hüftersatz",
-    "desc": "Chirurgischer Eingriff, bei dem ein beschädigtes oder schmerzhaftes Hüftgelenk durch eine künstliche Prothese ersetzt wird. Ziel: Schmerzen lindern, Beweglichkeit wiederherstellen, Lebensqualität verbessern.",
+    "desc": "Ein Hüftersatz ist ein chirurgischer Eingriff, bei dem ein beschädigtes oder schmerzhaftes Hüftgelenk durch eine künstliche Hüfte ersetzt wird. Ziel ist es, Schmerzen zu lindern, Beweglichkeit wiederherzustellen und die Lebensqualität zu verbessern.",
     "sections": [
       {
-        "h": "Erkennung",
+        "h": "Geräte",
+        "mode": "bullet",
         "items": [
-          "Hüftgelenk stark verschlissen oder nach Bruch nicht mehr belastbar",
-          "Starke Schmerzen, Gehunfähigkeit, eingeschränkte Beweglichkeit",
-          "Diagnose über Röntgen oder CT bestätigen"
-        ],
-        "mode": "bullet"
+          "Röntgen oder CT für präoperative Planung",
+          "Chirurgisches Instrumentarium für Osteotomie und Protheseenfixierung"
+        ]
       },
       {
         "h": "Ablauf",
+        "mode": "number",
         "items": [
-          "Patient in Narkose bringen und in Seitenlage lagern",
-          "Hautschnitt setzen, Muskulatur schichtweise darstellen",
-          "Gelenkkopf entfernen, Pfanne vorbereiten",
-          "Pfanne und Schaft einsetzen, Gelenkstabilität prüfen",
-          "Redon-Drainage einlegen, schichtweise verschließen",
-          "Hautnaht, steriler Verband, Nachsorge"
-        ],
-        "mode": "number"
+          "Einleitung der Narkose und Abstimmung des Schmerzmanagements",
+          "Reinigung der Operationsstelle",
+          "Zurückklappen von Haut und Weichgewebe, um die Hüfte freizulegen",
+          "Osteotomie: Entfernen des beschädigten Gelenks und Schneiden der Knochen für die Prothese",
+          "Einsetzen des Prothesenkopfes in den Oberschenkelknochen",
+          "Fixierung des Prothesenkörpers im Beckenkamm mit Schrauben oder Befestigungsmitteln",
+          "Vernähen von Haut und Weichgewebe",
+          "Postoperative Überwachung zur Kontrolle von Vitalwerten und Schmerzmanagement"
+        ]
+      },
+      {
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
+        "items": [
+          "Röntgen/CT: genaue Planung der Prothesenposition",
+          "Narkose: schmerzfreie Durchführung des Eingriffs",
+          "Chirurgische Instrumente: präzises Entfernen und Fixieren der Prothese",
+          "Tupfer und Nahtmaterial: saubere Wundversorgung, Infektionsprävention"
+        ]
       }
     ],
     "me": [
-      "/me nimmt Totalendoprothese, Operationsbesteck, Redon-Drainage, Nahtmaterial und sterile Abdeckungen aus dem OP-Set",
-      "/me desinfiziert das Operationsfeld großflächig und deckt es steril ab",
-      "/me lagert den Patienten in Seitenlage und fixiert ihn",
-      "/me setzt den Hautschnitt und präpariert schichtweise bis zum Gelenk",
-      "/me entfernt den Gelenkkopf und bereitet die Pfanne vor",
-      "/me setzt die Prothese ein und prüft die Gelenkstabilität",
-      "/me legt eine Redon-Drainage ein und verschließt die Wunde schichtweise",
-      "Notiz: Antibiose und Thromboseprophylaxe nach ärztlicher Anordnung",
-      "Notiz: Redon-Drainage entfernen, sobald die Sekretmenge gering ist"
+      "/me nimmt Prothese, chirurgisches Instrumentarium, Tupfer und Nahtmaterial aus dem OP-Set",
+      "/me bereitet die Operationsstelle vor und desinfiziert sie",
+      "/me legt Haut und Weichgewebe zurück",
+      "/me entfernt das beschädigte Gelenk und schneidet die Knochen zu",
+      "/me setzt die Prothese ein und fixiert sie",
+      "/me vernäht die Haut und kontrolliert die Wundheilung"
     ]
   },
   {
     "id": "Trommelfellriss",
     "cat": "o",
     "title": "Trommelfellriss",
-    "desc": "Ein geplatztes Trommelfell entsteht durch starken Druck oder laute Geräusche (z. B. Explosionen) und führt zu Schmerzen, Hörverlust oder Blutungen im Ohr.",
+    "desc": "Ein geplatztes Trommelfell entsteht durch starken Druck oder laute Geräusche (z. B. Explosionen) und kann zu Schmerzen, Hörverlust oder Blutungen im Ohr führen.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Otoskop zur Sichtkontrolle des Trommelfells",
+          "Narkoseausrüstung für schmerzfreien Eingriff",
+          "Silikonfolie zur Schienung des Trommelfells",
+          "Ohrenspüllösung / sterile Tupfer zur Reinigung"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Narkose einleiten, um Schmerzen zu vermeiden",
-          "Ohr reinigen, Schmutz und Blut entfernen",
-          "Eingerollte Ränder des gerissenen Trommelfells glätten und Silikonfolie als Schiene einsetzen",
-          "Ohr erneut spülen, um Rückstände zu entfernen",
-          "Schmerzlindernde Ohrentropfen verabreichen, bei Bedarf Hörgerät einsetzen",
-          "Narkose beenden und den Patienten engmaschig überwachen"
+          "Einleitung der Narkose, um Schmerzen zu vermeiden",
+          "Reinigung des Ohres, Entfernung von Schmutz und Blut",
+          "Glätten der eingerollten Ränder des gerissenen Trommelfells",
+          "Einsetzen einer Silikonfolie als Schiene zur Stabilisierung",
+          "Erneutes Spülen des Ohres, um Rückstände zu entfernen",
+          "Schmerzlindernde Ohrentropfen verabreichen",
+          "Bei Bedarf Hörgerät einsetzen, um Hörvermögen zu unterstützen",
+          "Beendigung der Narkose und engmaschige Überwachung des Patienten"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Otoskop, Narkoseausrüstung, Silikonfolie zur Schienung, Ohrenspüllösung und sterile Tupfer"
+          "Otoskop: prüft Umfang und Lage des Risses",
+          "Silikonfolie: stabilisiert das Trommelfell und unterstützt die Heilung",
+          "Ohrenspülung: hält das Gewebe sauber und reduziert Infektionsrisiko",
+          "Ohrentropfen: lindern Schmerzen und schützen vor Entzündungen"
         ]
       }
     ],
@@ -1318,41 +1442,46 @@
       "/me reinigt das Ohr vorsichtig",
       "/me glättet die eingerollten Ränder des Trommelfells",
       "/me legt die Silikonfolie als Schiene ein",
+      "/me spült das Ohr erneut aus",
       "/me tropft schmerzlindernde Ohrentropfen ein",
-      "/me überwacht den Patienten nach Beendigung der Narkose",
-      "Notiz: Hörvermögen nach der Abheilung kontrollieren"
+      "/me überwacht den Patienten nach der Beendigung der Narkose"
     ]
   },
   {
-    "id": "Gehirntumor (Wach-OP)",
+    "id": "Gehirntumor – Wach-OP",
     "cat": "o",
-    "title": "Gehirntumor (Wach-OP)",
-    "desc": "Abnorme Zellwucherung im Gehirn, die Druck auf benachbarte Strukturen ausübt und neurologische Funktionen beeinträchtigt. Die Behandlung hängt von Lage, Größe und Art des Tumors ab.",
+    "title": "Gehirntumor – Wach-OP",
+    "desc": "Ein Gehirntumor ist eine abnormale Zellwucherung im Gehirn, die Druck auf benachbarte Strukturen ausüben und neurologische Funktionen beeinträchtigen kann. Die Behandlung hängt von Lage, Größe und Art des Tumors ab.",
     "sections": [
       {
         "h": "Erkennung",
+        "mode": "bullet",
         "items": [
-          "MRT oder CT: Tumorgröße, Lage und angrenzendes Gewebe",
-          "Fluoreszenzmittel macht den Tumor während der OP sichtbar",
-          "Neurologische Tests: Sprache, Bewegung, Sensorik"
+          "MRT / CT: Darstellung von Tumorgröße, Lage und angrenzendem Gewebe.",
+          "Fluoreszenzmittel: Hilft während der OP, den Tumor sichtbar zu machen.",
+          "Neurologische Tests: Sprach-, Bewegungs- und Sensoriktests zur Funktionsüberwachung."
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Wach-OP immer von mindestens zwei Chirurgen durchführen, lokale Betäubung am Kopf",
-          "Kopf in stabiler Halterung fixieren, zweiter Arzt prüft während der OP Sprache und Funktionen",
-          "Hautschnitt setzen, Schädelknochen mit Bohrungen und Sägen öffnen",
-          "Hirnhaut öffnen und mit Spreizern präzisen Zugang zum Tumor schaffen",
-          "Tumor mit Ultraschall- oder Lasersystem präzise entfernen, Blut absaugen, ggf. Kunstgewebe einsetzen",
-          "Operationsgebiet sterilisieren, Dura verschließen, Kopfhaut nähen, sterilen Verband anlegen"
+          "WACH-OPs werden immer von mindestens zwei Chirurgen durchgeführt.",
+          "Vorbereitung: Lokale Betäubung am Kopf, Fixierung in stabiler Halterung.",
+          "Sprachkontrolle: Zweiter Arzt überprüft während der OP regelmäßig wichtige Funktionen.",
+          "Zugang zum Tumor: Schnitt in die Haut, Öffnung des Schädelknochens mittels Bohrungen und Sägen.",
+          "Hirnhaut öffnen: Präziser Zugang zum Tumor mit Spreizen.",
+          "Tumorentfernung: Abtrennen von Tumorrändern, Ultraschall- oder Lasersysteme für präzise Entfernung.",
+          "Blutkontrolle & Ersatz: Absaugen von Blut, ggf. Einsetzen von Kunstgewebe.",
+          "Abschluss: Sterilisation, Verschluss der Dura, Nähen der Kopfhaut, steriler Verband."
         ]
       },
       {
-        "h": "Überwachung",
+        "h": "Wichtige Werte",
+        "mode": "bullet",
         "items": [
-          "Puls, Blutdruck und Sauerstoffsättigung kontinuierlich, dazu regelmäßige Sprach- und Bewegungschecks"
+          "Vitalwerte: Puls, Blutdruck, Sauerstoffsättigung kontinuierlich überwachen.",
+          "Neurologische Tests: Regelmäßige Sprach- und Bewegungschecks während der OP."
         ]
       }
     ],
@@ -1361,34 +1490,49 @@
       "/me überprüft Bewusstsein und Vitalwerte des Patienten vor OP-Beginn",
       "/me fixiert den Kopf in der stabilen Halterung und injiziert lokale Betäubung",
       "/me führt Schnitt durch die Haut und öffnet den Schädelknochen",
-      "/me entfernt Tumor präzise mit dem Ultraschall-Laser und saugt Blut ab",
-      "/me verschließt die Dura, näht die Kopfhaut und legt sterilen Verband an",
-      "/me überprüft fortlaufend neurologische Funktionen während der Wach-OP",
-      "Notiz: Sprache und Bewegung während der Operation dokumentieren"
+      "/me öffnet vorsichtig die Hirnhaut und platziert Spreizer für besseren Zugang",
+      "/me entfernt Tumor präzise mit Ultraschall-Laser und saugt Blut ab",
+      "/me sterilisiert das Operationsgebiet",
+      "/me verschließt die Dura, näht die Kopfhaut und legt einen sterilen Verband an",
+      "/me überprüft fortlaufend neurologische Funktionen während der Wach-OP"
     ]
   },
   {
     "id": "Blutvergiftung (Sepsis)",
     "cat": "o",
     "title": "Blutvergiftung (Sepsis)",
-    "desc": "Lebensbedrohliche Reaktion des Körpers auf eine Infektion: Bakterien oder Giftstoffe im Blut lösen eine schwere Entzündung aus. Ursachen: infizierte Wunden, Lungenentzündung, Harnwegs- oder Bauchinfektionen. Symptome: Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck, Verwirrtheit.",
+    "desc": "Eine Blutvergiftung (Sepsis) ist eine lebensbedrohliche Reaktion des Körpers auf eine Infektion. Dabei gelangen Bakterien oder deren Giftstoffe ins Blut und führen zu einer schweren Entzündungsreaktion. Mögliche Ursachen sind infizierte Wunden, Lungenentzündungen, Harnwegsinfekte oder Bauchinfektionen. Typische Symptome sind Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck und Verwirrtheit.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Intravenöser Zugang (z. B. Shaldon-Katheter) zur Medikamentengabe und Dialyse",
+          "Infusionssysteme für Kochsalzlösung und Heparin",
+          "Blutkulturen und Laboranalysen zur Identifikation der Infektionsquelle",
+          "Dialysegerät zur Blutreinigung, EKG, Blutdruck- und Sauerstoffmonitor",
+          "OP-Besteck zur Entfernung infizierten Gewebes"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Venösen Zugang für Infusionen und Medikamente legen",
-          "Kochsalzlösung zur Stabilisierung des Kreislaufs geben",
-          "Breitbandantibiotika gegen die Infektion verabreichen",
-          "Dialyse einleiten (entfernt giftige Substanzen und überschüssige Flüssigkeit)",
-          "Infektionsquelle operativ entfernen, falls möglich",
-          "Bei starkem Blutverlust Bluttransfusion durchführen"
+          "Legen eines venösen Zugangs für Infusionen und Medikamente",
+          "Gabe von Kochsalzlösung zur Stabilisierung des Kreislaufs",
+          "Verabreichung von Breitbandantibiotika zur Bekämpfung der Infektion",
+          "Einleitung einer Dialyse zur Entfernung giftiger Substanzen und überschüssiger Flüssigkeit",
+          "Operative Entfernung der Infektionsquelle, falls möglich",
+          "Bei starkem Blutverlust: Durchführung einer Bluttransfusion"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Venöser Zugang (z. B. Shaldon-Katheter), Infusionssysteme für Kochsalzlösung und Heparin, Blutkulturen und Labor, Dialysegerät, EKG, Blutdruck- und Sauerstoffmonitor, OP-Besteck"
+          "Vitalwertmonitor: Überwacht Herzfrequenz, Blutdruck und Sauerstoffversorgung",
+          "Dialysegerät: Entfernt Giftstoffe und unterstützt die Nierenfunktion",
+          "Antibiotikagabe: Stoppt das Wachstum der Bakterien"
         ]
       }
     ],
@@ -1398,30 +1542,40 @@
       "/me verabreicht Kochsalzlösung und Antibiotika",
       "/me platziert einen Shaldon-Katheter und startet die Dialyse",
       "/me entfernt operativ die Infektionsquelle, falls erforderlich",
-      "/me überwacht die Vitalwerte und passt die Therapie an",
-      "Notiz: Infektionszeichen und Vitalwerte im Verlauf dokumentieren"
+      "/me überwacht die Vitalwerte und passt die Therapie an"
     ]
   },
   {
     "id": "Unterschenkelprothese",
     "cat": "o",
     "title": "Unterschenkelprothese",
-    "desc": "Ersetzt nach einer Amputation das entfernte Bein, ermöglicht Mobilität und verteilt den Druck auf den Stumpf.",
+    "desc": "Eine Unterschenkelprothese ersetzt nach Amputation das entfernte Bein, ermöglicht Mobilität und Druckverteilung auf den Stumpf.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Silikonhaftschaft als Verbindung zwischen Stumpf und Prothese",
+          "Protheseenschaft und Schraubverbindungen",
+          "Gelanwendung zur Druckverteilung"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Silikongel auf Stumpf und Haftschaft auftragen",
-          "Silikonhaftschaft am Stumpf anlegen",
-          "Prothese am Schaft über den Haftschaft befestigen",
-          "Auf Druckstellen und korrekte Sitzposition kontrollieren"
+          "Auftragen des Silikongels auf den Stumpf und den Haftschaft",
+          "Anlegen des Silikonhaftschafts am Stumpf",
+          "Befestigung der Prothese am Schaft über den Haftschaft",
+          "Kontrolle auf Druckstellen und korrekte Sitzposition"
         ]
       },
       {
-        "h": "Geräte",
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
         "items": [
-          "Silikonhaftschaft als Verbindung zwischen Stumpf und Prothese, Prothesenschaft mit Schraubverbindungen, Gel zur Druckverteilung"
+          "Silikonhaftschaft: verteilt den Druck gleichmäßig, schützt vor Reibung",
+          "Protheseenschaft: stellt sichere Verbindung für Gehfähigkeit her"
         ]
       }
     ],
@@ -1429,34 +1583,38 @@
       "/me nimmt Silikonhaftschaft, Prothesenschaft, Gel und Schraubverbindungen aus dem Prothesenlager",
       "/me trägt Gel auf den Stumpf auf und setzt den Silikonhaftschaft",
       "/me befestigt die Prothese am Schaft und prüft den Sitz",
-      "/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten",
-      "/me prüft die Druckstellen am Stumpf",
-      "/me kontrolliert die Schraubverbindungen des Prothesenschafts",
-      "Notiz: Druckstellen am Stumpf regelmäßig kontrollieren"
+      "/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten"
     ]
   },
   {
-    "id": "Verätzungen",
+    "id": "Behandlung von Verätzungen",
     "cat": "o",
-    "title": "Verätzungen",
-    "desc": "Direkter Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen (Laborunfälle, industrielle Chemikalien, gefährliche SCPs). Symptome: starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden, bei großen Flächen auch Reaktionen im ganzen Körper.",
+    "title": "Behandlung von Verätzungen",
+    "desc": "Eine Verätzung entsteht durch direkten Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen. Ursachen können Laborunfälle, industrielle Chemikalien oder Vorfälle bei gefährlichen SCPs sein. Symptome sind starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden und ggf. systemische Reaktionen bei großflächigen Verletzungen.",
     "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Steriles Spülset (NaCl oder Wasser) zur Sofortreinigung",
+          "Sterile Wundverbände und Brandwundenauflagen",
+          "Pinzetten und Skalpell zum Entfernen abgestorbenen Gewebes",
+          "Schmerzmedikation und Antibiotikatherapie",
+          "Vitalwertmonitor zur Überwachung von Puls, Blutdruck und Sauerstoff",
+          "Gegebenenfalls Transplantationsbesteck bei schweren Verätzungen"
+        ]
+      },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Betroffene Haut sofort mindestens 15–20 Minuten mit viel Wasser oder NaCl spülen",
-          "Kontaminierte Kleidung und Rückstände vorsichtig entfernen",
-          "1. Grad: Reinigung, Kühlung, schmerzlindernde Salbe",
-          "2. Grad: abgestorbenes Gewebe entfernen, steril abdecken, Schmerzmittel geben",
-          "3. und 4. Grad: Nekrosen chirurgisch entfernen, ggf. Hauttransplantation, engmaschig überwachen",
-          "Verbände fixieren und Heilungsverlauf regelmäßig kontrollieren"
-        ]
-      },
-      {
-        "h": "Geräte",
-        "items": [
-          "Steriles Spülset (NaCl oder Wasser), Wundverbände und Brandwundenauflagen, Pinzette und Skalpell, Schmerzmittel und Antibiotika, Vitalwertmonitor, bei schweren Fällen Transplantationsbesteck"
+          "Sofortiges Spülen der betroffenen Haut mit viel Wasser oder NaCl, mindestens 15–20 Minuten",
+          "Vorsichtiges Entfernen kontaminierter Kleidung und Rückstände",
+          "Bei leichten Verätzungen (1. Grad): Reinigung, Kühlung, Auftragen schmerzlindernder Salbe",
+          "Bei mittleren Verätzungen (2. Grad): Entfernen abgestorbenen Gewebes, sterile Abdeckung, Gabe von Schmerzmitteln und Antibiotika",
+          "Bei schweren Verätzungen (3. und 4. Grad): Chirurgische Entfernung von Nekrosen, ggf. Hauttransplantation, engmaschige Überwachung",
+          "Fixierung der Verbände und regelmäßige Kontrolle des Heilungsverlaufs",
+          "Antibiotikatherapie: Verhindert Infektionen bei offenen Wunden"
         ]
       }
     ],
@@ -1466,8 +1624,7 @@
       "/me entfernt kontaminierte Kleidung und Rückstände vorsichtig",
       "/me trägt Salbe oder Gel auf und deckt die Wunde steril ab",
       "/me entfernt abgestorbenes Gewebe bei tieferen Verätzungen",
-      "/me legt neue sterile Verbände an und überwacht die Vitalwerte",
-      "Notiz: Heilungsverlauf der betroffenen Haut regelmäßig kontrollieren"
+      "/me legt neue sterile Verbände an und überwacht die Vitalwerte"
     ]
   },
   {
