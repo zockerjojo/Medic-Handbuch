@@ -209,7 +209,7 @@ function applySet(){
 }
 
 /* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
-const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], subs: [], subDel: [], subOf: {}, v: 6});   // v: Stand der Umstellungen (4: Operationen umbenannt, 5: Narkose ganz oben, Unterkategorien, 6: Reihenfolge und Unterkategorien aus akten.json)
+const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], subs: [], subDel: [], subOf: {}, v: 7});   // v: Stand der Umstellungen (4: Operationen umbenannt, 5: Narkose ganz oben, Unterkategorien, 6: Reihenfolge und Unterkategorien aus akten.json, 7: Lokalanästhesie und Regional-, Plexus- und Spinalanästhesie bei Operationen)
 function save(){
   const now = JSON.stringify(S);
   if (lastSaved !== null && now !== lastSaved) {
@@ -234,11 +234,22 @@ function orderFix(saved, made = S.made){
 }
 // Umbenennungen (Stand 4): alte Kennung → neue Kennung. Gespeicherte Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit.
 const RENAMED = {'Narkose einleiten': 'Narkose richtig einleiten', 'Verätzungen': 'Behandlung von Verätzungen', 'Gehirntumor (Wach-OP)': 'Gehirntumor – Wach-OP', 'Korrosion durch SCP-106 (Pocket Dimension)': 'Korrosion - Pocket Dimension (SCP-106)'};
+// Stand 7: Lokalanästhesie sowie Regional-, Plexus- und Spinalanästhesie stehen bei Operationen, OP-Grundlagen & Narkose.
+// Eine gespeicherte Reihenfolge setzt sie hinter die letzte Akte dieser Unterkategorie. Alle anderen Verschiebungen bleiben.
+const STAND7 = ['Lokalanästhesie', 'Regional-, Plexus- und Spinalanästhesie'];
+function stand7(order, made = S.made){   // mit vollständiger Reihenfolge: fehlende Akten kommen wie beim Laden dazu
+  const ins = STAND7.filter(x => own(BASE, x)), rest = orderFix(order, made).filter(x => !ins.includes(x));
+  const grp = ins.length ? DATA_SUBOF[ins[0]] : null;
+  let at = -1;
+  rest.forEach((x, k) => { if (grp && own(DATA_SUBOF, x) && DATA_SUBOF[x] === grp) at = k; });
+  rest.splice(at + 1, 0, ...ins);
+  return rest;
+}
 function migrate(){
   if (!Array.isArray(S.subs)) S.subs = [];   // Unterkategorien, immer vorhanden
   if (!Array.isArray(S.subDel)) S.subDel = [];   // im Browser gelöschte Unterkategorien aus der Datei
   if (!S.subOf || typeof S.subOf !== 'object') S.subOf = {};
-  if (S.v >= 6) return;
+  if (S.v >= 7) return;
   if (!(S.v >= 3)) {   // Stand 3: den Abschnitt „Behandlung“ entfernen, auch aus früher gespeicherten Änderungen
     const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
     Object.keys(S.ov || {}).forEach(k => { if (S.ov[k] && Array.isArray(S.ov[k].sections)) S.ov[k].sections = ohneBeh(S.ov[k].sections); });
@@ -259,7 +270,8 @@ function migrate(){
     S.order = [...S.order.filter(istOben), ...S.order.filter(x => !istOben(x))];
   }
   if (S.v < 6) resetToData(S);   // Stand 6: Reihenfolge und Unterkategorien aus akten.json, einmal
-  S.v = 6;
+  if (S.v === 6) S.order = stand7(S.order);   // Stand 7: die beiden Akten zu Operationen, hinter Narkose richtig einleiten
+  S.v = 7;
   try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {}
 }
 // Stand 6: Reihenfolge, Unterkategorien und Zuordnungen kommen aus akten.json. Eigene Akten und eigene Unterkategorien bleiben.
@@ -278,10 +290,15 @@ function resetToData(st){
 function syncData(st = S){
   st.subDel = (st.subDel || []).filter(id => own(DATA_GROUP, id));
   st.subs = (st.subs || []).filter(s => s.src !== 'd' || own(DATA_GROUP, s.id));
-  DATA_GROUPS.forEach(g => {
+  DATA_GROUPS.forEach((g, i) => {
     const e = st.subs.find(s => s.id === g.id);
-    if (e) { e.src = 'd'; if (!e.ren) { e.t = g.t; e.cat = g.cat; } }
-    else if (!st.subDel.includes(g.id)) st.subs.push({id: g.id, cat: g.cat, t: g.t, src: 'd'});
+    if (e) { e.src = 'd'; if (!e.ren) { e.t = g.t; e.cat = g.cat; } return; }
+    if (st.subDel.includes(g.id)) return;
+    // neu aus der Datei: an ihre Stelle, also vor die nächste bekannte Unterkategorie derselben Kategorie, sonst hinter die vorige
+    const danach = DATA_GROUPS.slice(i + 1).find(n => n.cat === g.cat && st.subs.some(s => s.id === n.id));
+    const davor = DATA_GROUPS.slice(0, i).reverse().find(p => p.cat === g.cat && st.subs.some(s => s.id === p.id));
+    const at = danach ? st.subs.findIndex(s => s.id === danach.id) : davor ? st.subs.findIndex(s => s.id === davor.id) + 1 : st.subs.length;
+    st.subs.splice(at, 0, {id: g.id, cat: g.cat, t: g.t, src: 'd'});
   });
 }
 function load(){ loadRaw(); migrate(); syncData(); S.order = orderFix(S.order); lastSaved = JSON.stringify(S); }
@@ -720,7 +737,7 @@ function renderNav(){
   let h = BRAND + item('a', 'Alle', L.length) + item('fav', '★ Favoriten', L.filter(r => S.fav.includes(r.id)).length);
   // Akten ganz oben (früher die Kategorie Narkose): ohne Überschrift direkt unter den Favoriten, danach eine Trennlinie
   const top = L.filter(r => r.cat === TOP);
-  if (top.length) h += `<div class="gl flat">${top.map(navLink).join('')}</div><div class="sep"></div>`;
+  h += (top.length ? `<div class="gl flat">${top.map(navLink).join('')}</div>` : '') + '<div class="sep"></div>';
   Object.keys(C).filter(k => k !== TOP).forEach(k => {
     const rs = L.filter(r => r.cat === k), on = opened.has(k);
     h += `<div class="cr${view === k ? ' on' : ''}" data-act="view" data-v="${k}"><b class="tg" data-act="toggle" data-v="${k}">${on ? '▾' : '▸'}</b><span>${C[k]}</span><i>${rs.length}</i></div>`;
@@ -1076,6 +1093,7 @@ function importedState(d){
     res.data.fav = S.fav.filter(id => ids.has(id));
   }
   if (!(Number(d.v) >= 6)) resetToData(res.data);   // ältere Stände: Reihenfolge und Unterkategorien aus akten.json
+  if (Number(d.v) === 6) res.data.order = stand7(res.data.order, res.data.made);   // Stand 6: die beiden Akten zu Operationen
   syncData(res.data);
   return res;
 }
@@ -1338,26 +1356,34 @@ function runTests(){
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
   T('Den Abschnitt Behandlung gibt es in keiner Akte mehr', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung')), 'Behandlung noch in einer Akte'));
-  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 6 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
+  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 7 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
   T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
     reset0(); S.v = 3; S.ov['Verätzungen'] = {me: ['/me Test']}; S.del['Gehirntumor (Wach-OP)'] = true; S.fav = ['Verätzungen']; S.order = ['Verätzungen', 'Schlaganfall'];
     migrate();
-    const ok1 = S.v === 6 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order.filter(x => x === 'Behandlung von Verätzungen').length === 1 && !S.order.includes('Verätzungen');   // die Reihenfolge kommt jetzt aus der Datei
+    const ok1 = S.v === 7 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order.filter(x => x === 'Behandlung von Verätzungen').length === 1 && !S.order.includes('Verätzungen');   // die Reihenfolge kommt jetzt aus der Datei
     reset0(); ok(ok1, 'Umbenennung fehlgeschlagen');
   });
   T('Die umbenannten Operationen sind Akten in der Kategorie Operationen', () => ok(Object.values(RENAMED).every(t => { const r = SEED.find(x => x.id === t); return !!r && r.cat === 'o'; }) && !SEED.some(r => r.id === 'Narkose einleiten'), 'Umbenennung und akten.json stimmen nicht überein'));
   // ===== Narkose ganz oben, Unterkategorien (Behandlungen, Operationen, Medikamente) =====
-  T('Narkose-Akten stehen ganz oben, die Kategorie Narkose gibt es nicht mehr', () => {
+  T('Akten ganz oben stehen vorn in akten.json, die Kategorie Narkose gibt es nicht mehr', () => {
     reset0();
     const n = SEED.filter(r => r.cat === TOP).length;
-    ok(n > 0 && SEED.slice(0, n).every(r => r.cat === TOP), 'nicht ganz oben in akten.json');
+    ok(SEED.slice(0, n).every(r => r.cat === TOP), 'nicht ganz oben in akten.json');
     ok(!own(C, 'n') && !SEED.some(r => r.cat === 'n') && catKey('n') === TOP, 'Kategorie n noch da');
-    ok(all()[0].cat === TOP, 'in der Liste nicht zuerst');
+    ok(n === 0 || all()[0].cat === TOP, 'in der Liste nicht zuerst');
+  });
+  T('Lokalanästhesie und Regional-, Plexus- und Spinalanästhesie gehören zu Operationen, OP-Grundlagen & Narkose', () => {
+    reset0(); load();
+    const o1 = sidebarOrder('o', live().filter(r => r.cat === 'o')).filter(r => (subOfRec(r) || {}).id === 'o1').map(r => r.id);
+    ok(o1.join('|') === 'Narkose richtig einleiten|Lokalanästhesie|Regional-, Plexus- und Spinalanästhesie', o1.join('|'));
+    ok(SEED.filter(r => r.cat === TOP).length === 0, 'noch Akten ganz oben');
+    reset0();
   });
   T('Akten ganz oben stehen ohne Überschrift direkt unter den Favoriten', () => {
     reset0(); render();
     const h = $('#n').innerHTML, fav = h.indexOf('Favoriten'), top = h.indexOf('class="gl flat"'), erste = h.indexOf('data-v="v"');
+    if (!SEED.some(r => r.cat === TOP)) { ok(top < 0, 'leerer oberer Block wird trotzdem angezeigt'); return; }   // ohne Akten ganz oben gibt es keinen Block
     ok(fav > 0 && top > fav && top < erste, 'Reihenfolge der Seitenleiste falsch');
     const dazwischen = h.slice(top, erste);
     ok(!dazwischen.includes('<h') && !dazwischen.includes('class="c"'), 'Überschrift in der Gruppe ganz oben');
@@ -1471,9 +1497,9 @@ function runTests(){
   });
   T('Akten bekommen eine Unterkategorie-Auswahl nur in Behandlungen, Operationen und Medikamenten', () => {
     reset0();
-    const b = SEED.find(r => r.cat === 'b'), n = SEED.find(r => r.cat === TOP);
+    const b = SEED.find(r => r.cat === 'b'), v = SEED.find(r => r.cat === 'v');
     ok(card(get(b.id)).includes('class="subsel"'), 'fehlt bei Behandlungen');
-    ok(n && !card(get(n.id)).includes('class="subsel"'), 'steht bei einer Akte ganz oben');
+    ok(v && !card(get(v.id)).includes('class="subsel"'), 'steht bei einer Vitalwerte-Akte');
   });
   T('Alle zeigt die Unterkategorie hinter der Kategorie, die Kategorie selbst nicht', () => {
     reset0();
@@ -1538,7 +1564,7 @@ function runTests(){
     ok(!own(S.subOf, r) && S.subs.some(s => s.id === sid) && !S.made.some(m => m.id === r), 'Zuordnung oder Unterkategorie falsch');
   });
   // ===== Unterkategorien aus akten.json (Stand 6) =====
-  T('Neuer Browserstand startet auf Stand 6 mit leerer Löschliste', () => { const f = fresh(); ok(f.v === 6 && Array.isArray(f.subDel) && f.subDel.length === 0, 'Stand falsch'); });
+  T('Neuer Browserstand startet auf Stand 7 mit leerer Löschliste', () => { const f = fresh(); ok(f.v === 7 && Array.isArray(f.subDel) && f.subDel.length === 0, 'Stand falsch'); });
   T('Die Datei legt Unterkategorien fest: jede steht vor ihren Akten', () => {
     const akte = t => ({id: t, cat: 'b', title: t, sections: [{h: 'Erkennung', items: ['x']}]});
     const p = parseData([
@@ -1606,13 +1632,48 @@ function runTests(){
     finally { DATA_GROUPS = alle; DATA_GROUP = karte; }
     reset0();
   });
+  T('Stand 7: Lokalanästhesie und Regional-, Plexus- und Spinalanästhesie bleiben bei OP-Grundlagen, auch bei gespeicherter Reihenfolge', () => {
+    reset0(); syncData();
+    const alle = SEED.map(r => r.id), neu = STAND7.filter(x => alle.includes(x));
+    S.v = 6; S.order = [...neu, ...alle.filter(x => !neu.includes(x)).reverse()];   // so sieht ein Stand 6 aus: die beiden oben
+    const vorher = S.order.filter(x => !neu.includes(x));
+    migrate();
+    const o1 = sidebarOrder('o', live().filter(r => r.cat === 'o')).filter(r => (subOfRec(r) || {}).id === 'o1').map(r => r.id);
+    ok(S.v === 7, 'Stand nicht gesetzt');
+    ok(S.order.filter(x => !neu.includes(x)).join('|') === vorher.join('|'), 'andere Verschiebungen verändert');
+    ok(o1.join('|') === 'Narkose richtig einleiten|Lokalanästhesie|Regional-, Plexus- und Spinalanästhesie', o1.join('|'));
+    reset0();
+  });
+  T('Stand 7: die Reihenfolge eines Stand-6-Imports stimmt auch', () => {
+    reset0();
+    const o = importedState({v: 6, order: [...STAND7, ...SEED.map(r => r.id).filter(x => !STAND7.includes(x))]}).data.order;
+    reset0();
+    const a = o.indexOf('Narkose richtig einleiten'), b = o.indexOf('Lokalanästhesie'), c = o.indexOf('Regional-, Plexus- und Spinalanästhesie');
+    ok(a >= 0 && a < b && b < c, 'Import: ' + [a, b, c].join(','));
+  });
+  T('Eine Unterkategorie, die die Datei neu hat, erscheint an ihrer Stelle', () => {
+    reset0(); load();
+    const soll = DATA_GROUPS.filter(g => g.cat === 'o').map(g => g.id).join('|');
+    const neu = DATA_GROUPS.find(g => g.t === 'Intraoperative Komplikationen & Notfälle').id;
+    S.subs = S.subs.filter(s => s.id !== neu);   // so sieht ein Browserstand aus, der diese Unterkategorie noch nicht kennt
+    syncData();
+    const ist = subsOf('o').map(s => s.id).join('|');
+    reset0();
+    ok(ist === soll, 'Reihenfolge: ' + ist);
+  });
+  T('Starke innere Blutung steht in der Unterkategorie Intraoperative Komplikationen & Notfälle', () => {
+    const r = SEED.find(x => x.title === 'Starke innere Blutung (Intraoperativ)');
+    const g = r && DATA_SUBOF[r.id] ? DATA_GROUP[DATA_SUBOF[r.id]] : null;
+    ok(r && r.cat === 'o' && g && g.t === 'Intraoperative Komplikationen & Notfälle', 'falsche Unterkategorie');
+    ok(r && r.sections.map(s => s.h).join('|') === 'Erkennung|Ablauf' && (r.me[0] || '').startsWith('/me nimmt '), 'Aufbau');
+  });
   T('Stand 6: eine ältere Reihenfolge wird einmal auf die Datei gesetzt, eigene Gruppen bleiben', () => {
     reset0();
     S.v = 5; S.order = S.order.slice().reverse();   // eine selbst sortierte, ältere Reihenfolge
     const eigene = subAdd('b', 'Eigene Gruppe').id, erste = SEED.find(r => r.cat === 'b').id;
     S.subOf[erste] = eigene;   // von dir verschoben
     migrate();
-    ok(S.v === 6, 'Stand nicht gesetzt');
+    ok(S.v === 7, 'Stand nicht gesetzt');
     ok(S.order.slice(0, SEED.length).join('|') === SEED.map(r => r.id).join('|'), 'Reihenfolge nicht aus der Datei');
     ok(S.subs.some(s => s.id === eigene), 'eigene Gruppe verloren');
     ok(!own(S.subOf, erste), 'deine Verschiebung wurde nicht zurückgesetzt');
