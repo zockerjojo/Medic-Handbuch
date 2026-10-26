@@ -1030,7 +1030,7 @@
     "me": [
       "/me nimmt Operationsbesteck, Schädelplatte, Narkosemittel, Klammern und Verbandmaterial aus dem OP-Set",
       "/me überprüft Bewusstsein und Pupillenreaktion des Patienten",
-      "/me legt venösen Zugang und bereitet die Narkoseeinleitung vor",
+      "/me legt einen venösen Zugang und bereitet die Narkoseeinleitung vor",
       "/me desinfiziert den betroffenen Kopfbereich und eröffnet die Schädeldecke",
       "/me entfernt vorsichtig Frakturfragmente und passt die Schädelplatte an",
       "/me saugt überschüssige Flüssigkeit ab und verschließt die Dura",
@@ -1083,7 +1083,7 @@
       "/me legt Haut und Weichgewebe zurück",
       "/me entfernt das beschädigte Gelenk und schneidet die Knochen zu",
       "/me setzt die Prothese ein und fixiert sie",
-      "/me vernäht die Haut und kontrolliert die Wundheilung"
+      "/me vernäht die Haut und kontrolliert die Blutung"
     ]
   },
   {
@@ -1130,7 +1130,7 @@
     ],
     "me": [
       "/me nimmt Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial und sterile Verbände aus dem OP-Set",
-      "/me leitet die Narkose ein und legt den Tourniquet an",
+      "/me leitet die Narkose ein und legt den Touriquet an",
       "/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe",
       "/me fixiert den Knochen mit einem Splint und verödet Gefäße",
       "/me vernäht die Haut und legt sterile Verbände an",
@@ -1269,7 +1269,7 @@
       "/me nimmt Katheter, Ballon, Stent, Kontrastmittel, Röntgengerät und Gefäßmedikation aus dem Herzkatheterlabor",
       "/me gibt dem Patienten die Tablette Lisinopril-2,5",
       "/me legt den Patienten für die Narkose bereit",
-      "/me führt den Katheter vorsichtig über die Armarterie ein",
+      "/me führt den Katheter vorsichtig in die Armarterie ein",
       "/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät",
       "/me platziert den Stent und bläst den Miniaturballon auf",
       "/me entfernt den Katheter und versorgt die Wunde",
@@ -1571,7 +1571,7 @@
       "/me spritzt Esmolol zur Blutdruckkontrolle",
       "/me verabreicht Alteplase-Infusion über 90 Minuten",
       "/me führt Katheter über die Leistenarterie ein",
-      "/me navigiert den Stent-Retriever mithilfe von Kontrastmittel und Röntgenbildern",
+      "/me navigiert den Stent-Retriever mithilfe von Röntgenbildern",
       "/me entfernt das Blutgerinnsel und überprüft die Durchblutung"
     ]
   },
@@ -1624,7 +1624,7 @@
       "/me legt die Silikonfolie als Schiene ein",
       "/me spült das Ohr erneut aus",
       "/me tropft schmerzlindernde Ohrentropfen ein",
-      "/me überwacht den Patienten nach der Beendigung der Narkose"
+      "/me überwacht den Patienten nach Beendigung der Narkose"
     ]
   },
   {
@@ -1673,7 +1673,7 @@
       "/me öffnet vorsichtig die Hirnhaut und platziert Spreizer für besseren Zugang",
       "/me entfernt Tumor präzise mit Ultraschall-Laser und saugt Blut ab",
       "/me sterilisiert das Operationsgebiet",
-      "/me verschließt die Dura, näht die Kopfhaut und legt einen sterilen Verband an",
+      "/me verschließt die Dura, näht die Kopfhaut und legt sterilen Verband an",
       "/me überprüft fortlaufend neurologische Funktionen während der Wach-OP"
     ]
   },
@@ -1720,10 +1720,10 @@
     "me": [
       "/me nimmt Kochsalzlösung, Vollhaut, Kunststoffimplantate, Heilsalbe und Verbandmaterial aus dem OP-Set",
       "/me prüft die betroffene Stelle auf Ausmaß der Korrosion",
-      "/me macht präzise Einschnitte, um totes Gewebe zu entfernen",
+      "/me macht präzise Schnitte, um totes Gewebe zu identifizieren",
       "/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut",
-      "/me setzt Kunststoffimplantate an den betroffenen Stellen ein",
-      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte und Kontrolle der Wundheilung"
+      "/me setzt Kunststoffimplantate an beschädigten Stellen ein",
+      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte"
     ]
   },
   {
