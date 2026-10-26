@@ -41,7 +41,7 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 
 **Abschnitte (`sections`).** Jeder Abschnitt ist ein Objekt mit diesen Feldern:
 
-- `h`: die Überschrift. Pflicht, nicht leer, z. B. `"Erkennung"`, `"Ablauf"` oder für Sonderfälle `"Geräte"`. Einen Abschnitt „Behandlung“ gibt es nicht mehr. Beim Import verlieren Akten-Dateien diesen Abschnitt. Ausnahme ist die Originalakte „Streifschuss, Stichwunde, Bisswunde“: Ihre Originaldatei enthält den Abschnitt, daher bleibt er dort erhalten.
+- `h`: die Überschrift. Pflicht, nicht leer, z. B. `"Erkennung"`, `"Ablauf"` oder für Sonderfälle `"Geräte"`. Den Abschnitt „Behandlung“ schreibst du nicht in neue Akten. Nur die Originalakten „Streifschuss, Stichwunde, Bisswunde“ und „Prellung“ haben ihn, weil ihre Originaldateien ihn enthalten. Beim Import bleibt er erhalten, wenn die Datei ihn enthält.
 - `items`: die Zeilen des Abschnitts. Pflicht. Eine Liste von Texten, jede Zeile ist ein Eintrag, keine leeren Zeilen.
 - `mode` (optional): die Darstellung.
   - `"bullet"`: Stichpunkte
@@ -220,7 +220,7 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 - [ ] Eine Trennlinie ist genau `---` in einer eigenen Zeile. Sie zählt nicht zu den /me-Zeilen.
 - [ ] `table` hat `h` (Liste von Texten) und `r` (Liste von Zeilen, jede Zeile ist eine Liste von Texten).
 - [ ] Es gibt keine doppelten Kennungen und keine doppelten Titel.
-- [ ] Es gibt keinen Abschnitt „Behandlung“ (Ausnahme: die Originalakte „Streifschuss, Stichwunde, Bisswunde“, siehe Abschnitt 3). Standardabschnitte sind Erkennung und Ablauf, dazu die Durchführung (`me`).
+- [ ] Den Abschnitt „Behandlung“ gibt es nur in den Originalakten „Streifschuss, Stichwunde, Bisswunde“ und „Prellung“ (siehe Abschnitt 3). Standardabschnitte sind Erkennung und Ablauf, dazu die Durchführung (`me`).
 - [ ] Keine Dosierungen, Mengen oder erfundenen Angaben.
 - [ ] Keine HTML-Tags. Verweise nur als `[[Titel]]` auf vorhandene Akten.
 - [ ] Keine Kommentare, keine nachgestellten Kommas, nur gerade Anführungszeichen.

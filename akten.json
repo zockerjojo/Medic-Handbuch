@@ -205,13 +205,10 @@
         ]
       },
       {
-        "h": "Ablauf",
+        "h": "Behandlung",
         "mode": "number",
         "items": [
-          "Verletzte Stelle prüfen, bei Brustprellung die Atmung kontrollieren",
-          "Kühlpack auflegen",
-          "Schmerzmittel geben",
-          "Bei Brustprellung Verband oder Brustkorsett anlegen"
+          "Lege eine Schiene oder einen Gibsverband an"
         ]
       }
     ],

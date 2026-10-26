@@ -1123,13 +1123,16 @@ function importAkteFile(file){
   rd.onload = () => {
     let d = null;
     try { d = JSON.parse(rd.result); } catch (e) {}
-    const res = akteImport(d);
-    if (res.errors) return toast(Object.values(res.errors)[0]);
-    openRec(res.id);   // zeigt die neue Akte gleich an
-    toast(res.renamed ? 'Akte importiert, der Titel war schon vergeben' : 'Akte importiert');
+    importAkteDaten(d);
   };
   rd.onerror = () => toast('Die Datei konnte nicht gelesen werden');
   rd.readAsText(file);
+}
+function importAkteDaten(d){   // legt eine Akte aus geladenen Daten an und zeigt sie gleich; „Importieren“ nutzt das auch für einzelne Akten
+  const res = akteImport(d);
+  if (res.errors) return toast(Object.values(res.errors)[0]);
+  openRec(res.id);
+  toast(res.renamed ? 'Akte importiert, der Titel war schon vergeben' : 'Akte importiert');
 }
 
 /* ===== Import: jede Angabe wird geprüft, ungültige Teile werden übersprungen ===== */
@@ -1143,7 +1146,7 @@ function cleanSections(x){
   (Array.isArray(x) ? x : []).forEach(s => {
     if (!s || typeof s !== 'object') return;
     const h = cleanText(s.h), items = (Array.isArray(s.items) ? s.items : []).filter(t => typeof t === 'string' && t.trim()).map(t => t.trim());
-    if (!h || !items.length || h === 'Behandlung') return;   // den Abschnitt Behandlung gibt es nicht mehr
+    if (!h || !items.length) return;
     const o = {h, items};
     if (typeof s.k === 'string' && s.k) o.k = s.k;
     if (own(MODES, s.mode)) o.mode = s.mode;
@@ -1222,6 +1225,7 @@ function importFile(file){
   rd.onload = () => {
     let d = null;
     try { d = JSON.parse(rd.result); } catch (e) {}
+    if (d && d.format === 'medic-akte') return importAkteDaten(d);   // eine einzelne Akte, auch über „Importieren“
     if (!looksLikeExport(d)) return toast('Das ist keine Export-Datei dieses Handbuchs');
     if (!confirm('Deine Änderungen werden durch die Datei ersetzt. Favoriten bleiben, wenn die Datei keine enthält. Fortfahren?')) return;
     const res = importedState(d);
@@ -1548,10 +1552,10 @@ function runTests(){
   T('Gespeicherte Einstellung „Eine Spalte“ wird zu einer Spalte', () => { store.setItem(SETKEY, JSON.stringify({grid: 'one'})); loadSet(); const eine = SET.cols === 1; store.removeItem(SETKEY); ok(eine, 'alte Einstellung nicht übernommen'); });
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
-  // Ausnahme: die Originaldatei von Streifschuss enthält den Abschnitt Behandlung und bleibt so, wie sie ist
-  T('Den Abschnitt Behandlung hat nur die Originalakte Streifschuss', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung') || r.title === 'Streifschuss, Stichwunde, Bisswunde') && SEED.some(r => r.title === 'Streifschuss, Stichwunde, Bisswunde' && r.sections.some(s => s.h === 'Behandlung')), 'Behandlung an falscher Stelle'));
+  // Ausnahmen: die Originaldateien von Streifschuss und Prellung enthalten den Abschnitt Behandlung und bleiben so, wie sie sind
+  T('Den Abschnitt Behandlung haben nur die Originalakten Streifschuss und Prellung', () => { const mit = ['Streifschuss, Stichwunde, Bisswunde', 'Prellung']; ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung') || mit.includes(r.title)), 'Behandlung an falscher Stelle'); ok(mit.every(t => SEED.some(r => r.title === t && r.sections.some(s => s.h === 'Behandlung'))), 'Originalakte ohne Behandlung'); });
   T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 7 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
-  T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
+  T('Import behält den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import mit Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.join('|') === 'Behandlung|Erkennung', 'Behandlung verloren: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
     reset0(); S.v = 3; S.ov['Verätzungen'] = {me: ['/me Test']}; S.del['Gehirntumor (Wach-OP)'] = true; S.fav = ['Verätzungen']; S.order = ['Verätzungen', 'Schlaganfall'];
     migrate();
