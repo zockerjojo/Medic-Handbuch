@@ -846,20 +846,15 @@
         "t": "Überwachung des EKGs",
         "me": [
           "Puls → Normalwert: 60–80 Schläge/min",
-          "Wenn Puls zu niedrig:",
-          "/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
-          "Wenn Puls zu Hoch:",
-          "/me verabreicht Fentanyl über den Zugang, um den Puls zu senken",
+          "Wenn Puls zu niedrig: /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
+          "Wenn Puls zu Hoch: /me verabreicht Fentanyl über den Zugang, um den Puls zu senken",
           "---",
           "Blutdruck → Normalwert: 120/80 mmHg",
-          "Wenn Blutdruck zu niedrig:",
-          "/me verabreicht Kochsalzlösung über den Zugang, um den Bludruck zu erhöhen",
-          "Wenn Blutdruck zu hoch:",
-          "/me verabreicht Propofol über den Zugang, um den Blutdruck zu Steigern",
+          "Wenn Blutdruck zu niedrig: /me verabreicht Kochsalzlösung über den Zugang, um den Blutdruck zu erhöhen",
+          "Wenn Blutdruck zu hoch: /me verabreicht Propofol über den Zugang, um den Blutdruck zu steigern",
           "---",
           "Sauerstoffsättigung (SpO2) → Normalwert: 98–100 %",
-          "Wenn Sauerstoffsättigung zu Niedrig:",
-          "/me erhöht die Sauerstoffzufuhr, um die Sauerstoffsättigung auf Normnalwert zu bringen"
+          "Wenn Sauerstoffsättigung zu Niedrig: /me erhöht die Sauerstoffzufuhr, um die Sauerstoffsättigung auf Normalwert zu bringen"
         ]
       }
     ],

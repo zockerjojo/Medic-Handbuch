@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCP-RP Medic Handbuch</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iI2QzMmYyZiIgZD0iTTIyIDRoMjB2MThoMTh2MjBINDJ2MThIMjJWNDJINFYyMmgxOHoiLz48L3N2Zz4="><link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAlElEQVR4nOzawQmAMBTG4AiuI+4/hjiQ3vVqwZJ8I4S+y09X5FbkCoDcsADnvl98aDuOhQF6AcgVALkCIFcA5AqAXAGQKwByBUBOH+C1sny95PzNc1nqBJArAHIFQK4AyBUAuQIgVwDkCoBcAZBrE2SQfolNogDIFQC5AiBXAOQKgFwBkCsAcgVAbtgiNItOADl9gBsAAP//W2rMdAAAAAZJREFUAwBMqAz4rxi1EQAAAABJRU5ErkJggg==">
 <style>
-:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;--gelb:#D9A748;color-scheme:dark}
-:root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);--gelb:#9a6b00;color-scheme:light}
+:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;color-scheme:dark}
+:root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;display:flex;height:100vh;background:var(--bg);color:var(--t);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
 nav{width:250px;flex:none;display:flex;flex-direction:column;background:var(--p);border-right:1px solid var(--l);padding:20px 12px;overflow:auto}
@@ -50,7 +50,7 @@ button:hover{border-color:var(--a)}
 .ekg svg{width:15px;height:15px}
 .ekg:hover,.ekg:focus-visible{color:var(--a);border-color:var(--a)}
 .me.ekgbody{margin-top:0}
-.ekgh{margin:16px 0 6px;font-size:17px;line-height:1.35;color:var(--gelb)}   /* Normalwerte im EKG-Fenster: gelbe Überschriften, nicht kopierbar */
+.ekgh{margin:16px 0 6px;font-size:17px;line-height:1.35;color:var(--a)}   /* Normalwerte im EKG-Fenster: gelbe Überschriften, nicht kopierbar */
 @media(max-width:560px){.lbl{display:none}}
 #l{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:26px;align-items:start;padding-bottom:20px}
 @media(max-width:700px){#l{grid-template-columns:minmax(0,1fr)}}
@@ -61,6 +61,9 @@ body.nav-off nav{display:none}
 @media(min-width:1000px){.card{padding:24px 28px 26px}}
 body.compact .card{padding:12px 14px 14px}
 body.compact #l{gap:14px}
+/* Titel der Unterkategorien: bleibt beim Scrollen direkt unter der Kopfleiste stehen */
+.grph{grid-column:1/-1;position:sticky;top:var(--sbh,64px);z-index:3;margin:0;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);display:flex;align-items:baseline;gap:12px;font:700 20px Georgia,serif;color:var(--a)}
+.grph i{font:600 13px system-ui,"Segoe UI",sans-serif;color:var(--m);font-style:normal}
 .card.gone{opacity:.65}
 .card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px var(--shadow)}}
 .card h2{cursor:pointer}
@@ -426,6 +429,9 @@ function removeBox(id, bi){
   if (!boxes[bi]) return;
   boxes.splice(bi, 1); patch(id, 'boxes', boxes);
 }
+// Die Hauptbox (Durchführung) lässt sich wie jede andere Box entfernen. Ihre Zeilen bleiben erhalten und kommen mit „wieder hinzufügen“ zurück.
+function removeMainBox(id){ patch(id, 'meOff', true); }
+function restoreMainBox(id){ clearField(id, 'meOff'); }
 function moveBox(id, bi, d){   // zusätzliche /me-Box nach oben (d = -1) oder unten (d = 1) tauschen; am Rand passiert nichts, wie bei den Abschnitten
   const boxes = boxesOf(get(id)), j = bi + d;
   if (!boxes[bi] || !boxes[j]) return;
@@ -613,6 +619,7 @@ function akteExportObj(id){   // die Akte so, wie sie gerade angezeigt wird (mit
     sections: r.sections.map(s => { const o = {h: s.h, items: s.items.slice()}; if (s.mode) o.mode = s.mode; return o; }),
     me: r.me.slice(), boxes: boxesOf(r).map(b => ({t: b.t, me: b.me}))};   // ohne Kennung k, sie gehört nur zu dieser Ansicht
   if (r.meTitle) a.meTitle = r.meTitle;   // eigener Titel der Hauptbox
+  if (r.meOff) a.meOff = true;   // Hauptbox entfernt: die Zeilen bleiben in der Datei, angezeigt wird die Box nicht
   return {format: 'medic-akte', version: 1, akte: a};
 }
 function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; ungültige Angaben werden abgelehnt
@@ -628,6 +635,7 @@ function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; 
   const rec = {id, cat, title, desc: typeof a.desc === 'string' ? a.desc.trim() : '', kw: '', sections: secs,
     me: (Array.isArray(a.me) ? a.me : []).filter(t => typeof t === 'string'), boxes: cleanBoxes(a.boxes), table: null, widget: false};
   if (cleanText(a.meTitle)) rec.meTitle = cleanText(a.meTitle);
+  if (a.meOff === true) rec.meOff = true;
   S.made.push(rec);
   placeAt(id, cat, null);   // ans Ende ihrer Kategorie, ohne Unterkategorie
   save();
@@ -652,14 +660,40 @@ function hlEsc(text){
   cps.forEach((c, i) => { if (hit[i] !== on) { out += on ? '</mark>' : '<mark>'; on = hit[i]; } out += esc(c); });
   return on ? out + '</mark>' : out;
 }
-function fmt(s){   // gespeicherter Klartext -> sicheres HTML
-  return String(s).split(/(\[\[.+?\]\]|\*\*.+?\*\*)/).map(p => {
+function fmt(s){   // gespeicherter Klartext -> sicheres HTML: [[Verweis]], **fett** und <u>unterstrichen</u>
+  return String(s).split(/(\[\[.+?\]\]|\*\*.+?\*\*|<u>.+?<\/u>)/).map(p => {
     if (/^\[\[.+\]\]$/.test(p)) { const t = p.slice(2, -2), id = resolve(t); return id ? `<a href="#" class="lk" data-act="go" data-id="${esc(id)}">${hlEsc(t)}</a>` : hlEsc(t); }
-    if (/^\*\*.+\*\*$/.test(p)) return '<b>' + hlEsc(p.slice(2, -2)) + '</b>';
+    if (/^\*\*.+\*\*$/.test(p)) return '<b>' + fmt(p.slice(2, -2)) + '</b>';
+    if (/^<u>.+<\/u>$/.test(p)) return '<u>' + fmt(p.slice(3, -4)) + '</u>';
     return hlEsc(p);
   }).join('');
 }
-const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', r.me.join(' '), boxesOf(r).map(b => b.t + ' ' + b.me.join(' ')).join(' ')].join(' '));
+// Auszeichnung in Texten: **fett** und <u>unterstrichen</u>. In den Eingabefeldern wirken Strg+B und Strg+U.
+const plainFmt = s => String(s).replace(/\*\*(.+?)\*\*/g, '$1').replace(/<u>(.+?)<\/u>/g, '$1');   // Klartext ohne Auszeichnung
+function copyText(raw){   // Klick auf eine /me-Zeile: nur die Handlung, eine Bedingung davor („Wenn Puls zu niedrig:“) bleibt weg
+  const t = plainFmt(raw), i = t.indexOf('/me');
+  return i > 0 ? t.slice(i) : t;
+}
+const FMT_PAIR = {b: ['**', '**'], u: ['<u>', '</u>']};
+const fmtKey = e => ((e.ctrlKey || e.metaKey) && !e.altKey && FMT_PAIR[String(e.key).toLowerCase()]) || null;
+const fmtPath = p => p === 'desc' || /^[mx]:/.test(p) || p.indexOf('i:') === 0;   // Beschreibung und Zeilen, nicht Titel und Überschriften
+function fmtWrap(el, pair){   // Auswahl einrahmen; ohne Auswahl stehen die Zeichen da und der Cursor dazwischen
+  const [open, close] = pair;
+  if (el.isContentEditable) {
+    const sel = getSelection(), txt = sel.toString();
+    document.execCommand('insertText', false, open + txt + close);
+    if (!txt) for (let k = 0; k < close.length; k++) sel.modify('move', 'backward', 'character');
+    return;
+  }
+  const s = el.selectionStart, f = el.selectionEnd, txt = el.value.slice(s, f);
+  el.setRangeText(open + txt + close, s, f, 'end');
+  if (!txt) el.setSelectionRange(s + open.length, s + open.length);
+  el.dispatchEvent(new Event('input', {bubbles: true}));
+}
+function fmtRow(){   // Hinweis in den Einstellungen, damit die Auszeichnung auffindbar ist
+  return '<div class="srow"><p class="slabel">Text hervorheben</p><p class="shint">Fett: den Text zwischen zwei Sternchen setzen, zum Beispiel **wichtig**. Unterstrichen: den Text zwischen &lt;u&gt; und &lt;/u&gt; setzen. In Beschreibungen, Abschnitten und /me-Zeilen wirken außerdem Strg+B und Strg+U auf die markierte Stelle.</p></div>';
+}
+const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', (r.meOff ? '' : r.me.join(' ')), boxesOf(r).map(b => b.t + ' ' + b.me.join(' ')).join(' ')].join(' '));
 
 /* ===== Akten-Daten aus akten.json: prüfen und in die feste Form bringen ===== */
 let DATA_PROBLEMS = [];
@@ -788,11 +822,14 @@ function card(r){
   // Eine Zeile mit genau --- ist eine Trennlinie: keine Textstelle, nicht kopierbar, nur verschiebbar und entfernbar
   const lineRow = (m, path, s, i) => m === DIVIDER
     ? `<div class="ml tl"><span class="row" data-hold><span class="tl-line" role="separator" aria-label="Trennlinie"></span>${tools(ord(s, i))}</span></div>`
-    : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}${tools(ed + ord(s, i))}</span></div>`;
+    : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, fmt(m))}${tools(ed + ord(s, i))}</span></div>`;
   const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button> <button class="ad" data-act="adddiv" data-id="${id}" data-s="${s}">+ Trennlinie</button>`;
   const mt = r.meTitle || ME_TITLE;
   const mOpen = boxOpen(r.id, 'm');
-  const me = ro ? '' : `<div class="me${mOpen ? '' : ' shut'}"><div class="mtop"><span class="ttl">${barw('m', mOpen)}<span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed)}</span></span></div><div class="mbody">${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div></div>`;
+  const mainRm = can ? `<button class="danger xdel" data-act="rmmain" data-id="${id}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : '';   // wie bei den zusätzlichen Boxen
+  const mainBox = `<div class="me${mOpen ? '' : ' shut'}"><div class="mtop"><span class="ttl">${barw('m', mOpen)}<span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed)}</span></span>${mainRm}</div><div class="mbody">${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div></div>`;
+  // entfernte Hauptbox: nur der Knopf zum Wiederhinzufügen, und nur im Bearbeitungsmodus
+  const me = ro ? '' : r.meOff ? (can ? `<div class="me-off"><button class="ad" data-act="addmain" data-id="${id}">+ ${esc(mt)} wieder hinzufügen</button></div>` : '') : mainBox;
   const xboxes = ro ? '' : boxesOf(r).map((box, bi) => {
     const bt = box.t || 'Zusätzliche Box', bOpen = boxOpen(r.id, box.k);
     const bmove = b('boxmove', '▲', 'Box nach oben', `data-b="${bi}" data-d="-1"`) + b('boxmove', '▼', 'Box nach unten', `data-b="${bi}" data-d="1"`);   // Reihenfolge der Boxen, wie bei den Abschnitten
@@ -843,7 +880,7 @@ function renderSettings(){
     colsRow() +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
-    segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]) + resetRow();
+    segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]) + fmtRow() + resetRow();
 }
 function secFormHTML(sf, id){
   const err = k => (sf.errors && sf.errors[k]) ? `<p class="err">${esc(sf.errors[k])}</p>` : '';
@@ -875,7 +912,19 @@ function render(){
   else list = sidebarOrder(view, live().filter(r => r.cat === view));
   const fh = formHTML();
   if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }   // das Formular bleibt beim Tippen in der Suche erhalten
-  $('#l').innerHTML = list.length ? list.map(r => (view === 'trash' && !t) ? trashCard(r) : card(r)).join('') : `<p class="empty">${empty}</p>`;
+  // In einer Kategorie mit Unterkategorien steht der Titel jeder Gruppe über ihren Akten; bei der Suche gibt es keine Gruppen
+  const titled = !t && SUBCATS.includes(view);
+  let html = '', lastSid = null;
+  list.forEach(r => {
+    if (titled) {
+      const s = subOfRec(r), sid = s ? s.id : null;
+      if (s && sid !== lastSid) html += groupHead(s, list.filter(x => (subOfRec(x) || {}).id === sid).length);
+      lastSid = sid;
+    }
+    html += (view === 'trash' && !t) ? trashCard(r) : card(r);
+  });
+  $('#l').innerHTML = list.length ? html : `<p class="empty">${empty}</p>`;
+  setBarHeight();
   if (pending) {
     const p = pending; pending = null;
     if (p.path) { const el = [...document.querySelectorAll('.tx')].find(x => x.dataset.rec === p.id && x.dataset.path === p.path); if (el) startEdit(el); }
@@ -883,6 +932,15 @@ function render(){
     if (c) { c.scrollIntoView({block: 'center'}); c.classList.add('fl'); }
   }
 }
+
+function groupHead(s, n){   // Titel einer Unterkategorie über ihren Akten
+  return `<h3 class="grph"><span>${esc(s.t)}</span><i>${n}</i></h3>`;
+}
+function setBarHeight(){   // Höhe der Kopfleiste merken, damit die Gruppentitel direkt darunter kleben bleiben
+  const sb = $('#sb');
+  if (sb) document.documentElement.style.setProperty('--sbh', sb.offsetHeight + 'px');
+}
+window.addEventListener('resize', setBarHeight);
 
 /* ===== Bearbeiten: ein Mechanismus für alle Textstellen ===== */
 function startEdit(el){
@@ -996,7 +1054,7 @@ function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar 
   const rows = lines.map(m => m === DIVIDER
     ? '<div class="ml tl"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>'
     : m.includes('→ Normalwert:') ? `<h4 class="ekgh">${hlEsc(m)}</h4>` /* Normalwerte: gelbe Überschrift, nicht kopierbar */
-    : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${hlEsc(m)}</span></div>`).join('');
+    : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('');
   $('#mtitle').textContent = 'EKG-Überwachung';
   $('#mbody').innerHTML = lines.length
     ? `<div class="me ekgbody">${rows}</div>`
@@ -1021,7 +1079,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel', 'resetall']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel', 'resetall']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -1053,6 +1111,8 @@ function act(name, b){
   else if (name === 'adddiv') addDivider(id, d.s);
   else if (name === 'addbox') pending = {id, path: addBox(id)};
   else if (name === 'rmbox') removeBox(id, +d.b);
+  else if (name === 'rmmain') removeMainBox(id);
+  else if (name === 'addmain') restoreMainBox(id);
   else if (name === 'boxmove') moveBox(id, +d.b, +d.d);
   else if (name === 'delsec') delSection(id, +d.s);
   else if (name === 'recmove') moveRec(id, +d.d);
@@ -1163,6 +1223,7 @@ function cleanMade(x, seen){
   const out = {id, cat, title, desc: typeof x.desc === 'string' ? x.desc : '', kw: '', sections: cleanSections(x.sections),
     me: Array.isArray(x.me) ? x.me.filter(t => typeof t === 'string') : [], boxes: cleanBoxes(x.boxes), table: null, widget: false};
   const mt = cleanText(x.meTitle); if (mt) out.meTitle = mt;   // eigener Titel der Hauptbox
+  if (x.meOff === true) out.meOff = true;   // Hauptbox entfernt
   return out;
 }
 function cleanOv(x){
@@ -1170,6 +1231,7 @@ function cleanOv(x){
   if (!x || typeof x !== 'object') return o;
   const t = cleanText(x.title); if (t) o.title = t;
   const mt = cleanText(x.meTitle); if (mt) o.meTitle = mt;
+  if (x.meOff === true) o.meOff = true;
   if (typeof x.desc === 'string') o.desc = x.desc;
   if (Array.isArray(x.me)) o.me = x.me.filter(v => typeof v === 'string');
   if (Array.isArray(x.boxes)) o.boxes = cleanBoxes(x.boxes);
@@ -1254,7 +1316,7 @@ document.addEventListener('click', e => {
   const h = e.target.closest('h2');
   if (h && h.querySelector('.arw') && !(editing && editing.el.contains(e.target))) { toggleFold(h.parentNode.dataset.rec); return render(); }
   const ml = e.target.closest('.ml.cp');   // nur Zeilen mit /me sind kopierbar
-  if (ml && !editing) copy(ml.dataset.raw);
+  if (ml && !editing) copy(copyText(ml.dataset.raw));
 });
 document.addEventListener('focusout', e => { if (editing && e.target === editing.el) finishEdit(); });
 document.addEventListener('keydown', e => {
@@ -1263,6 +1325,7 @@ document.addEventListener('keydown', e => {
   if (editing && e.target === editing.el) {
     if (e.key === 'Enter' && !(e.shiftKey && editing.el.tagName === 'TEXTAREA')) { e.preventDefault(); editing.el.blur(); }   // Enter beendet die Bearbeitung, Shift + Enter setzt in einer Abschnittszeile einen Zeilenumbruch
     else if (e.key === 'Escape') { editing.cancel = true; editing.el.blur(); }
+    else if (fmtKey(e) && fmtPath(editing.el.dataset.path)) { e.preventDefault(); fmtWrap(editing.el, fmtKey(e)); }   // Strg+B fett, Strg+U unterstrichen
     return;
   }
   if (e.target.id === 'subin') {   // Name einer Unterkategorie: Enter speichert, Escape verwirft
@@ -1270,6 +1333,7 @@ document.addEventListener('keydown', e => {
     else if (e.key === 'Escape') { subForm = null; render(); }
     return;
   }
+  if (fmtKey(e) && e.target.matches && e.target.matches('textarea[data-sf="text"]')) { e.preventDefault(); return fmtWrap(e.target, fmtKey(e)); }   // Strg+B und Strg+U auch im Feld für neue Abschnitte
   const typing = e.target.matches && e.target.matches('input,textarea,select,[contenteditable="true"]');
   if ((e.ctrlKey || e.metaKey) && !typing && EDIT) {
     const k = e.key.toLowerCase();
@@ -1498,7 +1562,7 @@ function runTests(){
     act('ekg', {dataset: {}});
     const hs = [...$('#mbody').querySelectorAll('h4.ekgh')].map(h => h.textContent);
     ok(hs.length === 3 && ['Puls → Normalwert: 60–80 Schläge/min', 'Blutdruck → Normalwert: 120/80 mmHg', 'Sauerstoffsättigung (SpO2) → Normalwert: 98–100 %'].every(t => hs.includes(t)), 'Überschriften: ' + hs.join(' | '));
-    ok(![...$('#mbody').querySelectorAll('.ml.cp')].some(x => x.textContent.includes('Normalwert')), 'Normalwert ist kopierbar');
+    ok(![...$('#mbody').querySelectorAll('.ml.cp')].some(x => x.textContent.includes('→ Normalwert:')), 'Normalwert-Überschrift ist kopierbar');
     act('closemodal', {dataset: {}});
   });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
@@ -1555,6 +1619,66 @@ function runTests(){
   // Ausnahmen: die Originaldateien von Streifschuss und Prellung enthalten den Abschnitt Behandlung und bleiben so, wie sie sind
   T('Den Abschnitt Behandlung haben nur die Originalakten Streifschuss und Prellung', () => { const mit = ['Streifschuss, Stichwunde, Bisswunde', 'Prellung']; ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung') || mit.includes(r.title)), 'Behandlung an falscher Stelle'); ok(mit.every(t => SEED.some(r => r.title === t && r.sections.some(s => s.h === 'Behandlung'))), 'Originalakte ohne Behandlung'); });
   T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 7 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
+  T('Fett und unterstrichen werden angezeigt, die übrigen Zeichen bleiben sicher', () => {
+    query = '';
+    const out = fmt('**fett** und <u>unter</u> <i>roh</i> **<u>beides</u>**');
+    ok(out.includes('<b>fett</b>') && out.includes('<u>unter</u>'), 'Auszeichnung fehlt: ' + out);
+    ok(out.includes('&lt;i&gt;roh&lt;/i&gt;') && !out.includes('<i>'), 'HTML nicht geschützt: ' + out);
+    ok(out.includes('<b><u>beides</u></b>'), 'verschachtelt fehlt: ' + out);
+  });
+  T('Kopieren ohne Auszeichnung und ohne die Bedingung vor der /me-Handlung', () => {
+    ok(plainFmt('**Atropin** und <u>Zugang</u>') === 'Atropin und Zugang', 'Klartext falsch');
+    ok(copyText('Wenn Puls zu niedrig: /me verabreicht **Atropin** über den Zugang') === '/me verabreicht Atropin über den Zugang', 'Bedingung nicht abgetrennt');
+    ok(copyText('/me steht vorn') === '/me steht vorn', 'erste Zeile verändert');
+  });
+  T('Strg+B und Strg+U umrahmen die Auswahl und setzen den Cursor ohne Auswahl dazwischen', () => {
+    const ta = document.createElement('textarea'); ta.value = 'wichtig dazu'; document.body.appendChild(ta);
+    ta.setSelectionRange(0, 7); fmtWrap(ta, FMT_PAIR.b);
+    const a = ta.value;
+    ta.value = 'ab'; ta.setSelectionRange(1, 1); fmtWrap(ta, FMT_PAIR.u);
+    const b = ta.value, caret = ta.selectionStart;
+    ta.remove();
+    ok(a === '**wichtig** dazu', 'Auswahl nicht umrahmt: ' + a);
+    ok(b === 'a<u></u>b' && caret === 4, 'ohne Auswahl falsch: ' + b + ' ' + caret);
+  });
+  T('Fett in einer /me-Zeile wird angezeigt und beim Kopieren ohne Zeichen', () => {
+    query = ''; reset0(); const i = id(); setText(i, 'm:0', '/me **wichtig** tun');
+    ok(card(get(i)).includes('<b>wichtig</b>'), 'nicht fett');
+    ok(copyText(get(i).me[0]) === '/me wichtig tun', 'Kopie falsch: ' + copyText(get(i).me[0]));
+    reset0();
+  });
+  T('Die Hauptbox lässt sich entfernen und wieder hinzufügen, ihre Zeilen bleiben', () => {
+    reset0(); const i = id(), n = get(i).me.length;
+    ok(card(get(i)).includes('data-act="rmmain"'), 'Knopf „Box entfernen“ fehlt');
+    removeMainBox(i);
+    const weg = card(get(i));
+    ok(!weg.includes('data-act="rmmain"') && weg.includes('data-act="addmain"'), 'Box nicht ausgeblendet');
+    ok(get(i).me.length === n, 'Zeilen gehen verloren');
+    restoreMainBox(i);
+    ok(card(get(i)).includes('data-act="rmmain"') && !get(i).meOff, 'Box kommt nicht zurück');
+    reset0();
+  });
+  T('Entfernte Hauptbox bleibt beim Export und Import entfernt', () => {
+    reset0(); const i = id(); removeMainBox(i);
+    const o = JSON.parse(JSON.stringify(akteExportObj(i)));
+    ok(o.akte.meOff === true, 'Kennzeichen fehlt im Export');
+    const res = akteImport(o);
+    ok(res.id && get(res.id).meOff === true, 'nach dem Import nicht entfernt');
+    reset0();
+  });
+  T('Unterkategorien stehen als Titel über ihren Akten, bei der Suche nicht', () => {
+    const v0 = view; reset0(); syncData(); view = 'b'; render();
+    const titel = [...$('#l').querySelectorAll('h3.grph')].map(h => h.querySelector('span').textContent);
+    ok(titel.includes('Wunden & Trauma'), 'Titel fehlt: ' + titel.join(' | '));
+    query = 'Prellung'; render();
+    ok(!$('#l').querySelector('h3.grph'), 'Titel auch bei der Suche');
+    query = ''; view = v0; render();
+  });
+  T('Die Narkose-Akte hat die EKG-Box mit dem Normalwert-Text', () => {
+    reset0(); const b = boxesOf(get('Narkose richtig einleiten')).find(x => x.t === EKG.box);
+    ok(b && b.me.length === 10 && b.me[1] === 'Wenn Puls zu niedrig: /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'EKG-Box weicht ab');
+    ok(b.me.filter(x => x === DIVIDER).length === 2, 'Trennlinien fehlen');
+  });
   T('Import behält den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import mit Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.join('|') === 'Behandlung|Erkennung', 'Behandlung verloren: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
     reset0(); S.v = 3; S.ov['Verätzungen'] = {me: ['/me Test']}; S.del['Gehirntumor (Wach-OP)'] = true; S.fav = ['Verätzungen']; S.order = ['Verätzungen', 'Schlaganfall'];
