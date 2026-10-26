@@ -43,6 +43,12 @@ button:hover{border-color:var(--a)}
 .ibtn{width:34px;height:34px;padding:0;border-radius:50%;background:none;border:1px solid var(--l);color:var(--m);font-size:16px;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .ibtn:hover:not(:disabled){color:var(--a);border-color:var(--a)}
 .ibtn:disabled{opacity:.35;cursor:default}
+.htitle{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}   /* Titel und EKG-Symbol: das Symbol sitzt direkt hinter dem Titel */
+.htitle>.tx{min-width:0}
+.ekg{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--l);border-radius:50%;background:none;color:var(--m);font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.ekg svg{width:15px;height:15px}
+.ekg:hover,.ekg:focus-visible{color:var(--a);border-color:var(--a)}
+.me.ekgbody{margin-top:0}
 @media(max-width:560px){.lbl{display:none}}
 #l{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:26px;align-items:start;padding-bottom:20px}
 @media(max-width:700px){#l{grid-template-columns:minmax(0,1fr)}}
@@ -177,6 +183,8 @@ const FORM = {m: ['Dosis', 'Wirkung']};             // Formularabschnitte je Kat
 const DEFAULT_FORM = ['Erkennung', 'Ablauf'];   // Standardabschnitte neuer Akten; die Durchführung ist die /me-Box
 const ME_TITLE = 'Durchführung';   // Standardtitel der Hauptbox, im Browser umbenennbar (leer = wieder dieser Titel)
 const DIVIDER = '---';   // Trennlinie in einer /me-Liste: eine Zeile mit genau diesem Text, ohne Textstelle und ohne Kopieren
+const EKG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4.5l1.8-4.2 3.2 9.2 2.4-7.5 1.6 2.5H22"/></svg>';   // EKG-Symbol neben dem Titel jeder Akte
+const EKG = {akte: 'Narkose richtig einleiten', box: 'Überwachung des EKGs'};   // Quelle der Standard-EKG-Überwachung: die /me-Box mit diesem Titel in dieser Akte
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 const KEY = 'medic-handbuch-v2';
 const SETKEY = 'medic-handbuch-einstellungen-v2';   // v2: die neuen Standardwerte gelten einmal für alle
@@ -736,7 +744,8 @@ function card(r){
   const barw = (k, open) => `<span class="sarw" data-act="boxopen" data-id="${id}" data-bk="${esc(k)}" title="Auf- und zuklappen" aria-label="Auf- und zuklappen">${open ? '▾' : '▸'}</span>`;   // Pfeil einer /me-Box, wie bei den Abschnitten
   const edited = !!BASE[r.id] && !!S.ov[r.id];   // Standard-Akte, die du geändert hast
   const dot = edited ? '<span class="dot" title="Von dir angepasst" aria-label="Von dir angepasst"></span>' : '';
-  const head = `<h2>${arrow}${dot}<span class="row" data-hold>${tx('title', r.title, hlEsc(r.title))}${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
+  const ekgBtn = `<button class="ekg" data-act="ekg" title="EKG-Überwachung" aria-label="EKG-Überwachung">${EKG_ICON}</button>`;   // direkt hinter dem Titel, öffnet die Standard-EKG-Überwachung
+  const head = `<h2>${arrow}${dot}<span class="row" data-hold><span class="htitle">${tx('title', r.title, hlEsc(r.title))}${ekgBtn}</span>${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
   // Werkzeuge der ganzen Akte: fest unter dem Kopf, nur im Bearbeitungsmodus
   const ctools = can ? `<div class="ctools">${b('recmove', '▲ Nach oben', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼ Nach unten', 'Akte nach unten', 'data-d="1"')}${SUBCATS.includes(r.cat) ? subSelHTML(r, id) : ''}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}${b('trash', 'In den Papierkorb', 'In den Papierkorb legen')}</div>` : '';
   // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar; die Akten ganz oben haben keine Kategorie
@@ -949,8 +958,24 @@ function setOpt(k, v){
   else return;
   saveSet(); applySet(); renderSettings(); render();
 }
-function openModal(){ renderSettings(); $('#modal').hidden = false; focusField('#modal [data-act="closemodal"]'); }
+function openModal(){ $('#mtitle').textContent = 'Einstellungen'; renderSettings(); $('#modal').hidden = false; focusField('#modal [data-act="closemodal"]'); }
 function closeModal(){ $('#modal').hidden = true; }
+function ekgLines(){   // Zeilen der Standard-Box, null wenn es sie nicht (mehr) gibt
+  const r = get(EKG.akte), b = r ? boxesOf(r).find(x => x.t === EKG.box) : null;
+  return b ? b.me : null;
+}
+function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar wie in den Akten, Trennlinien bleiben Trennlinien
+  const lines = ekgLines() || [];
+  const rows = lines.map(m => m === DIVIDER
+    ? '<div class="ml tl"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>'
+    : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${hlEsc(m)}</span></div>`).join('');
+  $('#mtitle').textContent = 'EKG-Überwachung';
+  $('#mbody').innerHTML = lines.length
+    ? `<div class="me ekgbody">${rows}</div>`
+    : `<p class="c">Die Standard-EKG-Überwachung fehlt. Sie steht in der Akte „${esc(EKG.akte)}“ in der /me-Box „${esc(EKG.box)}“.</p>`;
+  $('#modal').hidden = false;
+  focusField('#modal [data-act="closemodal"]');
+}
 
 /* ===== Rückgängig und Wiederholen ===== */
 function undo(){
@@ -977,6 +1002,7 @@ function act(name, b){
   if (name === 'toggle') { if (opened.has(d.v)) opened.delete(d.v); else opened.add(d.v); return renderNav(); }
   if (name === 'create') return submit();
   if (name === 'export') return exportData();
+  if (name === 'ekg') return openEkg();
   if (name === 'import') return $('#imp').click();
   if (name === 'mode') return setMode(!EDIT);
   if (name === 'navtoggle') { SET.nav = SET.nav === 'open' ? 'closed' : 'open'; saveSet(); return applySet(); }
@@ -1370,6 +1396,8 @@ function runTests(){
   T('Einzelnes Umschalten überschreibt den Standard', () => { reset0(); setOpt('sec', 'open'); const i = E2().id, k = get(i).sections[0].k; act('secopen', {dataset: {id: i, sk: k}}); const c = card(get(i)); ok(c.includes('<div class="sec">'), 'erster Abschnitt nicht zu'); ok(c.includes('class="sec open"'), 'andere nicht offen'); setOpt('sec', 'open'); });
   T('Kompakt und Spalten wirken auf die Ansicht', () => { setOpt('compact', 'on'); setOpt('cols', '3'); ok(document.body.classList.contains('compact') && document.body.style.getPropertyValue('--cols').trim() === '3', 'Einstellung fehlt'); setOpt('compact', 'off'); ok(!document.body.classList.contains('compact'), 'Kompakt nicht zurückgesetzt'); setOpt('cols', '2'); setOpt('compact', 'on'); });
   T('Einstellungsfenster öffnet und schließt', () => { act('settings', {dataset: {}}); ok($('#modal').hidden === false, 'nicht offen'); ok($('#mbody').innerHTML.includes('Design'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); });
+  T('EKG-Symbol sitzt direkt hinter dem Titel und öffnet die Standard-Überwachung', () => { reset0(); const i = id(), c = card(get(i)), tEnd = c.indexOf('</span>', c.indexOf('data-path="title"')); ok(tEnd > 0 && c.slice(tEnd + 7).startsWith('<button class="ekg" data-act="ekg"'), 'Symbol nicht direkt hinter dem Titel'); act('ekg', {dataset: {}}); ok($('#modal').hidden === false, 'Fenster nicht offen'); ok($('#mtitle').textContent === 'EKG-Überwachung', 'Titel falsch'); const cp = [...$('#mbody').querySelectorAll('.ml.cp')]; ok(cp.length >= 5 && cp.every(x => x.dataset.raw.includes('/me')), 'Zeilen nicht kopierbar'); ok($('#mbody').innerHTML.includes('verabreicht Atropin'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); act('settings', {dataset: {}}); ok($('#mtitle').textContent === 'Einstellungen', 'Titel der Einstellungen bleibt EKG'); act('closemodal', {dataset: {}}); });
+  T('Ohne EKG-Box zeigt das Fenster einen Hinweis', () => { const keep = EKG.box; EKG.box = 'gibt es nicht'; try { act('ekg', {dataset: {}}); ok($('#mbody').textContent.includes('fehlt'), 'Hinweis fehlt'); } finally { EKG.box = keep; act('closemodal', {dataset: {}}); } });
   T('Akten-Daten: fehlerhafte Einträge werden erkannt', () => {
     const p = parseData([{id: 'a', cat: 'b', title: 'A', sections: []}, {id: '', cat: 'b', title: 'x'}, {id: 'c', cat: 'zz', title: 'C'}, {id: 'a', cat: 'b', title: 'doppelt'}]);
     ok(p.records.length === 1 && p.problems.length === 3, 'Ergebnis: ' + p.records.length + ' gültig, ' + p.problems.length + ' Fehler');
