@@ -18,7 +18,6 @@ nav h1{font:700 22px Georgia,serif;margin:0 8px 18px}
 .mv .tb,.subtools .tb{width:20px;height:20px;line-height:18px;font-size:11px}
 .subdiv{height:1px;background:var(--l);margin:10px 10px 4px}
 .subh{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:4px 10px 2px;min-width:0;color:var(--a);font-size:13px;font-weight:700}
-.subh i{font-style:normal;font-weight:400;color:var(--m);font-size:12px}
 .subt{flex:1 1 8em;min-width:0;overflow-wrap:break-word}
 .subtools{display:inline-flex;gap:2px;flex:none;margin-left:auto}
 .subempty{margin:0;padding:2px 10px 4px;color:var(--m);font-size:13px;font-style:italic}
@@ -59,11 +58,13 @@ body.nav-off nav{display:none}
 .card{min-width:0;border:1px solid var(--cardb);border-radius:14px;padding:16px 16px 18px;background:linear-gradient(180deg,var(--card-a),var(--card-b));box-shadow:0 8px 24px var(--shadow);transition:border-color .2s,box-shadow .2s;scroll-margin-top:76px}
 .card:hover{border-color:rgba(242,184,75,.45);box-shadow:0 10px 30px var(--shadow)}
 @media(min-width:1000px){.card{padding:24px 28px 26px}}
-body.compact .card{padding:12px 14px 14px}
-body.compact #l{gap:14px}
+body.abst-1 .card{padding:12px 14px 14px}
+body.abst-2 .card{padding:14px 15px 16px}
+body.abst-1 #l{gap:14px}
+body.abst-2 #l{gap:20px}
+body.eckig .card,body.eckig .me{border-radius:0}
 /* Titel der Unterkategorien: bleibt beim Scrollen direkt unter der Kopfleiste stehen */
 .grph{grid-column:1/-1;position:sticky;top:var(--sbh,64px);z-index:3;margin:0;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);display:flex;align-items:baseline;gap:12px;font:700 20px Georgia,serif;color:var(--a)}
-.grph i{font:600 13px system-ui,"Segoe UI",sans-serif;color:var(--m);font-style:normal}
 .card.gone{opacity:.65}
 .card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px var(--shadow)}}
 .card h2{cursor:pointer}
@@ -153,8 +154,9 @@ body:not(.edit) .only-edit{display:none!important}
 .srow{padding:12px 0;border-top:1px solid var(--l)}
 .slabel{margin:0 0 8px;font-weight:600}
 .shint{margin:6px 0 0;color:var(--m);font-size:13px;line-height:1.4}
-.srange{display:flex;align-items:center;gap:10px}
-.srange input[type=range]{flex:1;min-width:0;margin:0;accent-color:var(--a)}
+.srange{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.srange input[type=range]{flex:1 1 140px;min-width:0;margin:0;accent-color:var(--a)}
+.srange output{flex:none;white-space:nowrap}
 .rnum{color:var(--m);font-size:13px}
 #colsout{min-width:86px;text-align:right;font-weight:600;white-space:nowrap}
 .seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--l);border-radius:8px;overflow:hidden}
@@ -209,22 +211,26 @@ let DATA_GROUPS = [], DATA_GROUP = {}, DATA_SUBOF = {};   // Unterkategorien aus
 let S, view = 'a', query = '', opened = new Set(), folded = new Set(), secOv = new Map(), boxOv = new Map(), editing = null, pending = null, formState = null, sectionForm = null;
 let undoStack = [], redoStack = [], lastSaved = null, mergeNext = false;
 let EDIT = false;   // Bearbeitungsmodus: im Standard aus, also Zuschauermodus
-let SET = {theme: 'dark', cols: 2, sec: 'open', me: 'open', compact: true, nav: 'open'};
+let SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'};
+const ABST = {1: 'Eng', 2: 'Mittel', 3: 'Weit'};   // Namen der Stufen für den Abstand in den Akten-Karten
 
 /* ===== Einstellungen (nur Darstellung, getrennt von den Akten) ===== */
 function loadSet(){
   let x = {};
   try { x = JSON.parse(store.getItem(SETKEY)) || {}; } catch (e) {}
-  // Standardwerte, solange noch nichts gespeichert ist: Dunkel, 2 Spalten, Abschnitte und /me-Boxen ausgeklappt, Kompakte Karten an, Seitenleiste offen
+  // Standardwerte, solange noch nichts gespeichert ist: Dunkel, 2 Spalten, Abstand Eng, runde Ecken, Abschnitte und /me-Boxen ausgeklappt, Seitenleiste offen
   // Eine frühere Einstellung „Eine Spalte“ bleibt eine Spalte, „Automatisch“ wird zu den Standard-2 Spalten.
   const cols = [1, 2, 3, 4].includes(+x.cols) ? +x.cols : (x.grid === 'one' ? 1 : 2);
-  SET = {theme: x.theme === 'light' ? 'light' : 'dark', cols, sec: x.sec === 'closed' ? 'closed' : 'open', me: x.me === 'closed' ? 'closed' : 'open', compact: x.compact !== false, nav: x.nav === 'closed' ? 'closed' : 'open'};
+  // Frühere Einstellung „Kompakte Karten“: an wird Eng, aus wird Weit
+  const abstand = [1, 2, 3].includes(+x.abstand) ? +x.abstand : (x.compact === false ? 3 : 1);
+  SET = {theme: x.theme === 'light' ? 'light' : 'dark', cols, abstand, ecken: x.ecken === 'eckig' ? 'eckig' : 'rund', sec: x.sec === 'closed' ? 'closed' : 'open', me: x.me === 'closed' ? 'closed' : 'open', nav: x.nav === 'closed' ? 'closed' : 'open'};
 }
 function saveSet(){ try { store.setItem(SETKEY, JSON.stringify(SET)); } catch (e) {} }
 function applySet(){
   document.documentElement.dataset.theme = SET.theme;
   document.body.style.setProperty('--cols', String(SET.cols));   // Spalten pro Reihe
-  document.body.classList.toggle('compact', SET.compact);
+  [1, 2, 3].forEach(n => document.body.classList.toggle('abst-' + n, SET.abstand === n));   // Abstand in den Akten-Karten: Eng, Mittel oder Weit
+  document.body.classList.toggle('eckig', SET.ecken === 'eckig');   // eckiges Design der Akten
   document.body.classList.toggle('nav-off', SET.nav === 'closed');   // Seitenleiste eingeklappt
   const nb = $('#navbtn');
   if (nb) nb.setAttribute('aria-expanded', String(SET.nav === 'open'));
@@ -479,13 +485,6 @@ function subRename(id, t){
   if (err) return {error: err};
   s.t = title; if (s.src === 'd') s.ren = true; save(); return {id};   // umbenannte Gruppe aus der Datei behält deinen Titel
 }
-function subMove(id, d){   // Reihenfolge der Unterkategorien innerhalb ihrer Kategorie
-  const i = S.subs.findIndex(x => x.id === id);
-  if (i < 0) return;
-  let j = i + d;
-  while (j >= 0 && j < S.subs.length && S.subs[j].cat !== S.subs[i].cat) j += d;
-  if (j >= 0 && j < S.subs.length) { [S.subs[i], S.subs[j]] = [S.subs[j], S.subs[i]]; save(); }
-}
 function subDelete(id){   // die Akten bleiben erhalten und stehen danach ohne Unterkategorie
   const s = S.subs.find(x => x.id === id);
   if (s && s.src === 'd' && !S.subDel.includes(id)) S.subDel.push(id);   // Gruppe aus der Datei: bleibt im Browser gelöscht
@@ -522,7 +521,7 @@ function navGroups(k, rs){   // Akten einer Kategorie: zuerst die ohne Unterkate
   subsOf(k).forEach(s => {
     const ms = rs.filter(r => (subOfRec(r) || {}).id === s.id);
     if (!ms.length && !EDIT) return;   // leere Unterkategorien sehen nur die, die bearbeiten
-    h += (h ? '<div class="subdiv"></div>' : '') + subHead(s, ms.length) + ms.map(navLink).join('') + (ms.length ? '' : '<p class="subempty">Noch keine Akte</p>');
+    h += (h ? '<div class="subdiv"></div>' : '') + subHead(s) + ms.map(navLink).join('') + (ms.length ? '' : '<p class="subempty">Noch keine Akte</p>');
   });
   if (EDIT) h += subAddRow(k);
   return h;
@@ -532,10 +531,10 @@ function sidebarOrder(k, rs){
   if (!SUBCATS.includes(k)) return rs;
   return [...rs.filter(r => !subOfRec(r)), ...subsOf(k).flatMap(s => rs.filter(r => (subOfRec(r) || {}).id === s.id))];
 }
-function subHead(s, n){
+function subHead(s){   // Überschrift einer Unterkategorie in der Seitenleiste: nicht verschiebbar, nur umbenennen und löschen
   if (subForm && subForm.id === s.id) return subInput(subForm.val, 'Name der Unterkategorie');
-  const sid = esc(s.id), tools = EDIT ? `<span class="subtools"><button class="tb" data-act="submove" data-id="${sid}" data-d="-1" title="Unterkategorie nach oben" aria-label="Unterkategorie nach oben">▲</button><button class="tb" data-act="submove" data-id="${sid}" data-d="1" title="Unterkategorie nach unten" aria-label="Unterkategorie nach unten">▼</button><button class="tb" data-act="subedit" data-id="${sid}" title="Umbenennen" aria-label="Umbenennen">✎</button><button class="tb" data-act="subdel" data-id="${sid}" title="Unterkategorie löschen" aria-label="Unterkategorie löschen">✕</button></span>` : '';
-  return `<div class="subh"><span class="subt">${esc(s.t)}</span><i>${n}</i>${tools}</div>`;
+  const sid = esc(s.id), tools = EDIT ? `<span class="subtools"><button class="tb" data-act="subedit" data-id="${sid}" title="Umbenennen" aria-label="Umbenennen">✎</button><button class="tb" data-act="subdel" data-id="${sid}" title="Unterkategorie löschen" aria-label="Unterkategorie löschen">✕</button></span>` : '';
+  return `<div class="subh"><span class="subt">${esc(s.t)}</span>${tools}</div>`;
 }
 function subInput(val, label){
   return `<div class="subin"><input id="subin" maxlength="60" value="${esc(val || '')}" placeholder="${esc(label)}" aria-label="${esc(label)}"><button class="tb" data-act="subok" title="Speichern" aria-label="Speichern">✓</button><button class="tb" data-act="subcancel" title="Abbrechen" aria-label="Abbrechen">✕</button></div>`;
@@ -555,13 +554,12 @@ function subCommit(){   // Name speichern: neu anlegen oder umbenennen; bei Fehl
   if (res.error) { subForm.val = v; return toast(res.error); }
   subForm = null; toast('Unterkategorie gespeichert');
 }
-function subAct(name, d){   // Unterkategorien: anlegen, umbenennen, verschieben, löschen
+function subAct(name, d){   // Unterkategorien: anlegen, umbenennen, löschen
   const id = d.id || '';
   if (name === 'subnew') subForm = {cat: d.v, id: '', val: ''};
   else if (name === 'subedit') { const s = S.subs.find(x => x.id === id); subForm = s ? {cat: s.cat, id, val: s.t} : null; }
   else if (name === 'subcancel') subForm = null;
   else if (name === 'subok') subCommit();
-  else if (name === 'submove') subMove(id, +d.d);
   else if (name === 'subdel') { const s = S.subs.find(x => x.id === id); if (s && confirm('Unterkategorie „' + s.t + '“ löschen? Ihre Akten bleiben erhalten und stehen danach ohne Unterkategorie.')) subDelete(id); }
 }
 const trash = id => { S.del[id] = 1; save(); };
@@ -689,9 +687,6 @@ function fmtWrap(el, pair){   // Auswahl einrahmen; ohne Auswahl stehen die Zeic
   el.setRangeText(open + txt + close, s, f, 'end');
   if (!txt) el.setSelectionRange(s + open.length, s + open.length);
   el.dispatchEvent(new Event('input', {bubbles: true}));
-}
-function fmtRow(){   // Hinweis in den Einstellungen, damit die Auszeichnung auffindbar ist
-  return '<div class="srow"><p class="slabel">Text hervorheben</p><p class="shint">Fett: den Text zwischen zwei Sternchen setzen, zum Beispiel **wichtig**. Unterstrichen: den Text zwischen &lt;u&gt; und &lt;/u&gt; setzen. In Beschreibungen, Abschnitten und /me-Zeilen wirken außerdem Strg+B und Strg+U auf die markierte Stelle.</p></div>';
 }
 const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', (r.meOff ? '' : r.me.join(' ')), boxesOf(r).map(b => b.t + ' ' + b.me.join(' ')).join(' ')].join(' '));
 
@@ -864,23 +859,28 @@ function renderNav(){
   if (rd) rd.disabled = !redoStack.length;
 }
 function segRow(label, hint, k, opts){
-  const sel = v => k === 'compact' ? SET.compact === (v === 'on') : String(SET[k]) === String(v);
+  const sel = v => String(SET[k]) === String(v);
   return `<div class="srow"><p class="slabel">${label}</p><div class="seg">${opts.map(([v, t]) => `<button data-act="set" data-k="${k}" data-v="${v}" aria-pressed="${sel(v) ? 'true' : 'false'}">${t}</button>`).join('')}</div><p class="shint">${hint}</p></div>`;
 }
 function colsRow(){   // Schieberegler für die Spalten (1 bis 4), mit der gewählten Zahl daneben
   return `<div class="srow"><p class="slabel">Spalten pro Reihe</p><div class="srange"><span class="rnum">1</span><input type="range" id="colsrange" data-set="cols" min="1" max="4" step="1" value="${SET.cols}" list="colticks" aria-label="Spalten pro Reihe"><span class="rnum">4</span><output id="colsout" for="colsrange">Spalten: ${SET.cols}</output></div><datalist id="colticks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option></datalist><p class="shint">Wie viele Akten-Karten nebeneinander stehen (1 bis 4). Auf dem Handy ist immer eine Spalte.</p></div>`;
 }
+function abstandRow(){   // Schieberegler für den Abstand in den Akten-Karten: Eng, Mittel, Weit
+  return `<div class="srow"><p class="slabel">Abstand in den Akten-Karten</p><div class="srange"><span class="rnum">Eng</span><input type="range" id="abstandrange" data-set="abstand" min="1" max="3" step="1" value="${SET.abstand}" list="abstandticks" aria-label="Abstand in den Akten-Karten"><span class="rnum">Weit</span><output id="abstandout" for="abstandrange">${ABST[SET.abstand]}</output></div><datalist id="abstandticks"><option value="1"></option><option value="2"></option><option value="3"></option></datalist><p class="shint">Wie viel Platz zwischen den Akten-Karten und in ihnen ist.</p></div>`;
+}
 // Zurücksetzen aller mitgelieferten Akten: in beiden Modi, mit Rückfrage (act „resetall“). Es ändert nur den Browserstand dieses Geräts.
 function resetRow(){
-  return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall">Alle mitgelieferten Akten auf Original zurücksetzen</button><p class="shint">Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.</p></div>`;
+  return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall">Alle Akten zurücksetzen</button><p class="shint">Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.</p></div>`;
 }
 function renderSettings(){
   $('#mbody').innerHTML =
     segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
     colsRow() +
+    abstandRow() +
+    segRow('Ecken der Akten', 'Rund wie bisher oder eckig, für ein schlichteres Aussehen.', 'ecken', [['rund', 'Rund'], ['eckig', 'Eckig']]) +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
-    segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]) + fmtRow() + resetRow();
+    resetRow();
 }
 function secFormHTML(sf, id){
   const err = k => (sf.errors && sf.errors[k]) ? `<p class="err">${esc(sf.errors[k])}</p>` : '';
@@ -918,7 +918,7 @@ function render(){
   list.forEach(r => {
     if (titled) {
       const s = subOfRec(r), sid = s ? s.id : null;
-      if (s && sid !== lastSid) html += groupHead(s, list.filter(x => (subOfRec(x) || {}).id === sid).length);
+      if (s && sid !== lastSid) html += groupHead(s);
       lastSid = sid;
     }
     html += (view === 'trash' && !t) ? trashCard(r) : card(r);
@@ -933,8 +933,8 @@ function render(){
   }
 }
 
-function groupHead(s, n){   // Titel einer Unterkategorie über ihren Akten
-  return `<h3 class="grph"><span>${esc(s.t)}</span><i>${n}</i></h3>`;
+function groupHead(s){   // Titel einer Unterkategorie über ihren Akten, ohne Anzahl
+  return `<h3 class="grph"><span>${esc(s.t)}</span></h3>`;
 }
 function setBarHeight(){   // Höhe der Kopfleiste merken, damit die Gruppentitel direkt darunter kleben bleiben
   const sb = $('#sb');
@@ -1034,12 +1034,19 @@ function setCols(v){   // Spalten pro Reihe (1 bis 4): Raster, Anzeige und Regle
   const out = $('#colsout'); if (out) out.textContent = 'Spalten: ' + SET.cols;
   const rg = $('#colsrange'); if (rg && +rg.value !== SET.cols) rg.value = String(SET.cols);
 }
+function setAbstand(v){   // Abstand in den Akten-Karten: Anzeige und Schieberegler sofort aktualisieren
+  SET.abstand = [1, 2, 3].includes(+v) ? +v : 1;
+  saveSet(); applySet();
+  const out = $('#abstandout'); if (out) out.textContent = ABST[SET.abstand];
+  const rg = $('#abstandrange'); if (rg && +rg.value !== SET.abstand) rg.value = String(SET.abstand);
+}
 function setOpt(k, v){
   if (k === 'theme') SET.theme = v === 'light' ? 'light' : 'dark';
   else if (k === 'cols') return setCols(v);
   else if (k === 'sec') { SET.sec = v === 'open' ? 'open' : 'closed'; secOv.clear(); }
   else if (k === 'me') { SET.me = v === 'open' ? 'open' : 'closed'; boxOv.clear(); }
-  else if (k === 'compact') SET.compact = v === 'on';
+  else if (k === 'abstand') return setAbstand(v);
+  else if (k === 'ecken') SET.ecken = v === 'eckig' ? 'eckig' : 'rund';
   else return;
   saveSet(); applySet(); renderSettings(); render();
 }
@@ -1079,7 +1086,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'subdel']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -1116,7 +1123,7 @@ function act(name, b){
   else if (name === 'boxmove') moveBox(id, +d.b, +d.d);
   else if (name === 'delsec') delSection(id, +d.s);
   else if (name === 'recmove') moveRec(id, +d.d);
-  else if (['subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel'].includes(name)) subAct(name, d);
+  else if (['subnew', 'subedit', 'subcancel', 'subok', 'subdel'].includes(name)) subAct(name, d);
   else if (name === 'trash') trash(id);
   else if (name === 'restore') restore(id);
   else if (name === 'purge') { if (confirm('Akte endgültig löschen? Das lässt sich nicht rückgängig machen.')) purge(id); }
@@ -1347,6 +1354,7 @@ document.addEventListener('input', e => {
   if (t.id === 'q') setQuery(t.value);
   else if (t.id === 'subin') { if (subForm) subForm.val = t.value; }   // Name der Unterkategorie merken, falls die Ansicht neu gezeichnet wird
   else if (t.matches && t.matches('input[data-set="cols"]')) setCols(t.value);   // Schieberegler: sofort übernehmen, ohne das Fenster neu zu zeichnen
+  else if (t.matches && t.matches('input[data-set="abstand"]')) setAbstand(t.value);   // Abstand-Schieberegler: ebenso sofort
   else if (t.dataset && t.dataset.sf && sectionForm) sectionForm[t.dataset.sf] = t.value;   // Eingaben merken, damit sie beim Neuzeichnen bleiben
 });
 document.addEventListener('change', e => {
@@ -1487,11 +1495,11 @@ function runTests(){
   T('Neue Änderung verwirft den Wiederholen-Verlauf', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'A'); undo(); setText(i, 'i:0:0', 'B'); ok(redoStack.length === 0, 'Wiederholen nicht geleert'); });
   T('Zeile hinzufügen und Text sind ein Rückgängig-Schritt', () => { reset0(); const i = id(), n = get(i).me.length; const path = addLine(i, 'm'); setText(i, path, '/me Test'); ok(get(i).me.length === n + 1, 'Zeile fehlt'); undo(); ok(get(i).me.length === n, 'Zeile nicht komplett zurückgenommen'); });
   T('Nach Rückgängig stimmt der Speicher mit dem Stand überein', () => { reset0(); setText(id(), 'i:0:0', 'C'); undo(); ok(store.getItem(KEY) === lastSaved, 'Speicher weicht ab'); });
-  T('Design und Abschnitts-Standard werden gespeichert und geladen', () => { setOpt('theme', 'light'); setOpt('sec', 'closed'); SET = {theme: 'dark', cols: 2, sec: 'open', me: 'open', compact: true, nav: 'open'}; loadSet(); ok(SET.theme === 'light' && SET.sec === 'closed', 'nicht geladen'); setOpt('theme', 'dark'); setOpt('sec', 'open'); });
+  T('Design und Abschnitts-Standard werden gespeichert und geladen', () => { setOpt('theme', 'light'); setOpt('sec', 'closed'); SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; loadSet(); ok(SET.theme === 'light' && SET.sec === 'closed', 'nicht geladen'); setOpt('theme', 'dark'); setOpt('sec', 'open'); });
   T('Hell-Modus setzt das Design-Attribut', () => { setOpt('theme', 'light'); ok(document.documentElement.dataset.theme === 'light', 'kein Attribut'); setOpt('theme', 'dark'); ok(document.documentElement.dataset.theme === 'dark', 'nicht zurückgesetzt'); });
   T('Abschnitte sind bei ausgeklappter Einstellung offen', () => { reset0(); setOpt('sec', 'open'); ok(card(get(id())).includes('class="sec open"'), 'nicht offen'); setOpt('sec', 'closed'); ok(!card(get(id())).includes('class="sec open"'), 'nicht eingeklappt'); setOpt('sec', 'open'); });
   T('Einzelnes Umschalten überschreibt den Standard', () => { reset0(); setOpt('sec', 'open'); const i = E2().id, k = get(i).sections[0].k; act('secopen', {dataset: {id: i, sk: k}}); const c = card(get(i)); ok(c.includes('<div class="sec">'), 'erster Abschnitt nicht zu'); ok(c.includes('class="sec open"'), 'andere nicht offen'); setOpt('sec', 'open'); });
-  T('Kompakt und Spalten wirken auf die Ansicht', () => { setOpt('compact', 'on'); setOpt('cols', '3'); ok(document.body.classList.contains('compact') && document.body.style.getPropertyValue('--cols').trim() === '3', 'Einstellung fehlt'); setOpt('compact', 'off'); ok(!document.body.classList.contains('compact'), 'Kompakt nicht zurückgesetzt'); setOpt('cols', '2'); setOpt('compact', 'on'); });
+  T('Abstand, Ecken und Spalten wirken auf die Ansicht', () => { setOpt('abstand', '3'); ok(document.body.classList.contains('abst-3') && !document.body.classList.contains('abst-1'), 'Abstand Weit nicht gesetzt'); setOpt('abstand', '1'); ok(document.body.classList.contains('abst-1') && !document.body.classList.contains('abst-3'), 'Abstand Eng nicht zurückgesetzt'); setOpt('ecken', 'eckig'); ok(document.body.classList.contains('eckig'), 'Ecken eckig nicht gesetzt'); setOpt('ecken', 'rund'); ok(!document.body.classList.contains('eckig'), 'Ecken rund nicht zurückgesetzt'); setOpt('cols', '3'); ok(document.body.style.getPropertyValue('--cols').trim() === '3', 'Spalten nicht gesetzt'); setOpt('cols', '2'); });
   T('Einstellungsfenster öffnet und schließt', () => { act('settings', {dataset: {}}); ok($('#modal').hidden === false, 'nicht offen'); ok($('#mbody').innerHTML.includes('Design'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); });
   T('EKG-Symbol sitzt direkt hinter dem Titel und öffnet die Standard-Überwachung', () => { reset0(); const i = id(), c = card(get(i)), tEnd = c.indexOf('</span>', c.indexOf('data-path="title"')); ok(tEnd > 0 && c.slice(tEnd + 7).startsWith('<button class="ekg" data-act="ekg"'), 'Symbol nicht direkt hinter dem Titel'); act('ekg', {dataset: {}}); ok($('#modal').hidden === false, 'Fenster nicht offen'); ok($('#mtitle').textContent === 'EKG-Überwachung', 'Titel falsch'); const cp = [...$('#mbody').querySelectorAll('.ml.cp')]; ok(cp.length >= 5 && cp.every(x => x.dataset.raw.includes('/me')), 'Zeilen nicht kopierbar'); ok($('#mbody').innerHTML.includes('verabreicht Atropin'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); act('settings', {dataset: {}}); ok($('#mtitle').textContent === 'Einstellungen', 'Titel der Einstellungen bleibt EKG'); act('closemodal', {dataset: {}}); });
   T('Ohne EKG-Box zeigt das Fenster einen Hinweis', () => { const keep = EKG.box; EKG.box = 'gibt es nicht'; try { act('ekg', {dataset: {}}); ok($('#mbody').textContent.includes('fehlt'), 'Hinweis fehlt'); } finally { EKG.box = keep; act('closemodal', {dataset: {}}); } });
@@ -1502,7 +1510,10 @@ function runTests(){
   T('Gültige Akte bekommt eine feste Form', () => { const q = parseData([{id: 'z', cat: 'b', title: 'Z', sections: [{h: 'Erkennung', items: ['x']}]}]).records[0]; ok(q.me.length === 0 && q.table === null && q.desc === '' && q.sections[0].h === 'Erkennung' && q.widget === false, 'Form falsch'); });
   T('Abschnitte ohne Überschrift werden erkannt', () => ok(parseData([{id: 'y', cat: 'b', title: 'Y', sections: [{h: '', items: []}]}]).problems.length === 1, 'nicht erkannt'));
   T('Tabellen mit falschem Format werden erkannt', () => ok(parseData([{id: 't', cat: 'v', title: 'T', table: {h: ['a'], r: ['flach']}}]).problems.length === 1, 'nicht erkannt'));
-  T('Standard-Einstellungen: Dunkel, 2 Spalten, Ausgeklappt, Kompakt an, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.sec === 'open' && SET.me === 'open' && SET.compact === true && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
+  T('Standard-Einstellungen: Dunkel, 2 Spalten, Abstand Eng, Ecken rund, Ausgeklappt, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.abstand === 1 && SET.ecken === 'rund' && SET.sec === 'open' && SET.me === 'open' && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
+  T('Frühere Einstellung „Kompakte Karten“ wird zu Abstand übernommen, ungültige Werte fallen zurück', () => { store.setItem(SETKEY, JSON.stringify({compact: false})); loadSet(); const weit = SET.abstand === 3; store.setItem(SETKEY, JSON.stringify({compact: true})); loadSet(); const eng = SET.abstand === 1; store.setItem(SETKEY, JSON.stringify({abstand: 2, ecken: 'eckig'})); loadSet(); const mittel = SET.abstand === 2 && SET.ecken === 'eckig'; store.setItem(SETKEY, JSON.stringify({abstand: 9, ecken: 'quadrat'})); loadSet(); const zurueck = SET.abstand === 1 && SET.ecken === 'rund'; store.removeItem(SETKEY); loadSet(); ok(weit && eng && mittel && zurueck, 'Umstellung falsch: weit ' + weit + ', eng ' + eng + ', mittel ' + mittel + ', zurück ' + zurueck); });
+  T('Der Zurücksetzen-Knopf heißt Alle Akten zurücksetzen, und die Einstellungen erklären Text hervorheben nicht mehr', () => { renderSettings(); const b = document.querySelector('#mbody button[data-act="resetall"]'); ok(b && b.textContent.trim() === 'Alle Akten zurücksetzen', 'Beschriftung: ' + (b && b.textContent)); ok(!$('#mbody').textContent.includes('Text hervorheben'), 'Hinweis steht noch da'); });
+  T('Überschriften zeigen keine Anzahl der Akten mehr', () => ok(!groupHead({t: 'Test'}).includes('<i>') && !subHead({id: 'q', t: 'Test'}).includes('<i>'), 'Anzahl steht noch in der Überschrift'));
   T('Unter der /me-Box steht kein Hinweistext, kopierbare Zeilen bleiben', () => { reset0(); const c = card(get(id())); ok(!c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis steht noch da'); ok(c.includes('class="ml cp"'), 'keine kopierbare Zeile'); });
   T('Papierkorb hat ein Symbol und eine Trennlinie davor', () => { render(); const h = $('#n').innerHTML, s = h.lastIndexOf('class="sep"'); ok(h.includes('class="ic"'), 'Symbol fehlt'); ok(s > h.indexOf('Medikamente') && s < h.indexOf('Papierkorb'), 'Trennlinie an falscher Stelle'); });
   T('KI-Hinweis steht unten rechts und blockiert keine Klicks', () => { const w = $('#wm'); ok(w && w.textContent.includes('Mit KI erstellt'), 'Hinweis fehlt'); ok(getComputedStyle(w).pointerEvents === 'none', 'Hinweis fängt Klicks ab'); });
@@ -1599,7 +1610,7 @@ function runTests(){
   T('Zusätzliche /me-Boxen lassen sich nach oben und unten verschieben', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'A'); addBox(i); setText(i, 'xt:1', 'B'); addBox(i); setText(i, 'xt:2', 'C'); const t = () => boxesOf(get(i)).map(x => x.t).join(','); ok(t() === 'A,B,C', 'Ausgangslage: ' + t()); moveBox(i, 2, -1); ok(t() === 'A,C,B', 'nicht nach oben: ' + t()); moveBox(i, 0, -1); ok(t() === 'A,C,B', 'oberste Box über den Rand verschoben: ' + t()); moveBox(i, 0, 1); ok(t() === 'C,A,B', 'nicht nach unten: ' + t()); });
   T('/me-Boxen klappen einzeln ein und aus, auch im Zuschauermodus', () => { reset0(); const i = id(); addBox(i); const k = boxesOf(get(i))[0].k; ok(card(get(i)).includes('class="me xb"'), 'neue Box nicht offen'); act('boxopen', {dataset: {id: i, bk: k}}); ok(card(get(i)).includes('class="me xb shut"'), 'Box nicht eingeklappt'); act('boxopen', {dataset: {id: i, bk: k}}); ok(!card(get(i)).includes('shut'), 'Box nicht wieder offen'); act('boxopen', {dataset: {id: i, bk: 'm'}}); ok(card(get(i)).includes('class="me shut"'), 'Hauptbox nicht eingeklappt'); act('boxopen', {dataset: {id: i, bk: 'm'}}); ok(card(get(i)).includes('class="me"') && !card(get(i)).includes('shut'), 'Hauptbox nicht wieder offen'); });
   T('Die Grundeinstellung /me-Boxen eingeklappt gilt für alle Boxen und lässt sich einzeln ändern', () => { reset0(); const i = id(); addBox(i); setOpt('me', 'closed'); const c = card(get(i)); ok(c.includes('class="me shut"') && c.includes('class="me xb shut"'), 'Grundeinstellung nicht gültig'); act('boxopen', {dataset: {id: i, bk: boxesOf(get(i))[0].k}}); ok(card(get(i)).includes('class="me xb"'), 'einzelne Box nicht offen'); setOpt('me', 'open'); ok(!card(get(i)).includes('shut'), 'Grundeinstellung ausgeklappt nicht gültig'); });
-  T('Die Einstellung /me-Boxen wird gespeichert und geladen', () => { setOpt('me', 'closed'); SET = {theme: 'dark', cols: 2, sec: 'open', me: 'open', compact: true, nav: 'open'}; loadSet(); ok(SET.me === 'closed', 'nicht geladen'); setOpt('me', 'open'); ok(SET.me === 'open', 'nicht zurückgestellt'); });
+  T('Die Einstellung /me-Boxen wird gespeichert und geladen', () => { setOpt('me', 'closed'); SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; loadSet(); ok(SET.me === 'closed', 'nicht geladen'); setOpt('me', 'open'); ok(SET.me === 'open', 'nicht zurückgestellt'); });
   T('Eine neue Box ist offen, auch wenn die Grundeinstellung eingeklappt ist', () => { reset0(); setOpt('me', 'closed'); const i = id(); addBox(i); const offen = boxOpen(i, boxesOf(get(i))[0].k) === true; setOpt('me', 'open'); ok(offen, 'neue Box zu'); });
   T('Eingeklappte Box bleibt bei ihrer Box, wenn sie verschoben wird', () => { reset0(); const i = id(); addBox(i); addBox(i); mergeNext = false; /* die Verschiebung ist eine eigene Aktion, nicht Teil des Hinzufügens */ const [a, b2] = boxesOf(get(i)); act('boxopen', {dataset: {id: i, bk: a.k}}); moveBox(i, 0, 1); const now = boxesOf(get(i)); ok(now[1].k === a.k && !boxOpen(i, a.k) && boxOpen(i, b2.k), 'Zustand wandert nicht mit der Box'); undo(); ok(boxesOf(get(i))[0].k === a.k, 'Rückgängig stellt die Reihenfolge nicht her'); });
   T('Die Kennung einer Box steht nicht in der Akten-Datei', () => { reset0(); const i = id(); addBox(i); const o = akteExportObj(i); ok(o.akte.boxes.length === 1 && !('k' in o.akte.boxes[0]), 'Kennung steht in der Datei'); });
@@ -1630,11 +1641,11 @@ function runTests(){
   T('Die Hauptbox heißt Durchführung, neue Boxen bekommen einen Titel', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel der Hauptbox fehlt'); addBox(i); ok(get(i).boxes[0].t === 'Zusätzliche Box' && card(get(i)).includes('Zusätzliche Box'), 'Titel der neuen Box fehlt'); });
   T('Titel einer zusätzlichen Box lässt sich ändern', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'Nachsorge'); ok(get(i).boxes[0].t === 'Nachsorge' && card(get(i)).includes('Nachsorge'), 'Titel nicht geändert'); });
   T('Kein Alle-kopieren-Knopf in den /me-Boxen', () => { reset0(); const c = card(get(id())); ok(!c.includes('Alle kopieren') && !c.includes('data-act="copyall"'), 'Knopf noch da'); });
-  T('Einstellungen: Standardwerte und Schieberegler für die Spalten', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; const r = document.querySelector('#mbody input[data-set="cols"]'); ok(erster('theme') === 'dark' && erster('sec') === 'open' && erster('me') === 'open' && erster('compact') === 'on', 'Standard nicht links'); ok(r && r.type === 'range' && r.min === '1' && r.max === '4' && r.step === '1' && r.value === '2', 'Schieberegler falsch'); });
+  T('Einstellungen: Standardwerte und Schieberegler für die Spalten', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; const r = document.querySelector('#mbody input[data-set="cols"]'); ok(erster('theme') === 'dark' && erster('sec') === 'open' && erster('me') === 'open' && erster('ecken') === 'rund', 'Standard nicht links'); ok(r && r.type === 'range' && r.min === '1' && r.max === '4' && r.step === '1' && r.value === '2', 'Schieberegler falsch'); const a = document.querySelector('#mbody input[data-set="abstand"]'); ok(a && a.type === 'range' && a.min === '1' && a.max === '3' && a.value === '1' && document.querySelector('#abstandout').textContent === 'Eng', 'Abstand-Regler falsch'); });
   T('Spalten pro Reihe: 1 bis 4, ungültige Werte fallen auf 2 zurück', () => { setOpt('cols', '4'); ok(SET.cols === 4 && document.body.style.getPropertyValue('--cols').trim() === '4', 'vier Spalten nicht gesetzt'); setOpt('cols', '9'); ok(SET.cols === 2, 'ungültiger Wert nicht abgefangen'); setOpt('cols', '2'); });
   T('Volle Breite: die Kartenreihe hat keine Breitenbegrenzung mehr', () => ok(getComputedStyle(document.getElementById('l')).maxWidth === 'none', 'Breitenbegrenzung noch da'));
   T('Seitenleiste ein- und ausklappen', () => { SET.nav = 'open'; applySet(); act('navtoggle', {dataset: {}}); const zu = SET.nav === 'closed' && document.body.classList.contains('nav-off') && getComputedStyle(document.querySelector('nav')).display === 'none'; act('navtoggle', {dataset: {}}); ok(zu && SET.nav === 'open' && !document.body.classList.contains('nav-off'), 'Seitenleiste reagiert nicht'); });
-  T('Spalten und Seitenleiste werden gespeichert', () => { setOpt('cols', '3'); act('navtoggle', {dataset: {}}); SET = {theme: 'dark', cols: 2, sec: 'open', me: 'open', compact: true, nav: 'open'}; loadSet(); const gemerkt = SET.cols === 3 && SET.nav === 'closed'; setOpt('cols', '2'); act('navtoggle', {dataset: {}}); ok(gemerkt, 'nicht gespeichert'); });
+  T('Spalten und Seitenleiste werden gespeichert', () => { setOpt('cols', '3'); act('navtoggle', {dataset: {}}); SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; loadSet(); const gemerkt = SET.cols === 3 && SET.nav === 'closed'; setOpt('cols', '2'); act('navtoggle', {dataset: {}}); ok(gemerkt, 'nicht gespeichert'); });
   T('Gespeicherte Einstellung „Eine Spalte“ wird zu einer Spalte', () => { store.setItem(SETKEY, JSON.stringify({grid: 'one'})); loadSet(); const eine = SET.cols === 1; store.removeItem(SETKEY); ok(eine, 'alte Einstellung nicht übernommen'); });
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
@@ -1740,15 +1751,20 @@ function runTests(){
     ok(subAdd('b', '   ').error, 'leerer Name angenommen');
     ok(subAdd('o', 'Blutung').id, 'gleicher Name in einer anderen Kategorie abgelehnt');
   });
-  T('Unterkategorie umbenennen und verschieben', () => {
+  T('Unterkategorie umbenennen', () => {
     reset0();
     const x = subAdd('m', 'Schmerzmittel').id, y = subAdd('m', 'Antibiotika').id;
     ok(subRename(x, 'Analgetika').id && S.subs.find(s => s.id === x).t === 'Analgetika', 'nicht umbenannt');
     ok(subRename(x, 'antibiotika').error, 'doppelter Name beim Umbenennen erlaubt');
     ok(subRename(y, 'Antibiotika').id, 'eigener Name wird fälschlich abgelehnt');
-    subMove(y, -1); ok(subsOf('m')[0].id === y, 'nicht nach oben verschoben');
-    subMove(y, -1); ok(subsOf('m')[0].id === y, 'über den Rand hinaus verschoben');
-    subMove(y, 1); ok(subsOf('m')[1].id === y, 'nicht nach unten verschoben');
+  });
+  T('Die Überschriften der Unterkategorien lassen sich in der Seitenleiste nicht verschieben', () => {
+    reset0();
+    const x = subAdd('m', 'Schmerzmittel').id;
+    const alt = EDIT; setMode(true); const sh = subHead({id: x, t: 'Schmerzmittel'}); setMode(alt);
+    ok(!sh.includes('submove') && !sh.includes('nach oben') && !sh.includes('nach unten'), 'Pfeile noch da');
+    ok(sh.includes('data-act="subedit"') && sh.includes('data-act="subdel"'), 'Umbenennen oder Löschen fehlt');
+    ok(!subHead({id: x, t: 'Schmerzmittel'}).includes('<i>'), 'Anzahl steht noch da');
   });
   T('Unterkategorie löschen: die Akten bleiben und stehen danach ohne Unterkategorie', () => {
     reset0();
@@ -1815,7 +1831,7 @@ function runTests(){
   T('Im Zuschauermodus lassen sich Unterkategorien nicht ändern', () => {
     reset0(); setMode(false);
     const vorher = JSON.stringify(S);
-    act('subnew', {dataset: {v: 'b'}}); act('submove', {dataset: {id: 'nichtda', d: '1'}}); act('subdel', {dataset: {id: 'nichtda'}});
+    act('subnew', {dataset: {v: 'b'}}); act('subdel', {dataset: {id: 'nichtda'}});
     const unveraendert = JSON.stringify(S) === vorher && subForm === null;
     setMode(true);
     ok(unveraendert, 'Zuschauermodus hat etwas geändert');
@@ -2059,7 +2075,7 @@ function runTests(){
   });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
-  SET = {theme: 'dark', cols: 2, sec: 'open', me: 'open', compact: true, nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
+  SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
   $('#f').innerHTML = '';
   $('#l').innerHTML = `<h2>Tests</h2><p>${res.filter(r => r[0]).length} von ${res.length} bestanden</p>` + res.map(([good, m]) => `<p class="${good ? 'okt' : 'err'}">${good ? '✓' : '✗'} ${esc(m)}</p>`).join('');
 }
