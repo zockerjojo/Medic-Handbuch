@@ -25,7 +25,7 @@ Diese Anleitung ist für eine KI oder eine Person gedacht, die Akten für das Me
 |---|---|---|
 | `id` | ja | Text, identisch mit `title`. |
 | `title` | ja | Text, der Name der Akte, so wie er angezeigt wird. |
-| `cat` | ja | Kategorie. Erlaubt sind nur diese Werte: `"v"` Vitalwerte & Amnestika (schreibgeschützt), `"b"` Behandlungen, `"n"` Narkose, `"o"` Operationen, `"m"` Medikamente. |
+| `cat` | ja | Kategorie. Erlaubt sind nur diese Werte: `"t"` ganz oben (Akten ohne Überschrift, direkt unter den Favoriten, z. B. die Narkose-Akten), `"v"` Vitalwerte & Amnestika (schreibgeschützt), `"b"` Behandlungen, `"o"` Operationen, `"m"` Medikamente. Die alte Kennung `"n"` (früher Kategorie Narkose) wird wie `"t"` behandelt. |
 | `desc` | nein | Kurze Beschreibung unter dem Titel. Weglassen, wenn es keine gibt. |
 | `kw` | nein | Suchbegriffe, durch Leerzeichen getrennt, z. B. `"blutung wunde naht"`. |
 | `sections` | nein | Liste der Abschnitte in der Anzeigereihenfolge. Eine leere Liste `[]` ist erlaubt. |
@@ -35,6 +35,8 @@ Diese Anleitung ist für eine KI oder eine Person gedacht, die Akten für das Me
 | `boxes` | nein | Zusätzliche /me-Boxen. Jede Box ist ein Objekt mit `t` (Titel) und `me` (Liste der Zeilen). Meist weglassen, die Nutzer legen weitere Boxen selbst an. |
 
 Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf nicht verwendet werden.
+
+**Unterkategorien.** Für `"b"`, `"o"` und `"m"` können Nutzer im Browser Unterkategorien anlegen. Die Unterkategorien stehen nicht in `akten.json`. Die Datei enthält nur die Akten selbst, ohne Angaben zu Unterkategorien.
 
 **Abschnitte (`sections`).** Jeder Abschnitt ist ein Objekt mit diesen Feldern:
 
@@ -74,6 +76,7 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 | Problem | Folge |
 |---|---|
 | Kategorie unbekannt, z. B. `"B"` oder `"Behandlungen"` | Akte wird übersprungen |
+| Kategorie `"n"` (alte Kennung der Narkose) | wird als `"t"` übernommen |
 | `id` oder `title` fehlt oder ist leer | Akte wird übersprungen |
 | `id` oder `title` kommt doppelt vor | die zweite Akte wird übersprungen |
 | Zeile in `items` oder `me` ist kein Text, z. B. eine Zahl oder ein Objekt | Akte wird übersprungen |
@@ -176,7 +179,7 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 ## 9. Prüfliste vor der Ausgabe
 
 - [ ] Die Ausgabe ist ein einziges JSON-Array. Es beginnt mit `[` und endet mit `]`.
-- [ ] Jede Akte hat `id`, `title` (identisch) und `cat` (`v`, `b`, `n`, `o` oder `m`).
+- [ ] Jede Akte hat `id`, `title` (identisch) und `cat` (`t`, `v`, `b`, `o` oder `m`).
 - [ ] `sections` ist eine Liste. Jeder Abschnitt hat `h` (Text) und `items` (Liste von Texten).
 - [ ] `me` ist eine Liste von Texten. Handlungen beginnen mit `/me `, Notizen mit `Notiz: `.
 - [ ] Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile (`/me nimmt …`).
@@ -195,3 +198,4 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 2. Beide Dateien auf GitHub Pages hochladen (Commit und Push). Danach die Seite neu laden.
 3. Lokal nicht per Doppelklick öffnen, denn dann lädt der Browser `akten.json` nicht. Entweder den Ordner mit `python3 -m http.server` starten und `http://localhost:8000` öffnen, oder auf der Seite die Datei über das angebotene Auswahlfeld laden.
 4. Die Seite schreibt nicht in `akten.json`. Nutzeränderungen werden im Browser gespeichert und haben Vorrang vor der Datei. Eine Akte, die jemand selbst bearbeitet hat, zeigt seine Fassung. Mit „Original wiederherstellen“ (Schaltfläche beim Überfahren der Überschrift) kehrt er zur Fassung aus `akten.json` zurück. Neue Zeilen wie die Material-Zeile erscheinen bei einer Akte, die schon im Browser bearbeitet wurde, erst nach „Original wiederherstellen“.
+5. Unterkategorien für Behandlungen, Operationen und Medikamente legen die Nutzer im Bearbeitungsmodus selbst an, in der Seitenleiste oder beim Erstellen einer Akte. Sie können sie umbenennen, verschieben und löschen. Eine gelöschte Unterkategorie lässt ihre Akten bestehen, die Akten stehen danach ohne Unterkategorie. Diese Angaben gehören zu den Browser-Änderungen und stehen nicht in `akten.json`. Beim Exportieren der Änderungen werden sie mitgespeichert.

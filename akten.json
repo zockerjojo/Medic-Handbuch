@@ -1,5 +1,74 @@
 [
   {
+    "id": "Lokalanästhesie",
+    "cat": "t",
+    "title": "Lokalanästhesie",
+    "kw": "betäubung lidocain prilocain bupivacain",
+    "sections": [
+      {
+        "h": "Wann",
+        "items": [
+          "Nur eine Stelle (Handrücken, Wunde, Muttermal): Injektion, Creme, Gel oder Spray"
+        ]
+      },
+      {
+        "h": "Medikamente",
+        "items": [
+          "Lidocain, Prilocain, Bupivacain"
+        ]
+      },
+      {
+        "h": "Nebenwirkungen",
+        "items": [
+          "Übelkeit, Schwindel, niedriger Blutdruck; Dosis nach Körpergewicht"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Betäubungscreme, Lokalanästhetikum mit Spritze und Desinfektionsmittel aus dem Verbandskasten",
+      "/me desinfiziert die Stelle vor der Betäubung",
+      "/me sprüht die Betäubungscreme auf die Wunde",
+      "/me injiziert das Lokalanästhetikum langsam unter die Haut",
+      "/me wartet ein paar Minuten, bis die Stelle taub ist",
+      "/me prüft die Betäubung mit einer leichten Berührung",
+      "Notiz: Bei Übelkeit, Schwindel oder niedrigem Blutdruck Patienten hinlegen und Vitalwerte prüfen"
+    ]
+  },
+  {
+    "id": "Regional-, Plexus- und Spinalanästhesie",
+    "cat": "t",
+    "title": "Regional-, Plexus- und Spinalanästhesie",
+    "kw": "betäubung nervenblockade rückenmark ivra tourniquet",
+    "sections": [
+      {
+        "h": "Regional und Plexus (Arm oder Bein, Patient wach)",
+        "items": [
+          "Haut desinfizieren, Nadel oder Katheter einführen (oft mit Ultraschall), Mittel z. B. Lidocain spritzen"
+        ]
+      },
+      {
+        "h": "Spinal (Unterkörper, 1–2 Std.)",
+        "items": [
+          "Punktionsstelle am Rücken desinfizieren, lokal betäuben, Spinalnadel setzen, Mittel in den Spinalraum"
+        ]
+      },
+      {
+        "h": "IVRA (ca. 1 Std.)",
+        "items": [
+          "Tourniquet anlegen, Extremität blutleer machen, Mittel in die Vene"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Lokalanästhetikum, Punktionsnadel, Ultraschallgerät, Desinfektionsmittel und Tourniquet aus dem Narkosewagen",
+      "/me führt vorsichtig die Nadel ein und überprüft die Betäubung",
+      "/me bereitet die Punktionsstelle am Rücken vor",
+      "/me spritzt das Betäubungsmittel langsam in den Spinalraum",
+      "/me wartet, bis der Unterkörper betäubt ist",
+      "Notiz: Verlauf der Betäubung und Empfindung regelmäßig prüfen"
+    ]
+  },
+  {
     "id": "Vitalwerte",
     "cat": "v",
     "title": "Vitalwerte",
@@ -750,75 +819,6 @@
     ],
     "me": [
       "/me nimmt die passende Behandlungsakte aus dem Ordner zur Hand"
-    ]
-  },
-  {
-    "id": "Lokalanästhesie",
-    "cat": "n",
-    "title": "Lokalanästhesie",
-    "kw": "betäubung lidocain prilocain bupivacain",
-    "sections": [
-      {
-        "h": "Wann",
-        "items": [
-          "Nur eine Stelle (Handrücken, Wunde, Muttermal): Injektion, Creme, Gel oder Spray"
-        ]
-      },
-      {
-        "h": "Medikamente",
-        "items": [
-          "Lidocain, Prilocain, Bupivacain"
-        ]
-      },
-      {
-        "h": "Nebenwirkungen",
-        "items": [
-          "Übelkeit, Schwindel, niedriger Blutdruck; Dosis nach Körpergewicht"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Betäubungscreme, Lokalanästhetikum mit Spritze und Desinfektionsmittel aus dem Verbandskasten",
-      "/me desinfiziert die Stelle vor der Betäubung",
-      "/me sprüht die Betäubungscreme auf die Wunde",
-      "/me injiziert das Lokalanästhetikum langsam unter die Haut",
-      "/me wartet ein paar Minuten, bis die Stelle taub ist",
-      "/me prüft die Betäubung mit einer leichten Berührung",
-      "Notiz: Bei Übelkeit, Schwindel oder niedrigem Blutdruck Patienten hinlegen und Vitalwerte prüfen"
-    ]
-  },
-  {
-    "id": "Regional-, Plexus- und Spinalanästhesie",
-    "cat": "n",
-    "title": "Regional-, Plexus- und Spinalanästhesie",
-    "kw": "betäubung nervenblockade rückenmark ivra tourniquet",
-    "sections": [
-      {
-        "h": "Regional und Plexus (Arm oder Bein, Patient wach)",
-        "items": [
-          "Haut desinfizieren, Nadel oder Katheter einführen (oft mit Ultraschall), Mittel z. B. Lidocain spritzen"
-        ]
-      },
-      {
-        "h": "Spinal (Unterkörper, 1–2 Std.)",
-        "items": [
-          "Punktionsstelle am Rücken desinfizieren, lokal betäuben, Spinalnadel setzen, Mittel in den Spinalraum"
-        ]
-      },
-      {
-        "h": "IVRA (ca. 1 Std.)",
-        "items": [
-          "Tourniquet anlegen, Extremität blutleer machen, Mittel in die Vene"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Lokalanästhetikum, Punktionsnadel, Ultraschallgerät, Desinfektionsmittel und Tourniquet aus dem Narkosewagen",
-      "/me führt vorsichtig die Nadel ein und überprüft die Betäubung",
-      "/me bereitet die Punktionsstelle am Rücken vor",
-      "/me spritzt das Betäubungsmittel langsam in den Spinalraum",
-      "/me wartet, bis der Unterkörper betäubt ist",
-      "Notiz: Verlauf der Betäubung und Empfindung regelmäßig prüfen"
     ]
   },
   {

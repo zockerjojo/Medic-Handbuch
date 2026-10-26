@@ -12,6 +12,23 @@ nav h1{font:700 22px Georgia,serif;margin:0 8px 18px}
 .tg{width:14px;font-weight:400;text-align:center}
 .gl{margin:0 0 6px 22px;border-left:1px solid var(--l)}
 .gl a{display:block;padding:4px 10px;color:var(--m);border-radius:4px;text-decoration:none}.gl a:hover{background:var(--l);color:var(--t)}
+.gl.flat{margin:2px 0 0;border-left:0}.gl.flat a{color:var(--t)}
+.lrow{display:flex;align-items:center;gap:2px;min-width:0}.lrow a{flex:1;min-width:0}
+.mv{display:inline-flex;flex:none}
+.mv .tb,.subtools .tb{width:20px;height:20px;line-height:18px;font-size:11px}
+.subdiv{height:1px;background:var(--l);margin:10px 10px 4px}
+.subh{display:flex;align-items:center;gap:6px;padding:4px 10px 2px;min-width:0;color:var(--a);font-size:13px;font-weight:700}
+.subh i{font-style:normal;font-weight:400;color:var(--m);font-size:12px}
+.subt{flex:1;min-width:0;overflow-wrap:anywhere}
+.subtools{display:inline-flex;gap:2px;flex:none;margin-left:auto}
+.subempty{margin:0;padding:2px 10px 4px;color:var(--m);font-size:13px;font-style:italic}
+.subin{display:flex;align-items:center;gap:4px;padding:4px 10px 6px}
+.subin input{flex:1;min-width:0;padding:5px 8px;border-radius:4px;border:1px solid var(--a);background:var(--bg);color:var(--t);font:inherit;font-size:14px}
+.subin .tb{width:24px;height:24px;line-height:22px;font-size:13px}
+.subin .tb[data-act="subok"]{color:var(--a)}
+.gl .subadd{margin:8px 10px 4px}
+.subsel-l{display:inline-flex;align-items:center;gap:6px;color:var(--m);font-size:12px}
+.subsel{font-size:12px;padding:2px 8px;border-radius:12px;max-width:100%}
 .foot{margin-top:auto;padding-top:16px;display:flex;gap:6px;flex-wrap:wrap}
 main{flex:1;overflow:auto;padding:22px clamp(16px,4vw,48px)}
 #sb{position:sticky;top:0;z-index:5;background:none;border:0;box-shadow:none;padding:6px 0 14px;display:flex;align-items:center;gap:8px;pointer-events:none}
@@ -145,7 +162,11 @@ body:not(.edit) .only-edit{display:none!important}
 /* ===== Grundlagen ===== */
 const $ = s => document.querySelector(s);
 const TEST = /[?&]test\b/.test(location.search);
-const C = {v: 'Vitalwerte & Amnestika', b: 'Behandlungen', n: 'Narkose', o: 'Operationen', m: 'Medikamente'};
+const TOP = 't';                                   // Akten ganz oben, ohne Überschrift (früher die Kategorie Narkose)
+const C = {t: '', v: 'Vitalwerte & Amnestika', b: 'Behandlungen', o: 'Operationen', m: 'Medikamente'};
+const SUBCATS = ['b', 'o', 'm'];                   // Kategorien mit Unterkategorien
+const catKey = c => (c === 'n' ? TOP : c);         // alte Kennung „n“ (Narkose) gilt als Akte ganz oben
+const cleanT = s => String(s || '').replace(/\s+/g, ' ').trim().slice(0, 60);   // Name einer Unterkategorie
 const RO = {v: 1};                                  // schreibgeschützte Kategorien
 const FORM = {m: ['Dosis', 'Wirkung']};             // Formularabschnitte je Kategorie
 const DEFAULT_FORM = ['Erkennung', 'Ablauf'];   // Standardabschnitte neuer Akten; die Durchführung ist die /me-Box
@@ -187,7 +208,7 @@ function applySet(){
 }
 
 /* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
-const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], v: 4});   // v: Stand der Umstellungen (4: Operationen umbenannt)
+const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], subs: [], subOf: {}, v: 5});   // v: Stand der Umstellungen (4: Operationen umbenannt, 5: Narkose ganz oben, Unterkategorien)
 function save(){
   const now = JSON.stringify(S);
   if (lastSaved !== null && now !== lastSaved) {
@@ -213,7 +234,9 @@ function orderFix(saved, made = S.made){
 // Umbenennungen (Stand 4): alte Kennung → neue Kennung. Gespeicherte Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit.
 const RENAMED = {'Narkose einleiten': 'Narkose richtig einleiten', 'Verätzungen': 'Behandlung von Verätzungen', 'Gehirntumor (Wach-OP)': 'Gehirntumor – Wach-OP', 'Korrosion durch SCP-106 (Pocket Dimension)': 'Korrosion - Pocket Dimension (SCP-106)'};
 function migrate(){
-  if (S.v >= 4) return;
+  if (!Array.isArray(S.subs)) S.subs = [];   // Unterkategorien (Stand 5), immer vorhanden
+  if (!S.subOf || typeof S.subOf !== 'object') S.subOf = {};
+  if (S.v >= 5) return;
   if (!(S.v >= 3)) {   // Stand 3: den Abschnitt „Behandlung“ entfernen, auch aus früher gespeicherten Änderungen
     const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
     Object.keys(S.ov || {}).forEach(k => { if (S.ov[k] && Array.isArray(S.ov[k].sections)) S.ov[k].sections = ohneBeh(S.ov[k].sections); });
@@ -228,7 +251,12 @@ function migrate(){
     S.fav = (S.fav || []).map(x => (x === alt ? neu : x)).filter((x, i, a) => a.indexOf(x) === i);
     S.order = (S.order || []).map(x => (x === alt ? neu : x));
   });
-  S.v = 4;
+  if (S.v < 5) {   // Stand 5: die Kategorie Narkose entfällt, ihre Akten stehen ganz oben
+    (S.made || []).forEach(m => { if (m.cat === 'n') m.cat = TOP; });
+    const istOben = id => { const r = get(id); return !!r && r.cat === TOP; };
+    S.order = [...S.order.filter(istOben), ...S.order.filter(x => !istOben(x))];
+  }
+  S.v = 5;
   try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {}
 }
 function load(){ loadRaw(); migrate(); S.order = orderFix(S.order); lastSaved = JSON.stringify(S); }
@@ -332,11 +360,117 @@ function removeBox(id, bi){
   boxes.splice(bi, 1); patch(id, 'boxes', boxes);
 }
 function delSection(id, s){ const secs = clone(get(id).sections); secs.splice(s, 1); patch(id, 'sections', secs); }
-function moveRec(id, d){
-  const r = get(id), o = S.order, i = o.indexOf(id);
+/* ===== Unterkategorien (Behandlungen, Operationen, Medikamente): Titel, Trennlinien, Reihenfolge ===== */
+let subForm = null;   // offenes Eingabefeld in der Sidebar: {cat, id (leer = neu), val}
+const newSubId = () => 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const subsOf = k => S.subs.filter(s => s.cat === k);
+const subOfRec = r => { const sid = r && own(S.subOf, r.id) ? S.subOf[r.id] : null; return sid ? (S.subs.find(s => s.id === sid && s.cat === r.cat) || null) : null; };
+const sameGroup = (q, cat, sid) => !!q && q.cat === cat && ((subOfRec(q) || {}).id || null) === sid;
+function placeAt(id, cat, sid){   // ans Ende der Gruppe (Kategorie und Unterkategorie), sonst ans Ende der Kategorie, sonst ans Ende der Liste
+  S.order = S.order.filter(x => x !== id);
+  const last = test => { let at = -1; S.order.forEach((x, k) => { if (test(get(x))) at = k; }); return at; };
+  let at = last(q => sameGroup(q, cat, sid));
+  if (at < 0) at = last(q => !!q && q.cat === cat);
+  if (at < 0) at = S.order.length - 1;
+  S.order.splice(at + 1, 0, id);
+}
+function subCheck(cat, t, selfId){   // leer = in Ordnung, sonst die Meldung
+  if (!t) return 'Bitte einen Namen eingeben.';
+  if (subsOf(cat).some(s => s.id !== selfId && nf(s.t) === nf(t))) return 'Diesen Namen gibt es in dieser Kategorie schon.';
+  return '';
+}
+function subAdd(cat, t){
+  const title = cleanT(t), err = subCheck(cat, title, '');
+  if (err) return {error: err};
+  const id = newSubId(); S.subs.push({id, cat, t: title}); save(); return {id};
+}
+function subRename(id, t){
+  const s = S.subs.find(x => x.id === id), title = cleanT(t), err = s ? subCheck(s.cat, title, id) : 'Diese Unterkategorie gibt es nicht mehr.';
+  if (err) return {error: err};
+  s.t = title; save(); return {id};
+}
+function subMove(id, d){   // Reihenfolge der Unterkategorien innerhalb ihrer Kategorie
+  const i = S.subs.findIndex(x => x.id === id);
+  if (i < 0) return;
   let j = i + d;
-  while (j >= 0 && j < o.length && get(o[j]).cat !== r.cat) j += d;
+  while (j >= 0 && j < S.subs.length && S.subs[j].cat !== S.subs[i].cat) j += d;
+  if (j >= 0 && j < S.subs.length) { [S.subs[i], S.subs[j]] = [S.subs[j], S.subs[i]]; save(); }
+}
+function subDelete(id){   // die Akten bleiben erhalten und stehen danach ohne Unterkategorie
+  S.subs = S.subs.filter(s => s.id !== id);
+  Object.keys(S.subOf).forEach(k => { if (S.subOf[k] === id) delete S.subOf[k]; });
+  if (subForm && subForm.id === id) subForm = null;
+  save();
+}
+function setRecSub(id, sid){   // Akte in eine Unterkategorie legen; leer = ohne Unterkategorie
+  const r = get(id);
+  if (!r || !SUBCATS.includes(r.cat)) return;
+  const s = sid ? S.subs.find(x => x.id === sid && x.cat === r.cat) : null;
+  if (s) S.subOf[id] = s.id; else delete S.subOf[id];
+  placeAt(id, r.cat, s ? s.id : null);
+  save();
+}
+function moveRec(id, d){   // Akte nach oben oder unten, nur innerhalb ihrer Gruppe (Kategorie und Unterkategorie)
+  const r = get(id);
+  if (!r) return;
+  const o = S.order, i = o.indexOf(id), sid = (subOfRec(r) || {}).id || null;
+  let j = i + d;
+  while (j >= 0 && j < o.length && !sameGroup(get(o[j]), r.cat, sid)) j += d;
   if (j >= 0 && j < o.length) { [o[i], o[j]] = [o[j], o[i]]; save(); }
+}
+function navLink(r){   // Akte in der Sidebar; im Bearbeitungsmodus mit ▲▼ zum Verschieben
+  const a = `<a href="#" data-act="go" data-id="${esc(r.id)}">${esc(r.title)}</a>`;
+  if (!EDIT) return a;
+  const id = esc(r.id);
+  return `<div class="lrow">${a}<span class="mv"><button class="tb" data-act="recmove" data-id="${id}" data-d="-1" title="Akte nach oben" aria-label="Akte nach oben">▲</button><button class="tb" data-act="recmove" data-id="${id}" data-d="1" title="Akte nach unten" aria-label="Akte nach unten">▼</button></span></div>`;
+}
+function navGroups(k, rs){   // Akten einer Kategorie: zuerst die ohne Unterkategorie, dann je Unterkategorie mit Titel und Trennlinie
+  let h = rs.filter(r => !subOfRec(r)).map(navLink).join('');
+  if (!SUBCATS.includes(k)) return h;
+  subsOf(k).forEach(s => {
+    const ms = rs.filter(r => (subOfRec(r) || {}).id === s.id);
+    if (!ms.length && !EDIT) return;   // leere Unterkategorien sehen nur die, die bearbeiten
+    h += (h ? '<div class="subdiv"></div>' : '') + subHead(s, ms.length) + ms.map(navLink).join('') + (ms.length ? '' : '<p class="subempty">Noch keine Akte</p>');
+  });
+  if (EDIT) h += subAddRow(k);
+  return h;
+}
+// Reihenfolge wie in der Seitenleiste: zuerst die Akten ohne Unterkategorie, dann je Unterkategorie in ihrer Reihenfolge
+function sidebarOrder(k, rs){
+  if (!SUBCATS.includes(k)) return rs;
+  return [...rs.filter(r => !subOfRec(r)), ...subsOf(k).flatMap(s => rs.filter(r => (subOfRec(r) || {}).id === s.id))];
+}
+function subHead(s, n){
+  if (subForm && subForm.id === s.id) return subInput(subForm.val, 'Name der Unterkategorie');
+  const sid = esc(s.id), tools = EDIT ? `<span class="subtools"><button class="tb" data-act="submove" data-id="${sid}" data-d="-1" title="Unterkategorie nach oben" aria-label="Unterkategorie nach oben">▲</button><button class="tb" data-act="submove" data-id="${sid}" data-d="1" title="Unterkategorie nach unten" aria-label="Unterkategorie nach unten">▼</button><button class="tb" data-act="subedit" data-id="${sid}" title="Umbenennen" aria-label="Umbenennen">✎</button><button class="tb" data-act="subdel" data-id="${sid}" title="Unterkategorie löschen" aria-label="Unterkategorie löschen">✕</button></span>` : '';
+  return `<div class="subh"><span class="subt">${esc(s.t)}</span><i>${n}</i>${tools}</div>`;
+}
+function subInput(val, label){
+  return `<div class="subin"><input id="subin" maxlength="60" value="${esc(val || '')}" placeholder="${esc(label)}" aria-label="${esc(label)}"><button class="tb" data-act="subok" title="Speichern" aria-label="Speichern">✓</button><button class="tb" data-act="subcancel" title="Abbrechen" aria-label="Abbrechen">✕</button></div>`;
+}
+function subAddRow(k){
+  if (subForm && subForm.cat === k && !subForm.id) return subInput(subForm.val, 'Name der neuen Unterkategorie');
+  return `<button class="ad subadd" data-act="subnew" data-v="${k}">＋ Unterkategorie</button>`;
+}
+function subSelHTML(r, id){   // Unterkategorie der Akte wählen (im Bearbeitungsmodus, bei den Werkzeugen der Akte)
+  const cur = subOfRec(r) || {};
+  return `<label class="subsel-l">Unterkategorie<select class="subsel" data-subsel="1" data-id="${id}"><option value="">Ohne Unterkategorie</option>${subsOf(r.cat).map(s => `<option value="${esc(s.id)}"${s.id === cur.id ? ' selected' : ''}>${esc(s.t)}</option>`).join('')}</select></label>`;
+}
+function subCommit(){   // Name speichern: neu anlegen oder umbenennen; bei Fehler bleibt das Feld offen
+  if (!subForm) return;
+  const v = ($('#subin') || {}).value || '';
+  const res = subForm.id ? subRename(subForm.id, v) : subAdd(subForm.cat, v);
+  if (res.error) { subForm.val = v; return toast(res.error); }
+  subForm = null; toast('Unterkategorie gespeichert');
+}
+function subAct(name, d){   // Unterkategorien: anlegen, umbenennen, verschieben, löschen
+  const id = d.id || '';
+  if (name === 'subnew') subForm = {cat: d.v, id: '', val: ''};
+  else if (name === 'subedit') { const s = S.subs.find(x => x.id === id); subForm = s ? {cat: s.cat, id, val: s.t} : null; }
+  else if (name === 'subcancel') subForm = null;
+  else if (name === 'subok') subCommit();
+  else if (name === 'submove') subMove(id, +d.d);
+  else if (name === 'subdel') { const s = S.subs.find(x => x.id === id); if (s && confirm('Unterkategorie „' + s.t + '“ löschen? Ihre Akten bleiben erhalten und stehen danach ohne Unterkategorie.')) subDelete(id); }
 }
 const trash = id => { S.del[id] = 1; save(); };
 const restore = id => { delete S.del[id]; save(); };
@@ -347,21 +481,26 @@ function purge(id){
   S.made = S.made.filter(r => r.id !== id);
   S.order = S.order.filter(x => x !== id);
   S.fav = S.fav.filter(x => x !== id);
+  delete S.subOf[id];   // die Unterkategorie-Zuordnung geht mit
   delete S.del[id]; save();
 }
 function create(f){
-  const e = {}, cat = f.cat, title = String(f.title || '').replace(/\s+/g, ' ').trim();
+  const e = {}, cat = catKey(f.cat), title = String(f.title || '').replace(/\s+/g, ' ').trim();
   if (!C[cat] || RO[cat]) e.cat = 'Diese Kategorie ist schreibgeschützt.';
   if (!title) e.title = 'Bitte einen Titel eingeben.';
   else if (all().some(r => nf(r.title) === nf(title))) e.title = 'Diesen Titel gibt es schon.';
   const secs = (f.sections || []).map(s => ({h: s.h, items: lines(s.text)})).filter(s => s.items.length);
   if (!secs.length) e.sections = 'Mindestens eine Zeile in einem Abschnitt angeben.';
+  // Unterkategorie: eine bestehende oder eine neue, die zusammen mit der Akte angelegt wird
+  const neu = f.sub === '__new__' && SUBCATS.includes(cat), newT = neu ? cleanT(f.newSub) : '';
+  let sid = !neu && f.sub && S.subs.some(s => s.id === f.sub && s.cat === cat) ? f.sub : '';
+  if (neu) { const err = subCheck(cat, newT, ''); if (err) e.sub = err; }
   if (Object.keys(e).length) return {errors: e};
+  if (neu) { sid = newSubId(); S.subs.push({id: sid, cat, t: newT}); }
   const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   S.made.push({id, cat, title, desc: String(f.desc || '').trim(), kw: '', sections: secs, me: [MAT_DEFAULT], boxes: [], table: null, widget: false});
-  let at = -1;
-  S.order.forEach((x, k) => { if (get(x).cat === cat) at = k; });   // ans Ende der Kategorie
-  S.order.splice(at + 1, 0, id);
+  if (sid && SUBCATS.includes(cat)) S.subOf[id] = sid;
+  placeAt(id, cat, sid && SUBCATS.includes(cat) ? sid : null);   // ans Ende ihrer Gruppe
   save();
   return {id};
 }
@@ -378,7 +517,7 @@ function akteExportObj(id){   // die Akte so, wie sie gerade angezeigt wird (mit
 }
 function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; ungültige Angaben werden abgelehnt
   if (!d || typeof d !== 'object' || d.format !== 'medic-akte' || !d.akte || typeof d.akte !== 'object') return {errors: {file: 'Das ist keine Akten-Datei dieses Handbuchs.'}};
-  const a = d.akte, cat = a.cat, title0 = cleanText(a.title), secs = cleanSections(a.sections), e = {};
+  const a = d.akte, cat = catKey(a.cat), title0 = cleanText(a.title), secs = cleanSections(a.sections), e = {};
   if (!own(C, cat) || RO[cat]) e.cat = 'Diese Kategorie ist schreibgeschützt oder unbekannt.';
   if (!title0) e.title = 'Die Akte hat keinen Titel.';
   if (!secs.length) e.sections = 'Die Akte hat keinen Abschnitt mit Zeilen.';
@@ -388,9 +527,7 @@ function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; 
   const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   S.made.push({id, cat, title, desc: typeof a.desc === 'string' ? a.desc.trim() : '', kw: '', sections: secs,
     me: (Array.isArray(a.me) ? a.me : []).filter(t => typeof t === 'string'), boxes: cleanBoxes(a.boxes), table: null, widget: false});
-  let at = -1;
-  S.order.forEach((x, k) => { if (get(x).cat === cat) at = k; });   // ans Ende ihrer Kategorie
-  S.order.splice(at + 1, 0, id);
+  placeAt(id, cat, null);   // ans Ende ihrer Kategorie, ohne Unterkategorie
   save();
   return {id, title, renamed: n > 0};
 }
@@ -428,7 +565,7 @@ function checkRecord(x){   // null = gültig, sonst der Grund
   if (!x || typeof x !== 'object' || Array.isArray(x)) return 'kein Objekt';
   if (typeof x.id !== 'string' || !x.id.trim()) return 'Kennung (id) fehlt';
   if (typeof x.title !== 'string' || !x.title.trim()) return 'Titel fehlt';
-  if (!own(C, x.cat)) return 'Kategorie „' + x.cat + '“ ist unbekannt (erlaubt: v, b, n, o, m)';
+  if (!own(C, catKey(x.cat))) return 'Kategorie „' + x.cat + '“ ist unbekannt (erlaubt: t, v, b, o, m)';
   if (x.sections !== undefined && !Array.isArray(x.sections)) return 'sections ist keine Liste';
   for (const s of (x.sections || [])) {
     if (!s || typeof s !== 'object' || typeof s.h !== 'string' || !s.h.trim()) return 'ein Abschnitt hat keine Überschrift';
@@ -446,7 +583,7 @@ function checkRecord(x){   // null = gültig, sonst der Grund
   return null;
 }
 function normalizeRecord(x){   // feste Form, die die Anzeige erwartet
-  return {id: x.id.trim(), cat: x.cat, title: x.title.trim(), desc: x.desc || '', kw: x.kw || '',
+  return {id: x.id.trim(), cat: catKey(x.cat), title: x.title.trim(), desc: x.desc || '', kw: x.kw || '',
     sections: (x.sections || []).map(s => { const o = {h: s.h.trim(), items: s.items.slice()}; if (own(MODES, s.mode)) o.mode = s.mode; return o; }),
     me: (x.me || []).slice(), boxes: (x.boxes || []).map(normBox), table: x.table || null, widget: x.widget === true};
 }
@@ -492,9 +629,9 @@ function card(r){
   const dot = edited ? '<span class="dot" title="Von dir angepasst" aria-label="Von dir angepasst"></span>' : '';
   const head = `<h2>${arrow}${dot}<span class="row" data-hold>${tx('title', r.title, hlEsc(r.title))}${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
   // Werkzeuge der ganzen Akte: fest unter dem Kopf, nur im Bearbeitungsmodus
-  const ctools = can ? `<div class="ctools">${b('recmove', '▲ Nach oben', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼ Nach unten', 'Akte nach unten', 'data-d="1"')}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}${b('trash', 'In den Papierkorb', 'In den Papierkorb legen')}</div>` : '';
-  // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar
-  const cat = (view === 'a' || view === 'fav') ? `<p class="c">${C[r.cat]}</p>` : '';
+  const ctools = can ? `<div class="ctools">${b('recmove', '▲ Nach oben', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼ Nach unten', 'Akte nach unten', 'data-d="1"')}${SUBCATS.includes(r.cat) ? subSelHTML(r, id) : ''}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}${b('trash', 'In den Papierkorb', 'In den Papierkorb legen')}</div>` : '';
+  // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar; die Akten ganz oben haben keine Kategorie
+  const sub = subOfRec(r), cat = ((view === 'a' || view === 'fav') && C[r.cat]) ? `<p class="c">${C[r.cat]}${sub ? ' · ' + esc(sub.t) : ''}</p>` : '';
   const desc = (r.desc || can) ? `<p><span class="row" data-hold>${r.desc ? tx('desc', r.desc, fmt(r.desc)) : tx('desc', '', '<em class="c">Beschreibung hinzufügen</em>')}${tools(ed)}</span></p>` : '';
   const tbl = r.table ? `<div class="tw"><table><tr>${r.table.h.map(x => `<th>${esc(x)}</th>`).join('')}</tr>${r.table.r.map(w => `<tr>${w.map(x => `<td>${fmt(x)}</td>`).join('')}</tr>`).join('')}</table></div>` : '';
   const secs = r.sections.map((s, si) => {
@@ -528,10 +665,13 @@ function trashCard(r){
 function renderNav(){
   const L = live(), item = (v, label, n) => `<div class="cr${view === v ? ' on' : ''}" data-act="view" data-v="${v}"><span>${label}</span><i>${n}</i></div>`;
   let h = BRAND + item('a', 'Alle', L.length) + item('fav', '★ Favoriten', L.filter(r => S.fav.includes(r.id)).length);
-  Object.keys(C).forEach(k => {
+  // Akten ganz oben (früher die Kategorie Narkose): ohne Überschrift direkt unter den Favoriten, danach eine Trennlinie
+  const top = L.filter(r => r.cat === TOP);
+  if (top.length) h += `<div class="gl flat">${top.map(navLink).join('')}</div><div class="sep"></div>`;
+  Object.keys(C).filter(k => k !== TOP).forEach(k => {
     const rs = L.filter(r => r.cat === k), on = opened.has(k);
     h += `<div class="cr${view === k ? ' on' : ''}" data-act="view" data-v="${k}"><b class="tg" data-act="toggle" data-v="${k}">${on ? '▾' : '▸'}</b><span>${C[k]}</span><i>${rs.length}</i></div>`;
-    if (on) h += `<div class="gl">${rs.map(r => `<a href="#" data-act="go" data-id="${esc(r.id)}">${esc(r.title)}</a>`).join('')}</div>`;
+    if (on) h += `<div class="gl">${navGroups(k, rs)}</div>`;
   });
   h += '<div class="sep"></div>' + item('trash', '<span class="ic" aria-hidden="true">🗑️</span>Papierkorb', trashed().length);
   if (DATA_PROBLEMS.length) h += '<p class="warn" title="' + esc(DATA_PROBLEMS.join(' | ')) + '">Hinweis: ' + DATA_PROBLEMS.length + ' Einträge in akten.json wurden übersprungen.</p>';
@@ -563,11 +703,14 @@ function formHTML(){
   const f = formState;
   if (!f) return '';
   const secs = FORM[f.cat] || DEFAULT_FORM, err = k => (f.errors && f.errors[k]) ? `<p class="err">${esc(f.errors[k])}</p>` : '';
-  const opts = Object.keys(C).filter(k => !RO[k]).map(k => `<option value="${k}"${k === f.cat ? ' selected' : ''}>${C[k]}</option>`).join('');
-  return `<section class="form"><h3>Neue Akte anlegen</h3>${err('cat')}<label>Kategorie<select id="fcat">${opts}</select></label><label>Titel<input id="ftitle" value="${esc(f.title || '')}"></label>${err('title')}<label>Beschreibung (optional)<textarea id="fdesc">${esc(f.desc || '')}</textarea></label>${secs.map((h, i) => `<label>${h} (eine Zeile je Eintrag)<textarea class="fsec">${esc((f.text || [])[i] || '')}</textarea></label>`).join('')}${err('sections')}<p><button class="btn" data-act="create">Akte anlegen</button> <button data-act="closeform">Abbrechen</button></p></section>`;
+  const opts = Object.keys(C).filter(k => k !== TOP && !RO[k]).map(k => `<option value="${k}"${k === f.cat ? ' selected' : ''}>${C[k]}</option>`).join('');
+  // Unterkategorie: eine vorhandene wählen, ohne lassen oder eine neue im selben Dialog anlegen
+  const subs = !SUBCATS.includes(f.cat) ? '' : `<label>Unterkategorie<select id="fsub"><option value="">Ohne Unterkategorie</option>${subsOf(f.cat).map(s => `<option value="${esc(s.id)}"${f.sub === s.id ? ' selected' : ''}>${esc(s.t)}</option>`).join('')}<option value="__new__"${f.sub === '__new__' ? ' selected' : ''}>Neue Unterkategorie erstellen</option></select></label>${err('sub')}${f.sub === '__new__' ? `<label>Name der neuen Unterkategorie<input id="fsubnew" maxlength="60" value="${esc(f.newSub || '')}"></label>` : ''}`;
+  return `<section class="form"><h3>Neue Akte anlegen</h3>${err('cat')}<label>Kategorie<select id="fcat">${opts}</select></label>${subs}<label>Titel<input id="ftitle" value="${esc(f.title || '')}"></label>${err('title')}<label>Beschreibung (optional)<textarea id="fdesc">${esc(f.desc || '')}</textarea></label>${secs.map((h, i) => `<label>${h} (eine Zeile je Eintrag)<textarea class="fsec">${esc((f.text || [])[i] || '')}</textarea></label>`).join('')}${err('sections')}<p><button class="btn" data-act="create">Akte anlegen</button> <button data-act="closeform">Abbrechen</button></p></section>`;
 }
 function readForm(){
-  return {cat: $('#fcat').value, title: $('#ftitle').value, desc: $('#fdesc').value, text: [...document.querySelectorAll('.fsec')].map(t => t.value)};
+  const sub = $('#fsub'), nw = $('#fsubnew');
+  return {cat: $('#fcat').value, title: $('#ftitle').value, desc: $('#fdesc').value, text: [...document.querySelectorAll('.fsec')].map(t => t.value), sub: sub ? sub.value : '', newSub: nw ? nw.value : ''};
 }
 function render(){
   if (!S) return;   // vor dem Laden der Daten nichts zeichnen
@@ -577,7 +720,8 @@ function render(){
   if (t) { const q = nf(t).split(/\s+/); list = live().filter(r => q.every(x => haystack(r).includes(x))); empty = 'Nichts gefunden. Versuch einen kürzeren Suchbegriff.'; }
   else if (view === 'trash') { list = trashed(); empty = 'Der Papierkorb ist leer.'; }
   else if (view === 'fav') { list = live().filter(r => S.fav.includes(r.id)); empty = 'Noch keine Favoriten. Mit ☆ merkst du dir eine Akte.'; }
-  else list = live().filter(r => view === 'a' || r.cat === view);
+  else if (view === 'a') { const L = live(); list = [...new Set(L.map(r => r.cat))].flatMap(k => sidebarOrder(k, L.filter(r => r.cat === k))); }   // Alle: je Kategorie in der Reihenfolge der Seitenleiste
+  else list = sidebarOrder(view, live().filter(r => r.cat === view));
   const fh = formHTML();
   if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }   // das Formular bleibt beim Tippen in der Suche erhalten
   $('#l').innerHTML = list.length ? list.map(r => (view === 'trash' && !t) ? trashCard(r) : card(r)).join('') : `<p class="empty">${empty}</p>`;
@@ -618,7 +762,7 @@ function openRec(id){
   const next = S.del[id] ? 'trash' : r.cat;
   if (next !== view) { folded.clear(); secOv.clear(); }
   folded.delete(id); clearSecs(id);
-  view = next; query = ''; $('#q').value = ''; opened.add(r.cat); sectionForm = null;
+  view = next; query = ''; $('#q').value = ''; opened.add(r.cat); sectionForm = null; subForm = null;
   pending = {id}; render();
 }
 function setQuery(v){ query = v; folded.clear(); render(); }
@@ -643,7 +787,7 @@ function setSecMode(id, si, mode){
 }
 function submit(){
   const v = readForm(), secs = FORM[v.cat] || DEFAULT_FORM;
-  const r = create({cat: v.cat, title: v.title, desc: v.desc, sections: secs.map((h, i) => ({h, text: v.text[i] || ''}))});
+  const r = create({cat: v.cat, title: v.title, desc: v.desc, sub: v.sub, newSub: v.newSub, sections: secs.map((h, i) => ({h, text: v.text[i] || ''}))});
   if (r.errors) { formState = Object.assign(v, {errors: r.errors}); return render(); }
   formState = null; view = v.cat; query = ''; opened.add(v.cat); $('#q').value = ''; folded.clear(); secOv.clear(); sectionForm = null;
   pending = {id: r.id}; render(); toast('Akte angelegt');
@@ -653,7 +797,7 @@ function submit(){
 function setMode(on){   // Zuschauermodus (im Standard) oder Bearbeitungsmodus
   if (!on && editing) finishEdit();
   EDIT = !!on;
-  formState = null; sectionForm = null; pending = null;
+  formState = null; sectionForm = null; pending = null; subForm = null;
   document.body.classList.toggle('edit', EDIT);
   const mb = $('#modebtn');
   if (mb) {
@@ -696,7 +840,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'delsec', 'addbox', 'rmbox', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'delsec', 'addbox', 'rmbox', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -717,7 +861,7 @@ function act(name, b){
   if (name === 'settings') return openModal();
   if (name === 'closemodal') return closeModal();
   if (name === 'set') return setOpt(d.k, d.v);
-  if (name === 'view') { view = d.v; query = ''; $('#q').value = ''; folded.clear(); secOv.clear(); sectionForm = null; if (C[d.v]) opened.add(d.v); }
+  if (name === 'view') { view = d.v; query = ''; $('#q').value = ''; folded.clear(); secOv.clear(); sectionForm = null; subForm = null; if (C[d.v]) opened.add(d.v); }
   else if (name === 'fav') fav(id);
   else if (name === 'move') move(id, d.s, +d.i, +d.d);
   else if (name === 'secmove') moveSection(id, +d.s, +d.d);
@@ -727,11 +871,12 @@ function act(name, b){
   else if (name === 'rmbox') removeBox(id, +d.b);
   else if (name === 'delsec') delSection(id, +d.s);
   else if (name === 'recmove') moveRec(id, +d.d);
+  else if (['subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel'].includes(name)) subAct(name, d);
   else if (name === 'trash') trash(id);
   else if (name === 'restore') restore(id);
   else if (name === 'purge') { if (confirm('Akte endgültig löschen? Das lässt sich nicht rückgängig machen.')) purge(id); }
   else if (name === 'reset') { if (confirm('Eigene Änderungen an dieser Akte verwerfen?')) reset(id); }
-  else if (name === 'newform') formState = formState ? null : {cat: (C[view] && !RO[view]) ? view : 'b', title: '', desc: '', text: []};
+  else if (name === 'newform') formState = formState ? null : {cat: (C[view] && !RO[view]) ? view : 'b', title: '', desc: '', text: [], sub: '', newSub: ''};
   else if (name === 'closeform') formState = null;
   else if (name === 'secform') sectionForm = (sectionForm && sectionForm.id === id) ? null : {id, name: '', text: '', mode: 'bullet', errors: null};
   else if (name === 'secsave') {
@@ -744,6 +889,7 @@ function act(name, b){
   else if (name === 'seccancel') sectionForm = null;
   render();
   if (name === 'newform' && formState) focusField('#ftitle');
+  if (['subnew', 'subedit', 'subok'].includes(name) && subForm) focusField('#subin');
   if (name === 'secform' && sectionForm) focusField('[data-sf="name"]');
 }
 
@@ -822,8 +968,9 @@ function cleanBoxes(x){ return (Array.isArray(x) ? x : []).filter(validBox).map(
 function cleanMade(x, seen){
   if (!x || typeof x !== 'object' || !Array.isArray(x.sections)) return null;
   const id = typeof x.id === 'string' ? x.id.trim() : '', title = cleanText(x.title);
-  if (!id || own(BASE, id) || seen.has(id) || !own(C, x.cat) || RO[x.cat] || !title) return null;
-  return {id, cat: x.cat, title, desc: typeof x.desc === 'string' ? x.desc : '', kw: '', sections: cleanSections(x.sections),
+  const cat = catKey(x.cat);
+  if (!id || own(BASE, id) || seen.has(id) || !own(C, cat) || RO[cat] || !title) return null;
+  return {id, cat, title, desc: typeof x.desc === 'string' ? x.desc : '', kw: '', sections: cleanSections(x.sections),
     me: Array.isArray(x.me) ? x.me.filter(t => typeof t === 'string') : [], boxes: cleanBoxes(x.boxes), table: null, widget: false};
 }
 function cleanOv(x){
@@ -852,6 +999,14 @@ function sanitize(d){
   if (d.del && typeof d.del === 'object') Object.keys(d.del).forEach(k => { if (known(k)) out.del[k] = 1; else skipped++; });
   if (Array.isArray(d.fav)) out.fav = [...new Set(d.fav.filter(x => typeof x === 'string' && known(x)))];
   out.order = orderFix(Array.isArray(d.order) ? d.order.filter(x => typeof x === 'string' && known(x)) : [], out.made);
+  if (Array.isArray(d.subs)) d.subs.forEach(s => {   // Unterkategorien: nur gültige, je Kategorie ein Name
+    const t = cleanT(s && s.t), c = s && s.cat;
+    if (s && typeof s.id === 'string' && s.id && SUBCATS.includes(c) && t && !out.subs.some(x => x.id === s.id || (x.cat === c && nf(x.t) === nf(t)))) out.subs.push({id: s.id, cat: c, t});
+  });
+  if (d.subOf && typeof d.subOf === 'object') Object.keys(d.subOf).forEach(k => {   // Zuweisungen nur, wenn Akte und Unterkategorie zusammenpassen
+    const rec = out.made.find(m => m.id === k) || (own(BASE, k) ? BASE[k] : null), sid = d.subOf[k];
+    if (rec && out.subs.some(s => s.id === sid && s.cat === rec.cat)) out.subOf[k] = sid;
+  });
   return {data: out, skipped};
 }
 // Enthält die Datei keine Favoriten, bleiben die eigenen erhalten.
@@ -871,7 +1026,7 @@ function importFile(file){
     if (!looksLikeExport(d)) return toast('Das ist keine Export-Datei dieses Handbuchs');
     if (!confirm('Deine Änderungen werden durch die Datei ersetzt. Favoriten bleiben, wenn die Datei keine enthält. Fortfahren?')) return;
     const res = importedState(d);
-    S = res.data; secOv.clear(); save(); render();
+    S = res.data; secOv.clear(); subForm = null; save(); render();
     toast(res.skipped ? 'Importiert, ' + res.skipped + ' ungültige Einträge übersprungen' : 'Importiert');
   };
   rd.onerror = () => toast('Die Datei konnte nicht gelesen werden');
@@ -907,6 +1062,11 @@ document.addEventListener('keydown', e => {
     else if (e.key === 'Escape') { editing.cancel = true; editing.el.blur(); }
     return;
   }
+  if (e.target.id === 'subin') {   // Name einer Unterkategorie: Enter speichert, Escape verwirft
+    if (e.key === 'Enter') { e.preventDefault(); subCommit(); render(); if (subForm) focusField('#subin'); }
+    else if (e.key === 'Escape') { subForm = null; render(); }
+    return;
+  }
   const typing = e.target.matches && e.target.matches('input,textarea,select,[contenteditable="true"]');
   if ((e.ctrlKey || e.metaKey) && !typing && EDIT) {
     const k = e.key.toLowerCase();
@@ -918,6 +1078,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('input', e => {
   const t = e.target;
   if (t.id === 'q') setQuery(t.value);
+  else if (t.id === 'subin') { if (subForm) subForm.val = t.value; }   // Name der Unterkategorie merken, falls die Ansicht neu gezeichnet wird
   else if (t.matches && t.matches('input[data-set="cols"]')) setCols(t.value);   // Schieberegler: sofort übernehmen, ohne das Fenster neu zu zeichnen
   else if (t.dataset && t.dataset.sf && sectionForm) sectionForm[t.dataset.sf] = t.value;   // Eingaben merken, damit sie beim Neuzeichnen bleiben
 });
@@ -925,8 +1086,10 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.matches && t.matches('select[data-blood]')) t.closest('.card').querySelector('.bo').textContent = t.value ? 'Darf Blut erhalten von: ' + BG[t.value].split(' ').join(', ') : '';
   else if (t.matches && t.matches('select[data-smode]')) { if (EDIT) { setSecMode(t.dataset.id, +t.dataset.s, t.value); render(); } }
+  else if (t.matches && t.matches('select[data-subsel]')) { if (EDIT) { setRecSub(t.dataset.id, t.value); render(); } }   // Akte in eine Unterkategorie legen
   else if (t.dataset && t.dataset.sf && sectionForm) sectionForm[t.dataset.sf] = t.value;
-  else if (t.id === 'fcat') { formState = Object.assign(readForm(), {text: [], errors: null}); render(); }
+  else if (t.id === 'fcat') { formState = Object.assign(readForm(), {text: [], sub: '', newSub: '', errors: null}); render(); }
+  else if (t.id === 'fsub') { formState = Object.assign(readForm(), {errors: null}); render(); if (formState && formState.sub === '__new__') focusField('#fsubnew'); }
   else if (t.id === 'imp') { const f = t.files[0]; t.value = ''; if (f) importFile(f); }   // Auswahl leeren, damit dieselbe Datei erneut gewählt werden kann
   else if (t.id === 'impakte') { const f = t.files[0]; t.value = ''; if (f) importAkteFile(f); }   // eine einzelne Akte aus einer Datei
   else if (t.id === 'datafile') { const f = t.files[0]; if (f) loadDataFile(f); }          // akten.json von Hand auswählen (Fallback)
@@ -1004,7 +1167,7 @@ function runTests(){
   T('Me-Zeilen hinzufügen, verschieben, entfernen', () => { reset0(); const i = id(), n0 = get(i).me.length; addLine(i, 'm'); const path = addLine(i, 'm'); ok(get(i).me.length === n0 + 2 && path === 'm:' + (n0 + 1), 'nicht hinzugefügt'); const me = get(i).me; move(i, 'm', n0 + 1, -1); const me2 = get(i).me; ok(me2[n0] === me[n0 + 1] && me2[n0 + 1] === me[n0], 'nicht verschoben'); removeLine(i, 'm', n0); ok(get(i).me.length === n0 + 1, 'nicht entfernt'); });
   T('Weiches Löschen und Wiederherstellen', () => { reset0(); const i = id(); trash(i); ok(!live().some(r => r.id === i) && trashed().some(r => r.id === i)); restore(i); ok(live().some(r => r.id === i)); });
   T('Mitgelieferte Akten lassen sich nicht endgültig löschen', () => { reset0(); purge(id()); ok(get(id())); });
-  T('Neue Akte landet am Ende ihrer Kategorie', () => { reset0(); const r = create({cat: 'n', title: 'Test Narkose', sections: [{h: 'Ablauf', text: 'Schritt'}]}); ok(S.order[S.order.map(x => get(x).cat).lastIndexOf('n')] === r.id); });
+  T('Neue Akte landet am Ende ihrer Kategorie', () => { reset0(); const r = create({cat: 'o', title: 'Test Operation', sections: [{h: 'Ablauf', text: 'Schritt'}]}); ok(S.order[S.order.map(x => get(x).cat).lastIndexOf('o')] === r.id); });
   T('Sortieren bleibt innerhalb der Kategorie', () => { reset0(); const cats = () => S.order.map(x => get(x).cat).join(''); const before = cats(); moveRec(S.order.find(x => get(x).cat === 'b'), 1); ok(cats() === before); });
   T('Speichern und Laden ergeben denselben Stand', () => { reset0(); setText(id(), 'i:0:0', 'X'); const a = JSON.stringify(S); load(); ok(JSON.stringify(S) === a); });
   T('Bisherige Version wird übernommen (Kennung = Titel)', () => { const i = id(); store.removeItem(KEY); store.setItem('f', JSON.stringify([i])); store.setItem('me', JSON.stringify({[i]: ['/me Test']})); load(); ok(S.fav.includes(i) && get(i).me[0] === '/me Test'); store.removeItem('f'); store.removeItem('me'); });
@@ -1012,7 +1175,7 @@ function runTests(){
   T('Verweise werden zu Links', () => { const r = E(); ok(fmt('[[' + r.title + ']]').includes('data-id="' + esc(r.id) + '"')); });
   T('Fettschrift mit ** wird dargestellt', () => ok(fmt('**10 mg**') === '<b>10 mg</b>'));
   T('Suche ignoriert Groß-/Kleinschreibung und Umlaute', () => { const r = E(); const w = (r.sections[0].items[0].split(' ')[0] || '').replace(/[^\p{L}]/gu, ''); ok(w && haystack(r).includes(nf(w.toUpperCase())), 'Wort nicht gefunden: ' + w); });
-  T('Testlauf mit Beispieldaten je Kategorie', () => { reset0(); const ks = Object.keys(C).filter(k => !RO[k]); ks.forEach(k => create({cat: k, title: 'Beispiel ' + C[k], sections: [{h: 'Ablauf', text: 'Schritt 1'}]})); load(); ks.forEach(k => ok(live().some(r => r.cat === k && r.title === 'Beispiel ' + C[k]), k)); });
+  T('Testlauf mit Beispieldaten je Kategorie', () => { reset0(); const ks = Object.keys(C).filter(k => !RO[k] && k !== TOP); ks.forEach(k => create({cat: k, title: 'Beispiel ' + C[k], sections: [{h: 'Ablauf', text: 'Schritt 1'}]})); load(); ks.forEach(k => ok(live().some(r => r.cat === k && r.title === 'Beispiel ' + C[k]), k)); });
   T('Papierkorb steht unter den Kategorien', () => { const h = $('#n').innerHTML; ok(h.indexOf('Papierkorb') > h.indexOf('Medikamente'), 'Papierkorb nicht ganz unten'); });
   T('Akte einklappen blendet nur diese Akte ein und aus', () => { reset0(); const i = id(); act('fold', {dataset: {id: i}}); ok(folded.has(i) && card(get(i)).includes('folded')); act('fold', {dataset: {id: i}}); ok(!folded.has(i)); });
   T('Kategoriewechsel klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); act('view', {dataset: {v: 'b'}}); ok(folded.size === 0); });
@@ -1047,7 +1210,7 @@ function runTests(){
   T('Neuer Abschnitt mit Einfachem Text', () => { reset0(); const i = id(); const res = addSection(i, 'Hinweis', 'Ruhe bewahren', 'text'); ok(res.ok, 'nicht angenommen'); ok(modeOf(get(i).sections.slice(-1)[0]) === 'text', 'Darstellung falsch'); });
   T('Darstellung eines Abschnitts nachträglich ändern', () => { reset0(); const i = id(); setSecMode(i, 0, 'number'); ok(modeOf(get(i).sections[0]) === 'number', 'nicht geändert'); });
   T('Nur Zeilen mit /me sind kopierbar, Notizen nicht', () => { reset0(); const i = id(); addLine(i, 'm', '/me Test'); addLine(i, 'm', 'Notiz: '); const c = card(get(i)); ok(c.includes('class="ml cp"'), 'kein kopierbarer Eintrag'); ok(c.includes('class="ml nt"'), 'keine Notiz'); });
-  T('Kategorie-Untertitel nur in Alle und Favoriten', () => { reset0(); const r = E(), tag = '<p class="c">' + C[r.cat] + '</p>'; act('view', {dataset: {v: 'a'}}); ok(card(get(r.id)).includes(tag), 'in Alle fehlt'); act('view', {dataset: {v: 'fav'}}); ok(card(get(r.id)).includes(tag), 'in Favoriten fehlt'); act('view', {dataset: {v: r.cat}}); ok(!card(get(r.id)).includes(tag), 'in Kategorie sichtbar'); act('view', {dataset: {v: 'a'}}); });
+  T('Kategorie-Untertitel nur in Alle und Favoriten', () => { reset0(); const r = all().find(x => !RO[x.cat] && x.cat !== TOP && x.sections.length), tag = '<p class="c">' + C[r.cat]; act('view', {dataset: {v: 'a'}}); ok(card(get(r.id)).includes(tag), 'in Alle fehlt'); act('view', {dataset: {v: 'fav'}}); ok(card(get(r.id)).includes(tag), 'in Favoriten fehlt'); act('view', {dataset: {v: r.cat}}); ok(!card(get(r.id)).includes(tag), 'in Kategorie sichtbar'); act('view', {dataset: {v: 'a'}}); });
   T('Alle bearbeitbaren Akten haben Inhalt, Notizen ohne /me sind möglich', () => { ok(all().filter(r => !RO[r.cat]).every(r => r.sections.some(s => s.items.length > 0)), 'leere Akte'); ok(all().some(r => r.me.some(t => !t.includes('/me'))), 'keine Notizen vorhanden'); });
   T('Rückgängig macht die letzte Änderung', () => { reset0(); const i = id(), orig = get(i).sections[0].items[0]; setText(i, 'i:0:0', 'Undo-Test'); ok(get(i).sections[0].items[0] === 'Undo-Test', 'Änderung fehlt'); undo(); ok(get(i).sections[0].items[0] === orig, 'nicht zurückgesetzt'); });
   T('Wiederholen stellt die Änderung wieder her', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Redo-Test'); undo(); redo(); ok(get(i).sections[0].items[0] === 'Redo-Test', 'nicht wiederhergestellt'); });
@@ -1114,15 +1277,205 @@ function runTests(){
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
   T('Den Abschnitt Behandlung gibt es in keiner Akte mehr', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung')), 'Behandlung noch in einer Akte'));
-  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 4 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
+  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 5 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
   T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
     reset0(); S.v = 3; S.ov['Verätzungen'] = {me: ['/me Test']}; S.del['Gehirntumor (Wach-OP)'] = true; S.fav = ['Verätzungen']; S.order = ['Verätzungen', 'Schlaganfall'];
     migrate();
-    const ok1 = S.v === 4 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order[0] === 'Behandlung von Verätzungen' && S.order[1] === 'Schlaganfall';
+    const ok1 = S.v === 5 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order[0] === 'Behandlung von Verätzungen' && S.order[1] === 'Schlaganfall';
     reset0(); ok(ok1, 'Umbenennung fehlgeschlagen');
   });
   T('Die umbenannten Operationen sind Akten in der Kategorie Operationen', () => ok(Object.values(RENAMED).every(t => { const r = SEED.find(x => x.id === t); return !!r && r.cat === 'o'; }) && !SEED.some(r => r.id === 'Narkose einleiten'), 'Umbenennung und akten.json stimmen nicht überein'));
+  // ===== Narkose ganz oben, Unterkategorien (Behandlungen, Operationen, Medikamente) =====
+  T('Narkose-Akten stehen ganz oben, die Kategorie Narkose gibt es nicht mehr', () => {
+    reset0();
+    const n = SEED.filter(r => r.cat === TOP).length;
+    ok(n > 0 && SEED.slice(0, n).every(r => r.cat === TOP), 'nicht ganz oben in akten.json');
+    ok(!own(C, 'n') && !SEED.some(r => r.cat === 'n') && catKey('n') === TOP, 'Kategorie n noch da');
+    ok(all()[0].cat === TOP, 'in der Liste nicht zuerst');
+  });
+  T('Akten ganz oben stehen ohne Überschrift direkt unter den Favoriten', () => {
+    reset0(); render();
+    const h = $('#n').innerHTML, fav = h.indexOf('Favoriten'), top = h.indexOf('class="gl flat"'), erste = h.indexOf('data-v="v"');
+    ok(fav > 0 && top > fav && top < erste, 'Reihenfolge der Seitenleiste falsch');
+    const dazwischen = h.slice(top, erste);
+    ok(!dazwischen.includes('<h') && !dazwischen.includes('class="c"'), 'Überschrift in der Gruppe ganz oben');
+  });
+  T('Unterkategorie anlegen: Name wird bereinigt, doppelte und leere Namen werden abgelehnt', () => {
+    reset0();
+    const a = subAdd('b', '  Blutung  ');
+    ok(a.id && S.subs.length === 1 && S.subs[0].t === 'Blutung', 'nicht angelegt');
+    ok(subAdd('b', 'blutung').error, 'Groß- und Kleinschreibung nicht beachtet');
+    ok(subAdd('b', '   ').error, 'leerer Name angenommen');
+    ok(subAdd('o', 'Blutung').id, 'gleicher Name in einer anderen Kategorie abgelehnt');
+  });
+  T('Unterkategorie umbenennen und verschieben', () => {
+    reset0();
+    const x = subAdd('m', 'Schmerzmittel').id, y = subAdd('m', 'Antibiotika').id;
+    ok(subRename(x, 'Analgetika').id && S.subs.find(s => s.id === x).t === 'Analgetika', 'nicht umbenannt');
+    ok(subRename(x, 'antibiotika').error, 'doppelter Name beim Umbenennen erlaubt');
+    ok(subRename(y, 'Antibiotika').id, 'eigener Name wird fälschlich abgelehnt');
+    subMove(y, -1); ok(subsOf('m')[0].id === y, 'nicht nach oben verschoben');
+    subMove(y, -1); ok(subsOf('m')[0].id === y, 'über den Rand hinaus verschoben');
+    subMove(y, 1); ok(subsOf('m')[1].id === y, 'nicht nach unten verschoben');
+  });
+  T('Unterkategorie löschen: die Akten bleiben und stehen danach ohne Unterkategorie', () => {
+    reset0();
+    const sid = subAdd('o', 'Zum Löschen').id;
+    const r = create({cat: 'o', title: 'Akte im Löschtest', sub: sid, sections: [{h: 'Ablauf', text: 'Schritt'}]});
+    ok(!r.errors && subOfRec(get(r.id)).id === sid, 'nicht zugeordnet');
+    subDelete(sid);
+    ok(!S.subs.some(s => s.id === sid) && !own(S.subOf, r.id), 'Zuordnung bleibt');
+    ok(live().some(x => x.id === r.id) && !subOfRec(get(r.id)), 'Akte verloren');
+  });
+  T('Neue Akte im Dialog zusammen mit einer neuen Unterkategorie anlegen', () => {
+    reset0();
+    const r = create({cat: 'b', title: 'Dialog-Test', sub: '__new__', newSub: 'Neu im Dialog', sections: [{h: 'Ablauf', text: 'Schritt'}]});
+    ok(r.id, 'nicht angelegt: ' + JSON.stringify(r.errors));
+    const s = subOfRec(get(r.id));
+    ok(s && s.t === 'Neu im Dialog' && s.cat === 'b', 'Unterkategorie fehlt');
+    ok(S.subs.length === 1, 'Unterkategorie doppelt oder fehlend');
+  });
+  T('Dialog lehnt doppelte oder leere neue Unterkategorien ab und legt dann nichts an', () => {
+    reset0();
+    const vorhanden = subAdd('b', 'Vorhanden').id;
+    const e1 = create({cat: 'b', title: 'Dup-Test 1', sub: '__new__', newSub: 'vorhanden', sections: [{h: 'Ablauf', text: 'x'}]});
+    ok(e1.errors && e1.errors.sub && !S.made.some(m => m.title === 'Dup-Test 1'), 'doppelter Name angenommen');
+    const e2 = create({cat: 'b', title: 'Dup-Test 2', sub: '__new__', newSub: '  ', sections: [{h: 'Ablauf', text: 'x'}]});
+    ok(e2.errors && e2.errors.sub, 'leerer Name angenommen');
+    const e3 = create({cat: 'b', title: 'Dup-Test 3', sub: '__new__', newSub: 'Neu', sections: []});
+    ok(e3.errors && e3.errors.sections && S.subs.length === 1, 'Unterkategorie trotz Fehler in der Akte angelegt');
+    const e4 = create({cat: 'b', title: 'Mit Vorhandener', sub: vorhanden, sections: [{h: 'Ablauf', text: 'x'}]});
+    ok(!e4.errors && subOfRec(get(e4.id)).id === vorhanden, 'vorhandene Unterkategorie nicht übernommen');
+  });
+  T('Akte in eine andere Unterkategorie verschieben und wieder ohne Unterkategorie legen', () => {
+    reset0();
+    const a = subAdd('m', 'Eins').id, b2 = subAdd('m', 'Zwei').id;
+    const r = create({cat: 'm', title: 'Verschieb-Test', sub: a, sections: [{h: 'Wirkung', text: 'x'}]}).id;
+    setRecSub(r, b2); ok(subOfRec(get(r)).id === b2, 'nicht verschoben');
+    setRecSub(r, ''); ok(!subOfRec(get(r)), 'nicht ohne Unterkategorie');
+  });
+  T('Akten bleiben beim Verschieben in ihrer Unterkategorie', () => {
+    reset0();
+    const g = subAdd('o', 'Gruppe A').id;
+    const eins = create({cat: 'o', title: 'Gruppe A Eins', sub: g, sections: [{h: 'Ablauf', text: 'x'}]}).id;
+    create({cat: 'o', title: 'Ohne Gruppe', sections: [{h: 'Ablauf', text: 'x'}]});
+    const zwei = create({cat: 'o', title: 'Gruppe A Zwei', sub: g, sections: [{h: 'Ablauf', text: 'x'}]}).id;
+    const inGruppe = () => live().filter(r => (subOfRec(r) || {}).id === g).map(r => r.title).join('|');
+    moveRec(zwei, -1);   // Zwei rückt in der Gruppe vor Eins
+    ok(inGruppe() === 'Gruppe A Zwei|Gruppe A Eins', 'Reihenfolge: ' + inGruppe());
+    moveRec(eins, 1);    // nach unten gibt es in der Gruppe nichts mehr
+    ok(inGruppe() === 'Gruppe A Zwei|Gruppe A Eins', 'über die Gruppe hinaus verschoben: ' + inGruppe());
+  });
+  T('Sidebar: Unterkategorien mit Titel und Trennlinie, leere nur im Bearbeitungsmodus', () => {
+    reset0();
+    subAdd('b', 'Leere Gruppe');
+    const voll = subAdd('b', 'Volle Gruppe').id;
+    create({cat: 'b', title: 'In der vollen Gruppe', sub: voll, sections: [{h: 'Ablauf', text: 'x'}]});
+    act('view', {dataset: {v: 'b'}}); opened.add('b'); render();
+    let h = $('#n').innerHTML;
+    ok(h.includes('Volle Gruppe') && h.includes('class="subdiv"') && h.includes('class="subh"'), 'Titel oder Trennlinie fehlt');
+    ok(h.includes('Leere Gruppe') && h.includes('data-act="subnew"') && h.includes('data-act="recmove"'), 'Bearbeiten-Teile fehlen');
+    setMode(false); render(); h = $('#n').innerHTML;
+    ok(h.includes('Volle Gruppe') && !h.includes('Leere Gruppe'), 'leere Gruppe im Zuschauermodus sichtbar');
+    ok(!h.includes('data-act="subnew"') && !h.includes('data-act="recmove"'), 'Bearbeiten-Schaltflächen im Zuschauermodus');
+    setMode(true); act('view', {dataset: {v: 'a'}});
+  });
+  T('Im Zuschauermodus lassen sich Unterkategorien nicht ändern', () => {
+    reset0(); setMode(false);
+    const vorher = JSON.stringify(S);
+    act('subnew', {dataset: {v: 'b'}}); act('submove', {dataset: {id: 'nichtda', d: '1'}}); act('subdel', {dataset: {id: 'nichtda'}});
+    const unveraendert = JSON.stringify(S) === vorher && subForm === null;
+    setMode(true);
+    ok(unveraendert, 'Zuschauermodus hat etwas geändert');
+  });
+  T('Unterkategorie-Name: Enter speichert, Escape verwirft', () => {
+    reset0(); act('subnew', {dataset: {v: 'b'}});
+    ok($('#subin') && subForm, 'Eingabe fehlt');
+    $('#subin').value = 'Enter-Test';
+    $('#subin').dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+    ok(S.subs.some(s => s.t === 'Enter-Test') && subForm === null, 'Enter speichert nicht');
+    act('subnew', {dataset: {v: 'b'}});
+    $('#subin').value = 'Verworfen';
+    $('#subin').dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+    ok(subForm === null && !S.subs.some(s => s.t === 'Verworfen'), 'Escape verwirft nicht');
+  });
+  T('Dialog: Unterkategorie wählbar, „Neue Unterkategorie erstellen“ vorhanden, Narkose nicht', () => {
+    reset0(); subAdd('b', 'Im Dialog');
+    formState = {cat: 'b', title: '', desc: '', text: [], sub: '', newSub: ''};
+    const h = formHTML();
+    formState = null;
+    ok(h.includes('id="fsub"') && h.includes('Im Dialog') && h.includes('value="__new__"') && h.includes('Neue Unterkategorie erstellen'), 'Auswahl unvollständig');
+    ok(!h.includes('value="t"') && !h.includes('value="n"'), 'Narkose im Dropdown');
+  });
+  T('Akten bekommen eine Unterkategorie-Auswahl nur in Behandlungen, Operationen und Medikamenten', () => {
+    reset0();
+    const b = SEED.find(r => r.cat === 'b'), n = SEED.find(r => r.cat === TOP);
+    ok(card(get(b.id)).includes('class="subsel"'), 'fehlt bei Behandlungen');
+    ok(n && !card(get(n.id)).includes('class="subsel"'), 'steht bei einer Akte ganz oben');
+  });
+  T('Alle zeigt die Unterkategorie hinter der Kategorie, die Kategorie selbst nicht', () => {
+    reset0();
+    const sid = subAdd('o', 'Zeigen').id;
+    const r = create({cat: 'o', title: 'Zeigen-Test', sub: sid, sections: [{h: 'Ablauf', text: 'x'}]}).id;
+    act('view', {dataset: {v: 'a'}});
+    ok(card(get(r)).includes('Operationen · Zeigen'), 'in Alle fehlt die Unterkategorie');
+    act('view', {dataset: {v: 'o'}});
+    ok(!card(get(r)).includes('Operationen · Zeigen'), 'in der Kategorie steht die Zeile noch');
+    act('view', {dataset: {v: 'a'}});
+  });
+  T('Alle sortiert je Kategorie wie die Seitenleiste: zuerst ohne, dann je Unterkategorie', () => {
+    reset0();
+    const g = subAdd('b', 'Reihe').id;
+    create({cat: 'b', title: 'Reihe Eins', sub: g, sections: [{h: 'Ablauf', text: 'x'}]});
+    create({cat: 'b', title: 'Reihe Ohne', sections: [{h: 'Ablauf', text: 'x'}]});
+    act('view', {dataset: {v: 'a'}});
+    const l = $('#l').innerHTML;
+    ok(l.indexOf('Reihe Ohne') > -1 && l.indexOf('Reihe Ohne') < l.indexOf('Reihe Eins'), 'Reihenfolge in Alle');
+  });
+  T('Importierte Akte landet am Ende ihrer Kategorie', () => {
+    reset0();
+    const res = akteImport({format: 'medic-akte', akte: {cat: 'o', title: 'Am Ende Test', sections: [{h: 'Ablauf', items: ['x']}]}});
+    ok(res.id && S.order[S.order.map(x => get(x).cat).lastIndexOf('o')] === res.id, 'nicht am Ende der Kategorie');
+  });
+  T('Gespeicherte Narkose-Akte wandert beim Laden nach ganz oben', () => {
+    reset0();
+    const x = create({cat: 'o', title: 'Alt-Narkose Test', sections: [{h: 'Ablauf', text: 'x'}]}).id;
+    S.made.find(m => m.id === x).cat = 'n';   // so sieht eine Akte aus dem Stand 4 aus
+    S.v = 4; migrate();
+    const cats = S.order.map(q => get(q).cat), anzahl = cats.filter(c => c === TOP).length;
+    ok(get(x).cat === TOP && cats.slice(0, anzahl).every(c => c === TOP), 'Narkose-Akten nicht ganz oben');
+    reset0();
+  });
+  T('Gespeicherte Unterkategorien: ungültige werden beim Laden entfernt', () => {
+    reset0();
+    const bRec = SEED.find(r => r.cat === 'b').id;
+    const r = sanitize({subs: [{id: 'sxgueltig', cat: 'b', t: 'Gültig'}, {id: 'sxfalsch', cat: 'v', t: 'Falsche Kategorie'}, {id: 'sxdoppelt', cat: 'b', t: 'gültig'}, {id: '', cat: 'b', t: 'Ohne Kennung'}],
+      subOf: {[bRec]: 'sxgueltig', nichtda: 'sxgueltig', [bRec + '_x']: 'sxfalsch'}});
+    ok(r.data.subs.length === 1 && r.data.subs[0].id === 'sxgueltig', 'Unterkategorien: ' + JSON.stringify(r.data.subs));
+    ok(Object.keys(r.data.subOf).length === 1 && r.data.subOf[bRec] === 'sxgueltig', 'Zuordnungen: ' + JSON.stringify(r.data.subOf));
+  });
+  T('Export und Import behalten Unterkategorien und Zuordnungen', () => {
+    reset0();
+    const sid = subAdd('m', 'Export-Gruppe').id, mRec = SEED.find(r => r.cat === 'm').id;
+    setRecSub(mRec, sid);
+    const r = sanitize(JSON.parse(exportText()));
+    ok(r.data.subs.some(s => s.id === sid && s.t === 'Export-Gruppe'), 'Unterkategorie fehlt nach dem Import');
+    ok(r.data.subOf[mRec] === sid, 'Zuordnung fehlt nach dem Import');
+  });
+  T('Rückgängig und Wiederholen gelten auch für Unterkategorien', () => {
+    reset0();
+    subAdd('b', 'Rückgängig-Gruppe');
+    undo(); ok(!S.subs.some(s => s.t === 'Rückgängig-Gruppe'), 'nicht zurückgenommen');
+    redo(); ok(S.subs.some(s => s.t === 'Rückgängig-Gruppe'), 'nicht wiederhergestellt');
+  });
+  T('Endgültiges Löschen entfernt die Zuordnung, die Unterkategorie bleibt', () => {
+    reset0();
+    const sid = subAdd('m', 'Lösch-Test').id;
+    const r = create({cat: 'm', title: 'Endgültig weg', sub: sid, sections: [{h: 'Wirkung', text: 'x'}]}).id;
+    trash(r); purge(r);
+    ok(!own(S.subOf, r) && S.subs.some(s => s.id === sid) && !S.made.some(m => m.id === r), 'Zuordnung oder Unterkategorie falsch');
+  });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
   SET = {theme: 'dark', cols: 2, sec: 'open', compact: true, nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
