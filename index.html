@@ -122,7 +122,7 @@ select{padding:7px;border-radius:4px;background:var(--p);color:var(--t);border:1
 .bo{color:var(--t)}
 .okt{color:var(--ok)}
 .warn{color:var(--r);font-size:13px;margin:14px 4px 0;line-height:1.4}
-.sep{height:1px;background:var(--cardb);margin:14px 8px}
+.sep{height:1px;flex:none;background:var(--cardb);margin:14px 8px}   /* flex:none: in der Seitenleiste darf die Linie bei langen Listen nicht auf 0 px schrumpfen */
 .lk{color:var(--a)}
 .ic{display:inline-block;width:24px;text-align:center}
 mark{background:rgba(242,184,75,.38);color:inherit;border-radius:3px;padding:0 .08em}
@@ -870,9 +870,9 @@ function segRow(label, hint, k, opts){
 function colsRow(){   // Schieberegler für die Spalten (1 bis 4), mit der gewählten Zahl daneben
   return `<div class="srow"><p class="slabel">Spalten pro Reihe</p><div class="srange"><span class="rnum">1</span><input type="range" id="colsrange" data-set="cols" min="1" max="4" step="1" value="${SET.cols}" list="colticks" aria-label="Spalten pro Reihe"><span class="rnum">4</span><output id="colsout" for="colsrange">Spalten: ${SET.cols}</output></div><datalist id="colticks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option></datalist><p class="shint">Wie viele Akten-Karten nebeneinander stehen (1 bis 4). Auf dem Handy ist immer eine Spalte.</p></div>`;
 }
-// Zurücksetzen aller mitgelieferten Akten: nur im Bearbeitungsmodus, mit Rückfrage (act „resetall“)
+// Zurücksetzen aller mitgelieferten Akten: in beiden Modi, mit Rückfrage (act „resetall“). Es ändert nur den Browserstand dieses Geräts.
 function resetRow(){
-  return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall"${EDIT ? '' : ' disabled'}>Alle mitgelieferten Akten auf Original zurücksetzen</button><p class="shint">Setzt Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien und Papierkorb aller mitgelieferten Akten auf den Stand aus der Datei zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben unverändert. Vorher kommt eine Rückfrage.${EDIT ? '' : ' Zum Zurücksetzen in den Bearbeitungsmodus wechseln.'}</p></div>`;
+  return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall">Alle mitgelieferten Akten auf Original zurücksetzen</button><p class="shint">Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.</p></div>`;
 }
 function renderSettings(){
   $('#mbody').innerHTML =
@@ -1079,7 +1079,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel', 'resetall']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -1121,7 +1121,7 @@ function act(name, b){
   else if (name === 'restore') restore(id);
   else if (name === 'purge') { if (confirm('Akte endgültig löschen? Das lässt sich nicht rückgängig machen.')) purge(id); }
   else if (name === 'reset') { if (confirm('Eigene Änderungen an dieser Akte verwerfen?')) reset(id); }
-  else if (name === 'resetall') { if (confirm('Alle mitgelieferten Akten auf den Originalzustand zurücksetzen?\n\nDeine Änderungen an diesen Akten gehen verloren (Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien). Mitgelieferte Akten im Papierkorb kommen zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben erhalten. Mit Strg+Z lässt sich das rückgängig machen.')) { resetStandard(); closeModal(); toast('Mitgelieferte Akten sind wieder im Originalzustand'); } }
+  else if (name === 'resetall') { if (confirm('Alle mitgelieferten Akten auf den Originalzustand zurücksetzen?\n\nDeine Änderungen an diesen Akten gehen verloren (Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien). Mitgelieferte Akten im Papierkorb kommen zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben erhalten. Rückgängig machen lässt sich das mit Strg+Z im Bearbeitungsmodus.')) { resetStandard(); closeModal(); toast('Mitgelieferte Akten sind wieder im Originalzustand'); } }
   else if (name === 'newform') formState = formState ? null : {cat: (C[view] && !RO[view]) ? view : 'b', title: '', desc: '', text: [], sub: '', newSub: ''};
   else if (name === 'closeform') formState = null;
   else if (name === 'secform') sectionForm = (sectionForm && sectionForm.id === id) ? null : {id, name: '', text: '', mode: 'bullet', errors: null};
@@ -1548,15 +1548,37 @@ function runTests(){
     try { act('resetall', {dataset: {}}); } finally { window.confirm = keep; }
     ok(get(i).sections[0].items[0] === orig, 'Bestätigen hat nicht zurückgesetzt');
   });
-  T('Zurücksetzen gibt es nur im Bearbeitungsmodus', () => {
-    reset0(); const i = id(), keep = window.confirm; setText(i, 'i:0:0', 'Zuschauer'); let aus = false;
-    window.confirm = () => true; setMode(false);
-    try { act('resetall', {dataset: {}}); act('settings', {dataset: {}}); aus = $('#mbody').innerHTML.includes('data-act="resetall" disabled'); act('closemodal', {dataset: {}}); }
-    finally { window.confirm = keep; setMode(true); }
-    ok(get(i).sections[0].items[0] === 'Zuschauer', 'im Zuschauermodus zurückgesetzt');
-    ok(aus, 'Schaltfläche im Zuschauermodus nicht gesperrt');
-    act('settings', {dataset: {}}); const an = $('#mbody').innerHTML; act('closemodal', {dataset: {}});
-    ok(an.includes('data-act="resetall"') && !an.includes('data-act="resetall" disabled'), 'im Bearbeitungsmodus gesperrt');
+  T('Zurücksetzen funktioniert im Zuschauermodus und im Bearbeitungsmodus', () => {
+    reset0(); const i = id(), orig = BASE[i].sections[0].items[0], keep = window.confirm;
+    window.confirm = () => true;
+    try {
+      setText(i, 'i:0:0', 'Zuschauer'); setMode(false);
+      act('settings', {dataset: {}}); const zu = $('#mbody').innerHTML; act('closemodal', {dataset: {}});
+      ok(zu.includes('data-act="resetall"') && !zu.includes('data-act="resetall" disabled'), 'Knopf im Zuschauermodus gesperrt');
+      ok(zu.includes('Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.'), 'Beschreibung des Knopfs stimmt nicht');
+      act('resetall', {dataset: {}});
+      ok(get(i).sections[0].items[0] === orig, 'im Zuschauermodus nicht zurückgesetzt');
+      setMode(true); setText(i, 'i:0:0', 'Bearbeiten'); act('resetall', {dataset: {}});
+      ok(get(i).sections[0].items[0] === orig, 'im Bearbeitungsmodus nicht zurückgesetzt');
+    } finally { window.confirm = keep; setMode(true); }
+  });
+  T('Zurücksetzen im Zuschauermodus lässt sich im Bearbeitungsmodus rückgängig machen', () => {
+    reset0(); const i = id(), orig = BASE[i].sections[0].items[0], keep = window.confirm;
+    window.confirm = () => true;
+    try {
+      setText(i, 'i:0:0', 'Vor dem Zurücksetzen'); setMode(false);
+      act('resetall', {dataset: {}});
+      ok(get(i).sections[0].items[0] === orig, 'nicht zurückgesetzt');
+      setMode(true); undo();
+      ok(get(i).sections[0].items[0] === 'Vor dem Zurücksetzen', 'Rückgängig stellt den Stand vor dem Zurücksetzen nicht wieder her');
+    } finally { window.confirm = keep; setMode(true); }
+  });
+  T('Trennlinien der Seitenleiste schrumpfen nicht, auch wenn eine Kategorie offen ist', () => {
+    opened.add('b'); render();
+    const linien = [...document.querySelectorAll('#n .sep')];
+    ok(linien.length >= 2, 'Trennlinien fehlen');
+    ok(linien.every(s => getComputedStyle(s).flexShrink === '0'), 'Eine Trennlinie darf in der Seitenleiste schrumpfen');
+    opened.delete('b'); render();
   });
   T('Normalwerte im EKG-Fenster sind gelbe Überschriften, nicht kopierbar', () => {
     act('ekg', {dataset: {}});
