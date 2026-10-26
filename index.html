@@ -67,6 +67,7 @@ h4{margin:14px 0 4px;color:var(--a);font-size:15px}
 .row{display:flex;gap:6px;align-items:flex-start;position:relative}
 .tx{flex:1;min-width:0;outline:0;border-radius:3px;white-space:pre-wrap}
 .tx.ed{background:var(--l);box-shadow:0 1px 0 var(--a);cursor:text;padding:0 4px}
+.tx-ta{flex:1 1 auto;min-width:0;margin:0;padding:0 4px;border:0;border-radius:3px;background:var(--l);box-shadow:0 1px 0 var(--a);color:inherit;font:inherit;outline:0;resize:none;overflow:hidden;display:block}
 @media(hover:none){.acts{flex-wrap:wrap;justify-content:flex-end}}
 /* Werkzeuge stehen fest im Layout: keine schwebenden Menüs, nichts ragt aus der Karte */
 .tools{display:inline-flex;gap:2px;align-items:center;margin-left:auto;flex:none;opacity:.8}
@@ -736,9 +737,8 @@ function card(r){
     ? `<div class="ml tl"><span class="row" data-hold><span class="tl-line" role="separator" aria-label="Trennlinie"></span>${tools(ord(s, i))}</span></div>`
     : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}${tools(ed + ord(s, i))}</span></div>`;
   const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button> <button class="ad" data-act="adddiv" data-id="${id}" data-s="${s}">+ Trennlinie</button>`;
-  const hint = r.me.some(m => m.includes('/me')) ? '<small class="c">Zeile mit /me anklicken zum Kopieren</small>' : '';
   const mt = r.meTitle || ME_TITLE;
-  const me = ro ? '' : `<div class="me"><div class="mtop"><span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed)}</span></div>${hint}${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
+  const me = ro ? '' : `<div class="me"><div class="mtop"><span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed)}</span></div>${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
   const xboxes = ro ? '' : boxesOf(r).map((box, bi) => {
     const bt = box.t || 'Zusätzliche Box';
     return `<div class="me xb"><div class="bhead"><span class="row" data-hold>${tx('xt:' + bi, bt, hlEsc(bt))}${tools(ed)}</span>${can ? `<button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : ''}</div>${box.me.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div>`;
@@ -832,17 +832,29 @@ function startEdit(el){
     el = [...document.querySelectorAll('.tx')].find(x => x.dataset.rec === rec && x.dataset.path === path);
     if (!el) return;
   }
+  if (el.dataset.path.indexOf('i:') === 0) el = lineArea(el);   // Zeilen in Abschnitten sind mehrzeilig: Shift + Enter setzt einen Zeilenumbruch
   editing = {el, cancel: false};
+  if (el.tagName === 'TEXTAREA') { fit(el); el.focus(); el.select(); return; }
   el.contentEditable = 'true'; el.classList.add('ed');
   el.textContent = el.dataset.raw; el.focus();
   const rg = document.createRange(); rg.selectNodeContents(el);
   const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg);
 }
+function lineArea(el){   // Zeile eines Abschnitts: die Anzeige wird durch ein Textfeld ersetzt, das mehrere Zeilen halten kann
+  const ta = document.createElement('textarea');
+  ta.className = 'tx-ta'; ta.rows = 1; ta.value = el.dataset.raw; ta.setAttribute('aria-label', 'Zeile bearbeiten');
+  ta.dataset.rec = el.dataset.rec; ta.dataset.path = el.dataset.path; ta.dataset.raw = el.dataset.raw;
+  ta.addEventListener('input', () => fit(ta));
+  el.replaceWith(ta);
+  return ta;
+}
+function fit(ta){ ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }   // das Textfeld wächst mit dem Text
 function finishEdit(){
   if (!editing) return;
   const {el, cancel} = editing; editing = null;
-  el.contentEditable = 'false'; el.classList.remove('ed');
-  if (!cancel) { const t = el.textContent.replace(/\s+/g, ' ').trim(); if (t !== el.dataset.raw) setText(el.dataset.rec, el.dataset.path, t); }
+  const area = el.tagName === 'TEXTAREA';   // mehrzeilige Abschnittszeile
+  if (!area) { el.contentEditable = 'false'; el.classList.remove('ed'); }
+  if (!cancel) { const t = area ? cleanLines(el.value) : el.textContent.replace(/\s+/g, ' ').trim(); if (t !== el.dataset.raw) setText(el.dataset.rec, el.dataset.path, t); }
   render();
 }
 
@@ -1040,6 +1052,7 @@ function importAkteFile(file){
 
 /* ===== Import: jede Angabe wird geprüft, ungültige Teile werden übersprungen ===== */
 const cleanText = t => (typeof t === 'string' ? t.replace(/\s+/g, ' ').trim() : '');
+const cleanLines = t => (typeof t === 'string' ? t.split('\n').map(l => l.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n') : '');   // Zeilenumbrüche bleiben, Leerzeichen am Rand und Leerzeilen fallen weg
 function looksLikeExport(d){
   return !!d && typeof d === 'object' && !Array.isArray(d) && ['ov', 'del', 'fav', 'made', 'order'].some(k => k in d);
 }
@@ -1162,7 +1175,7 @@ document.addEventListener('keydown', e => {
   const mo = $('#modal');
   if (mo && mo.hidden === false) { if (e.key === 'Escape') closeModal(); return; }
   if (editing && e.target === editing.el) {
-    if (e.key === 'Enter') { e.preventDefault(); editing.el.blur(); }
+    if (e.key === 'Enter' && !(e.shiftKey && editing.el.tagName === 'TEXTAREA')) { e.preventDefault(); editing.el.blur(); }   // Enter beendet die Bearbeitung, Shift + Enter setzt in einer Abschnittszeile einen Zeilenumbruch
     else if (e.key === 'Escape') { editing.cancel = true; editing.el.blur(); }
     return;
   }
@@ -1268,6 +1281,9 @@ function runTests(){
   T('Doppelter Titel wird abgelehnt', () => ok(create({cat: 'b', title: E().title.toLowerCase(), sections: [{h: 'Erkennung', text: 'x'}]}).errors.title));
   T('Zeile bearbeiten und Original wiederherstellen', () => { reset0(); const i = id(), orig = BASE[i].sections[0].items[0]; setText(i, 'i:0:0', 'Testzeile'); ok(get(i).sections[0].items[0] === 'Testzeile'); reset(i); ok(get(i).sections[0].items[0] === orig); });
   T('Leere Zeile wird entfernt', () => { reset0(); const i = id(), n = get(i).sections.reduce((a, s) => a + s.items.length, 0); setText(i, 'i:0:0', ''); ok(get(i).sections.reduce((a, s) => a + s.items.length, 0) === n - 1, 'Zeile nicht entfernt'); });
+  T('Zeilenumbrüche in Abschnittszeilen bleiben, Leerzeilen und Leerzeichen am Rand fallen weg', () => ok(cleanLines('  Erste   Zeile \n\n  zweite\tZeile  \n ') === 'Erste Zeile\nzweite Zeile' && cleanLines('  nur Text ') === 'nur Text' && cleanLines('\n \n') === '', 'Zeilen falsch bereinigt'));
+  T('Mehrzeilige Abschnittszeile wird gespeichert und angezeigt', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Erste Zeile\nZweite Zeile'); ok(get(i).sections[0].items[0] === 'Erste Zeile\nZweite Zeile', 'nicht gespeichert'); ok(card(get(i)).includes('Erste Zeile\nZweite Zeile'), 'nicht angezeigt'); });
+  T('Zeilenumbruch bleibt beim Export und Import erhalten', () => { reset0(); const i = id(); setText(i, 'i:0:0', 'Erste\nZweite'); const r = sanitize(JSON.parse(exportText())); ok(r.data.ov[i].sections[0].items[0] === 'Erste\nZweite', 'Zeilenumbruch fehlt nach dem Import'); });
   T('Me-Zeilen hinzufügen, verschieben, entfernen', () => { reset0(); const i = id(), n0 = get(i).me.length; addLine(i, 'm'); const path = addLine(i, 'm'); ok(get(i).me.length === n0 + 2 && path === 'm:' + (n0 + 1), 'nicht hinzugefügt'); const me = get(i).me; move(i, 'm', n0 + 1, -1); const me2 = get(i).me; ok(me2[n0] === me[n0 + 1] && me2[n0 + 1] === me[n0], 'nicht verschoben'); removeLine(i, 'm', n0); ok(get(i).me.length === n0 + 1, 'nicht entfernt'); });
   T('Weiches Löschen und Wiederherstellen', () => { reset0(); const i = id(); trash(i); ok(!live().some(r => r.id === i) && trashed().some(r => r.id === i)); restore(i); ok(live().some(r => r.id === i)); });
   T('Mitgelieferte Akten lassen sich nicht endgültig löschen', () => { reset0(); purge(id()); ok(get(id())); });
@@ -1335,7 +1351,7 @@ function runTests(){
   T('Abschnitte ohne Überschrift werden erkannt', () => ok(parseData([{id: 'y', cat: 'b', title: 'Y', sections: [{h: '', items: []}]}]).problems.length === 1, 'nicht erkannt'));
   T('Tabellen mit falschem Format werden erkannt', () => ok(parseData([{id: 't', cat: 'v', title: 'T', table: {h: ['a'], r: ['flach']}}]).problems.length === 1, 'nicht erkannt'));
   T('Standard-Einstellungen: Dunkel, 2 Spalten, Ausgeklappt, Kompakt an, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.sec === 'open' && SET.compact === true && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
-  T('Hinweis an den /me-Zeilen nennt nur das Kopieren', () => { reset0(); const c = card(get(id())); ok(c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis fehlt'); ok(!c.includes('Zeilen ohne /me'), 'alter Zusatz steht noch da'); });
+  T('Unter der /me-Box steht kein Hinweistext, kopierbare Zeilen bleiben', () => { reset0(); const c = card(get(id())); ok(!c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis steht noch da'); ok(c.includes('class="ml cp"'), 'keine kopierbare Zeile'); });
   T('Papierkorb hat ein Symbol und eine Trennlinie davor', () => { render(); const h = $('#n').innerHTML, s = h.lastIndexOf('class="sep"'); ok(h.includes('class="ic"'), 'Symbol fehlt'); ok(s > h.indexOf('Medikamente') && s < h.indexOf('Papierkorb'), 'Trennlinie an falscher Stelle'); });
   T('KI-Hinweis steht unten rechts und blockiert keine Klicks', () => { const w = $('#wm'); ok(w && w.textContent.includes('Mit KI erstellt'), 'Hinweis fehlt'); ok(getComputedStyle(w).pointerEvents === 'none', 'Hinweis fängt Klicks ab'); });
   T('Jede bearbeitbare Akte beginnt mit einer Material-Zeile', () => { const ohne = SEED.filter(r => !RO[r.cat] && !/^\/me nimmt /.test((r.me || [])[0] || '')).map(r => r.title); ok(!ohne.length, 'ohne Material-Zeile: ' + ohne.join(', ')); });
