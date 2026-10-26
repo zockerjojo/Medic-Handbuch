@@ -13,13 +13,13 @@ nav h1{font:700 22px Georgia,serif;margin:0 8px 18px}
 .gl{margin:0 0 6px 22px;border-left:1px solid var(--l)}
 .gl a{display:block;padding:4px 10px;color:var(--m);border-radius:4px;text-decoration:none}.gl a:hover{background:var(--l);color:var(--t)}
 .gl.flat{margin:2px 0 0;border-left:0}.gl.flat a{color:var(--t)}
-.lrow{display:flex;align-items:center;gap:2px;min-width:0}.lrow a{flex:1;min-width:0}
+.lrow{display:flex;align-items:center;gap:2px;min-width:0}.lrow a{flex:1;min-width:0;overflow-wrap:anywhere}
 .mv{display:inline-flex;flex:none}
 .mv .tb,.subtools .tb{width:20px;height:20px;line-height:18px;font-size:11px}
 .subdiv{height:1px;background:var(--l);margin:10px 10px 4px}
-.subh{display:flex;align-items:center;gap:6px;padding:4px 10px 2px;min-width:0;color:var(--a);font-size:13px;font-weight:700}
+.subh{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:4px 10px 2px;min-width:0;color:var(--a);font-size:13px;font-weight:700}
 .subh i{font-style:normal;font-weight:400;color:var(--m);font-size:12px}
-.subt{flex:1;min-width:0;overflow-wrap:anywhere}
+.subt{flex:1 1 8em;min-width:0;overflow-wrap:break-word}
 .subtools{display:inline-flex;gap:2px;flex:none;margin-left:auto}
 .subempty{margin:0;padding:2px 10px 4px;color:var(--m);font-size:13px;font-style:italic}
 .subin{display:flex;align-items:center;gap:4px;padding:4px 10px 6px}
@@ -183,6 +183,7 @@ const memStore = () => { const m = {}; return {getItem: k => (k in m ? m[k] : nu
 const PERSIST = (() => { try { localStorage.setItem('_t', '1'); localStorage.removeItem('_t'); return true; } catch (e) { return false; } })();
 let store = (TEST || !PERSIST) ? memStore() : localStorage;
 let SEED = [], BASE = {};   // werden beim Start aus akten.json geladen
+let DATA_GROUPS = [], DATA_GROUP = {}, DATA_SUBOF = {};   // Unterkategorien aus akten.json: Liste in Dateireihenfolge, Nachschlag nach Kennung, Zuordnung Akte → Unterkategorie
 let S, view = 'a', query = '', opened = new Set(), folded = new Set(), secOv = new Map(), editing = null, pending = null, formState = null, sectionForm = null;
 let undoStack = [], redoStack = [], lastSaved = null, mergeNext = false;
 let EDIT = false;   // Bearbeitungsmodus: im Standard aus, also Zuschauermodus
@@ -208,7 +209,7 @@ function applySet(){
 }
 
 /* ===== Speicher: eine Datei, eine Form, mit Rückgängig-Verlauf ===== */
-const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], subs: [], subOf: {}, v: 5});   // v: Stand der Umstellungen (4: Operationen umbenannt, 5: Narkose ganz oben, Unterkategorien)
+const fresh = () => ({ov: {}, del: {}, fav: [], order: [], made: [], subs: [], subDel: [], subOf: {}, v: 6});   // v: Stand der Umstellungen (4: Operationen umbenannt, 5: Narkose ganz oben, Unterkategorien, 6: Reihenfolge und Unterkategorien aus akten.json)
 function save(){
   const now = JSON.stringify(S);
   if (lastSaved !== null && now !== lastSaved) {
@@ -234,9 +235,10 @@ function orderFix(saved, made = S.made){
 // Umbenennungen (Stand 4): alte Kennung → neue Kennung. Gespeicherte Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit.
 const RENAMED = {'Narkose einleiten': 'Narkose richtig einleiten', 'Verätzungen': 'Behandlung von Verätzungen', 'Gehirntumor (Wach-OP)': 'Gehirntumor – Wach-OP', 'Korrosion durch SCP-106 (Pocket Dimension)': 'Korrosion - Pocket Dimension (SCP-106)'};
 function migrate(){
-  if (!Array.isArray(S.subs)) S.subs = [];   // Unterkategorien (Stand 5), immer vorhanden
+  if (!Array.isArray(S.subs)) S.subs = [];   // Unterkategorien, immer vorhanden
+  if (!Array.isArray(S.subDel)) S.subDel = [];   // im Browser gelöschte Unterkategorien aus der Datei
   if (!S.subOf || typeof S.subOf !== 'object') S.subOf = {};
-  if (S.v >= 5) return;
+  if (S.v >= 6) return;
   if (!(S.v >= 3)) {   // Stand 3: den Abschnitt „Behandlung“ entfernen, auch aus früher gespeicherten Änderungen
     const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
     Object.keys(S.ov || {}).forEach(k => { if (S.ov[k] && Array.isArray(S.ov[k].sections)) S.ov[k].sections = ohneBeh(S.ov[k].sections); });
@@ -256,10 +258,33 @@ function migrate(){
     const istOben = id => { const r = get(id); return !!r && r.cat === TOP; };
     S.order = [...S.order.filter(istOben), ...S.order.filter(x => !istOben(x))];
   }
-  S.v = 5;
+  if (S.v < 6) resetToData(S);   // Stand 6: Reihenfolge und Unterkategorien aus akten.json, einmal
+  S.v = 6;
   try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {}
 }
-function load(){ loadRaw(); migrate(); S.order = orderFix(S.order); lastSaved = JSON.stringify(S); }
+// Stand 6: Reihenfolge, Unterkategorien und Zuordnungen kommen aus akten.json. Eigene Akten und eigene Unterkategorien bleiben.
+function resetToData(st){
+  const madeSet = new Set(st.made.map(m => m.id));
+  const catOf = id => { const m = st.made.find(x => x.id === id); return m ? m.cat : (BASE[id] ? BASE[id].cat : null); };
+  const ids = [...new Set(SEED.map(r => r.id).concat((st.order || []).filter(x => madeSet.has(x))))];
+  const oben = x => catOf(x) === TOP;   // Akten ganz oben bleiben an der Spitze
+  st.order = [...ids.filter(oben), ...ids.filter(x => !oben(x))];
+  st.subs = DATA_GROUPS.map(g => ({id: g.id, cat: g.cat, t: g.t, src: 'd'})).concat(st.subs.filter(s => s.src !== 'd' && !own(DATA_GROUP, s.id)));
+  st.subDel = [];
+  SEED.forEach(r => { delete st.subOf[r.id]; });   // die Zuordnungen aus der Datei gelten wieder
+}
+// Unterkategorien aus akten.json in den Browserstand übernehmen: neue dazu, unveränderte Titel nachziehen,
+// im Browser gelöschte bleiben weg, aus der Datei entfernte verschwinden.
+function syncData(st = S){
+  st.subDel = (st.subDel || []).filter(id => own(DATA_GROUP, id));
+  st.subs = (st.subs || []).filter(s => s.src !== 'd' || own(DATA_GROUP, s.id));
+  DATA_GROUPS.forEach(g => {
+    const e = st.subs.find(s => s.id === g.id);
+    if (e) { e.src = 'd'; if (!e.ren) { e.t = g.t; e.cat = g.cat; } }
+    else if (!st.subDel.includes(g.id)) st.subs.push({id: g.id, cat: g.cat, t: g.t, src: 'd'});
+  });
+}
+function load(){ loadRaw(); migrate(); syncData(); S.order = orderFix(S.order); lastSaved = JSON.stringify(S); }
 function loadRaw(){
   S = fresh();
   let raw = null;
@@ -364,7 +389,8 @@ function delSection(id, s){ const secs = clone(get(id).sections); secs.splice(s,
 let subForm = null;   // offenes Eingabefeld in der Sidebar: {cat, id (leer = neu), val}
 const newSubId = () => 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const subsOf = k => S.subs.filter(s => s.cat === k);
-const subOfRec = r => { const sid = r && own(S.subOf, r.id) ? S.subOf[r.id] : null; return sid ? (S.subs.find(s => s.id === sid && s.cat === r.cat) || null) : null; };
+// Zuordnung: was du im Browser festgelegt hast (auch „ohne“), sonst die Zuordnung aus akten.json
+const subOfRec = r => { const sid = !r ? '' : own(S.subOf, r.id) ? S.subOf[r.id] : (own(DATA_SUBOF, r.id) ? DATA_SUBOF[r.id] : ''); return sid ? (S.subs.find(s => s.id === sid && s.cat === r.cat) || null) : null; };
 const sameGroup = (q, cat, sid) => !!q && q.cat === cat && ((subOfRec(q) || {}).id || null) === sid;
 function placeAt(id, cat, sid){   // ans Ende der Gruppe (Kategorie und Unterkategorie), sonst ans Ende der Kategorie, sonst ans Ende der Liste
   S.order = S.order.filter(x => x !== id);
@@ -387,7 +413,7 @@ function subAdd(cat, t){
 function subRename(id, t){
   const s = S.subs.find(x => x.id === id), title = cleanT(t), err = s ? subCheck(s.cat, title, id) : 'Diese Unterkategorie gibt es nicht mehr.';
   if (err) return {error: err};
-  s.t = title; save(); return {id};
+  s.t = title; if (s.src === 'd') s.ren = true; save(); return {id};   // umbenannte Gruppe aus der Datei behält deinen Titel
 }
 function subMove(id, d){   // Reihenfolge der Unterkategorien innerhalb ihrer Kategorie
   const i = S.subs.findIndex(x => x.id === id);
@@ -397,8 +423,10 @@ function subMove(id, d){   // Reihenfolge der Unterkategorien innerhalb ihrer Ka
   if (j >= 0 && j < S.subs.length) { [S.subs[i], S.subs[j]] = [S.subs[j], S.subs[i]]; save(); }
 }
 function subDelete(id){   // die Akten bleiben erhalten und stehen danach ohne Unterkategorie
-  S.subs = S.subs.filter(s => s.id !== id);
-  Object.keys(S.subOf).forEach(k => { if (S.subOf[k] === id) delete S.subOf[k]; });
+  const s = S.subs.find(x => x.id === id);
+  if (s && s.src === 'd' && !S.subDel.includes(id)) S.subDel.push(id);   // Gruppe aus der Datei: bleibt im Browser gelöscht
+  S.subs = S.subs.filter(x => x.id !== id);
+  Object.keys(S.subOf).forEach(k => { if (S.subOf[k] === id) S.subOf[k] = ''; });   // „ohne“ festhalten, sonst fiele die Akte in ihre Gruppe aus der Datei zurück
   if (subForm && subForm.id === id) subForm = null;
   save();
 }
@@ -406,7 +434,7 @@ function setRecSub(id, sid){   // Akte in eine Unterkategorie legen; leer = ohne
   const r = get(id);
   if (!r || !SUBCATS.includes(r.cat)) return;
   const s = sid ? S.subs.find(x => x.id === sid && x.cat === r.cat) : null;
-  if (s) S.subOf[id] = s.id; else delete S.subOf[id];
+  S.subOf[id] = s ? s.id : '';   // „ohne“ wird festgehalten, damit die Akte nicht in ihre Gruppe aus der Datei zurückfällt
   placeAt(id, r.cat, s ? s.id : null);
   save();
 }
@@ -587,25 +615,50 @@ function normalizeRecord(x){   // feste Form, die die Anzeige erwartet
     sections: (x.sections || []).map(s => { const o = {h: s.h.trim(), items: s.items.slice()}; if (own(MODES, s.mode)) o.mode = s.mode; return o; }),
     me: (x.me || []).slice(), boxes: (x.boxes || []).map(normBox), table: x.table || null, widget: x.widget === true};
 }
+// Unterkategorie in akten.json: {"typ": "unterkategorie", "id": "b1", "cat": "b", "title": "…"}. Sie steht vor ihren Akten,
+// alle folgenden Akten derselben Kategorie gehören zu ihr, bis eine andere Unterkategorie oder eine andere Kategorie kommt.
+function checkGroup(x){   // null = gültig, sonst der Grund
+  if (typeof x.id !== 'string' || !x.id.trim()) return 'Kennung (id) fehlt';
+  if (!SUBCATS.includes(x.cat)) return 'Unterkategorien gibt es nur bei b, o und m';
+  if (typeof x.title !== 'string' || !cleanT(x.title)) return 'Titel (title) fehlt';
+  return null;
+}
 function parseData(raw){   // reine Prüfung, ändert nichts
-  if (!Array.isArray(raw)) return {records: [], problems: ['akten.json muss eine Liste (Array) von Akten enthalten.']};
-  const records = [], problems = [], ids = new Set(), titles = new Set();
+  if (!Array.isArray(raw)) return {records: [], groups: [], subOf: {}, problems: ['akten.json muss eine Liste (Array) von Akten enthalten.']};
+  const records = [], groups = [], subOf = {}, problems = [], ids = new Set(), titles = new Set(), gids = new Set(), gtitles = new Set();
+  let cur = null;   // die Unterkategorie, deren Akten gerade folgen
   raw.forEach((x, i) => {
     const label = (x && typeof x === 'object' && typeof x.id === 'string' && x.id.trim()) ? '„' + x.id + '“' : 'Eintrag ' + (i + 1);
+    if (x && typeof x === 'object' && !Array.isArray(x) && x.typ === 'unterkategorie') {
+      const why = checkGroup(x);
+      if (why) { problems.push(label + ': ' + why); cur = null; return; }
+      const gid = x.id.trim(), gt = cleanT(x.title), gkey = x.cat + '|' + nf(gt);
+      if (gids.has(gid)) { problems.push(label + ': Kennung kommt doppelt vor'); cur = null; return; }
+      if (gtitles.has(gkey)) { problems.push(label + ': Titel kommt in dieser Kategorie doppelt vor'); cur = null; return; }
+      gids.add(gid); gtitles.add(gkey);
+      cur = {id: gid, cat: x.cat, t: gt};
+      groups.push(cur);
+      return;
+    }
     const why = checkRecord(x);
     if (why) { problems.push(label + ': ' + why); return; }
     const id = x.id.trim(), t = nf(x.title.trim());
     if (ids.has(id)) { problems.push(label + ': Kennung kommt doppelt vor'); return; }
     if (titles.has(t)) { problems.push(label + ': Titel kommt doppelt vor'); return; }
     ids.add(id); titles.add(t); records.push(normalizeRecord(x));
+    if (cur && cur.cat === catKey(x.cat)) subOf[id] = cur.id; else cur = null;
   });
-  return {records, problems};
+  return {records, groups, subOf, problems};
 }
-function applyData(res){   // übernimmt die geprüften Akten
+function applyData(res){   // übernimmt die geprüften Akten und Unterkategorien
   SEED = res.records;
   BASE = {};
   SEED.forEach(r => { BASE[r.id] = r; });
   DATA_PROBLEMS = res.problems;
+  DATA_GROUPS = res.groups;
+  DATA_GROUP = {};
+  DATA_GROUPS.forEach(g => { DATA_GROUP[g.id] = g; });
+  DATA_SUBOF = res.subOf;
 }
 
 /* ===== Anzeige ===== */
@@ -1001,11 +1054,17 @@ function sanitize(d){
   out.order = orderFix(Array.isArray(d.order) ? d.order.filter(x => typeof x === 'string' && known(x)) : [], out.made);
   if (Array.isArray(d.subs)) d.subs.forEach(s => {   // Unterkategorien: nur gültige, je Kategorie ein Name
     const t = cleanT(s && s.t), c = s && s.cat;
-    if (s && typeof s.id === 'string' && s.id && SUBCATS.includes(c) && t && !out.subs.some(x => x.id === s.id || (x.cat === c && nf(x.t) === nf(t)))) out.subs.push({id: s.id, cat: c, t});
+    if (s && typeof s.id === 'string' && s.id && SUBCATS.includes(c) && t && !out.subs.some(x => x.id === s.id || (x.cat === c && nf(x.t) === nf(t)))) {
+      const g = {id: s.id, cat: c, t};
+      if (s.src === 'd') g.src = 'd';   // aus akten.json übernommen
+      if (s.ren === true) g.ren = true;   // dort umbenannt
+      out.subs.push(g);
+    }
   });
-  if (d.subOf && typeof d.subOf === 'object') Object.keys(d.subOf).forEach(k => {   // Zuweisungen nur, wenn Akte und Unterkategorie zusammenpassen
+  if (Array.isArray(d.subDel)) out.subDel = [...new Set(d.subDel.filter(x => typeof x === 'string' && x))];
+  if (d.subOf && typeof d.subOf === 'object') Object.keys(d.subOf).forEach(k => {   // Zuweisungen nur, wenn Akte und Unterkategorie zusammenpassen; „ohne“ (leer) bleibt
     const rec = out.made.find(m => m.id === k) || (own(BASE, k) ? BASE[k] : null), sid = d.subOf[k];
-    if (rec && out.subs.some(s => s.id === sid && s.cat === rec.cat)) out.subOf[k] = sid;
+    if (rec && typeof sid === 'string' && (sid === '' || out.subs.some(s => s.id === sid && s.cat === rec.cat))) out.subOf[k] = sid;
   });
   return {data: out, skipped};
 }
@@ -1016,6 +1075,8 @@ function importedState(d){
     const ids = new Set(SEED.map(r => r.id).concat(res.data.made.map(m => m.id)));
     res.data.fav = S.fav.filter(id => ids.has(id));
   }
+  if (!(Number(d.v) >= 6)) resetToData(res.data);   // ältere Stände: Reihenfolge und Unterkategorien aus akten.json
+  syncData(res.data);
   return res;
 }
 function importFile(file){
@@ -1169,7 +1230,7 @@ function runTests(){
   T('Mitgelieferte Akten lassen sich nicht endgültig löschen', () => { reset0(); purge(id()); ok(get(id())); });
   T('Neue Akte landet am Ende ihrer Kategorie', () => { reset0(); const r = create({cat: 'o', title: 'Test Operation', sections: [{h: 'Ablauf', text: 'Schritt'}]}); ok(S.order[S.order.map(x => get(x).cat).lastIndexOf('o')] === r.id); });
   T('Sortieren bleibt innerhalb der Kategorie', () => { reset0(); const cats = () => S.order.map(x => get(x).cat).join(''); const before = cats(); moveRec(S.order.find(x => get(x).cat === 'b'), 1); ok(cats() === before); });
-  T('Speichern und Laden ergeben denselben Stand', () => { reset0(); setText(id(), 'i:0:0', 'X'); const a = JSON.stringify(S); load(); ok(JSON.stringify(S) === a); });
+  T('Speichern und Laden ergeben denselben Stand', () => { reset0(); load(); setText(id(), 'i:0:0', 'X'); const a = JSON.stringify(S); load(); ok(JSON.stringify(S) === a); });
   T('Bisherige Version wird übernommen (Kennung = Titel)', () => { const i = id(); store.removeItem(KEY); store.setItem('f', JSON.stringify([i])); store.setItem('me', JSON.stringify({[i]: ['/me Test']})); load(); ok(S.fav.includes(i) && get(i).me[0] === '/me Test'); store.removeItem('f'); store.removeItem('me'); });
   T('Eingaben werden nicht als HTML ausgeführt', () => ok(!fmt('<img src=x onerror=1>').includes('<img')));
   T('Verweise werden zu Links', () => { const r = E(); ok(fmt('[[' + r.title + ']]').includes('data-id="' + esc(r.id) + '"')); });
@@ -1277,12 +1338,12 @@ function runTests(){
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
   T('Den Abschnitt Behandlung gibt es in keiner Akte mehr', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung')), 'Behandlung noch in einer Akte'));
-  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 5 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
+  T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 6 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
   T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
     reset0(); S.v = 3; S.ov['Verätzungen'] = {me: ['/me Test']}; S.del['Gehirntumor (Wach-OP)'] = true; S.fav = ['Verätzungen']; S.order = ['Verätzungen', 'Schlaganfall'];
     migrate();
-    const ok1 = S.v === 5 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order[0] === 'Behandlung von Verätzungen' && S.order[1] === 'Schlaganfall';
+    const ok1 = S.v === 6 && S.ov['Behandlung von Verätzungen'].me[0] === '/me Test' && !own(S.ov, 'Verätzungen') && S.del['Gehirntumor – Wach-OP'] === true && !own(S.del, 'Gehirntumor (Wach-OP)') && S.fav.join('|') === 'Behandlung von Verätzungen' && S.order.filter(x => x === 'Behandlung von Verätzungen').length === 1 && !S.order.includes('Verätzungen');   // die Reihenfolge kommt jetzt aus der Datei
     reset0(); ok(ok1, 'Umbenennung fehlgeschlagen');
   });
   T('Die umbenannten Operationen sind Akten in der Kategorie Operationen', () => ok(Object.values(RENAMED).every(t => { const r = SEED.find(x => x.id === t); return !!r && r.cat === 'o'; }) && !SEED.some(r => r.id === 'Narkose einleiten'), 'Umbenennung und akten.json stimmen nicht überein'));
@@ -1325,7 +1386,7 @@ function runTests(){
     const r = create({cat: 'o', title: 'Akte im Löschtest', sub: sid, sections: [{h: 'Ablauf', text: 'Schritt'}]});
     ok(!r.errors && subOfRec(get(r.id)).id === sid, 'nicht zugeordnet');
     subDelete(sid);
-    ok(!S.subs.some(s => s.id === sid) && !own(S.subOf, r.id), 'Zuordnung bleibt');
+    ok(!S.subs.some(s => s.id === sid) && S.subOf[r.id] === '', 'Zuordnung bleibt');
     ok(live().some(x => x.id === r.id) && !subOfRec(get(r.id)), 'Akte verloren');
   });
   T('Neue Akte im Dialog zusammen mit einer neuen Unterkategorie anlegen', () => {
@@ -1475,6 +1536,121 @@ function runTests(){
     const r = create({cat: 'm', title: 'Endgültig weg', sub: sid, sections: [{h: 'Wirkung', text: 'x'}]}).id;
     trash(r); purge(r);
     ok(!own(S.subOf, r) && S.subs.some(s => s.id === sid) && !S.made.some(m => m.id === r), 'Zuordnung oder Unterkategorie falsch');
+  });
+  // ===== Unterkategorien aus akten.json (Stand 6) =====
+  T('Neuer Browserstand startet auf Stand 6 mit leerer Löschliste', () => { const f = fresh(); ok(f.v === 6 && Array.isArray(f.subDel) && f.subDel.length === 0, 'Stand falsch'); });
+  T('Die Datei legt Unterkategorien fest: jede steht vor ihren Akten', () => {
+    const akte = t => ({id: t, cat: 'b', title: t, sections: [{h: 'Erkennung', items: ['x']}]});
+    const p = parseData([
+      {typ: 'unterkategorie', id: 'g1', cat: 'b', title: 'Eins'}, akte('A'), akte('B'),
+      {typ: 'unterkategorie', id: 'g2', cat: 'b', title: 'Zwei'}, akte('C'),
+      {id: 'D', cat: 'v', title: 'D', sections: [{h: 'Erkennung', items: ['x']}]}, akte('E')
+    ]);
+    ok(p.groups.map(g => g.id).join() === 'g1,g2' && p.problems.length === 0, 'Gruppen: ' + JSON.stringify(p.groups) + ' ' + p.problems.join(' | '));
+    ok(p.subOf.A === 'g1' && p.subOf.B === 'g1' && p.subOf.C === 'g2', 'Zuordnung: ' + JSON.stringify(p.subOf));
+    ok(!('D' in p.subOf) && !('E' in p.subOf), 'Akte nach einer fremden Kategorie hängt noch an einer Gruppe');
+  });
+  T('Ungültige Unterkategorien aus der Datei werden übersprungen', () => {
+    const akte = {id: 'R', cat: 'o', title: 'R', sections: [{h: 'Ablauf', items: ['x']}]};
+    const p = parseData([
+      {typ: 'unterkategorie', id: 'x1', cat: 'v', title: 'Falsche Kategorie'},
+      {typ: 'unterkategorie', id: 'x2', cat: 'b', title: '   '},
+      {typ: 'unterkategorie', id: 'x3', cat: 'o', title: 'Gut'}, akte,
+      {typ: 'unterkategorie', id: 'x3', cat: 'b', title: 'Doppelte Kennung'},
+      {typ: 'unterkategorie', id: 'x4', cat: 'o', title: 'gut'}
+    ]);
+    ok(p.groups.length === 1 && p.groups[0].id === 'x3', 'Gruppen: ' + JSON.stringify(p.groups));
+    ok(p.problems.length === 4, 'Meldungen: ' + p.problems.join(' | '));
+    ok(p.subOf.R === 'x3', 'Akte nicht bei der gültigen Gruppe');
+  });
+  T('Gruppen aus der Datei stehen im Browser, Akten folgen der Datei', () => {
+    reset0(); load();
+    ok(DATA_GROUPS.length > 0 && DATA_GROUPS.every(g => S.subs.some(s => s.id === g.id && s.src === 'd')), 'Gruppen fehlen im Browserstand');
+    const r = SEED.find(x => own(DATA_SUBOF, x.id));
+    ok(r && (subOfRec(get(r.id)) || {}).id === DATA_SUBOF[r.id], 'Akte nicht in der Gruppe aus der Datei');
+    reset0();
+  });
+  T('Eigene Zuordnung bleibt beim Neuladen, „ohne“ fällt nicht auf die Datei zurück', () => {
+    reset0(); load();
+    const r = SEED.find(x => own(DATA_SUBOF, x.id)), anders = S.subs.find(s => s.cat === r.cat && s.id !== DATA_SUBOF[r.id]);
+    setRecSub(r.id, anders.id); load();
+    ok((subOfRec(get(r.id)) || {}).id === anders.id, 'Verschiebung beim Neuladen verloren');
+    setRecSub(r.id, ''); load();
+    ok(!subOfRec(get(r.id)), '„ohne“ beim Neuladen auf die Datei zurückgefallen');
+    reset0();
+  });
+  T('Im Browser gelöschte Gruppe aus der Datei kommt beim Neuladen nicht zurück', () => {
+    reset0(); load();
+    const g = DATA_GROUPS.find(x => SEED.some(r => DATA_SUBOF[r.id] === x.id)), akte = SEED.find(r => DATA_SUBOF[r.id] === g.id);
+    subDelete(g.id); load();
+    ok(!S.subs.some(s => s.id === g.id) && S.subDel.includes(g.id), 'Gruppe ist nach dem Neuladen wieder da');
+    ok(!subOfRec(get(akte.id)), 'Akte hängt noch an der gelöschten Gruppe');
+    reset0();
+  });
+  T('Umbenannte Gruppe behält ihren Titel, auch wenn sich die Datei ändert', () => {
+    reset0(); load();
+    const o = DATA_GROUPS.find(x => x.cat === 'o'), m = DATA_GROUPS.find(x => x.cat === 'm'), altO = o.t, altM = m.t;
+    try {
+      subRename(o.id, 'Eigener Name');
+      o.t = 'Neuer Dateititel'; m.t = 'Geänderter Dateititel'; syncData();
+      ok(S.subs.find(s => s.id === o.id).t === 'Eigener Name', 'Browser-Titel überschrieben');
+      ok(S.subs.find(s => s.id === m.id).t === 'Geänderter Dateititel', 'Titel aus der Datei nicht übernommen');
+    } finally { o.t = altO; m.t = altM; }
+    reset0();
+  });
+  T('Aus der Datei entfernte Gruppe verschwindet im Browser', () => {
+    reset0(); load();
+    const alle = DATA_GROUPS, karte = DATA_GROUP, weg = alle[alle.length - 1];
+    DATA_GROUPS = alle.filter(g => g !== weg); DATA_GROUP = {}; DATA_GROUPS.forEach(g => { DATA_GROUP[g.id] = g; });
+    try { syncData(); ok(!S.subs.some(s => s.id === weg.id), 'entfernte Gruppe steht noch im Browser'); }
+    finally { DATA_GROUPS = alle; DATA_GROUP = karte; }
+    reset0();
+  });
+  T('Stand 6: eine ältere Reihenfolge wird einmal auf die Datei gesetzt, eigene Gruppen bleiben', () => {
+    reset0();
+    S.v = 5; S.order = S.order.slice().reverse();   // eine selbst sortierte, ältere Reihenfolge
+    const eigene = subAdd('b', 'Eigene Gruppe').id, erste = SEED.find(r => r.cat === 'b').id;
+    S.subOf[erste] = eigene;   // von dir verschoben
+    migrate();
+    ok(S.v === 6, 'Stand nicht gesetzt');
+    ok(S.order.slice(0, SEED.length).join('|') === SEED.map(r => r.id).join('|'), 'Reihenfolge nicht aus der Datei');
+    ok(S.subs.some(s => s.id === eigene), 'eigene Gruppe verloren');
+    ok(!own(S.subOf, erste), 'deine Verschiebung wurde nicht zurückgesetzt');
+    reset0();
+  });
+  T('Export mit „ohne Unterkategorie“ bleibt beim Import erhalten', () => {
+    reset0(); load();
+    const r = SEED.find(x => own(DATA_SUBOF, x.id));
+    setRecSub(r.id, '');
+    const res = sanitize(JSON.parse(exportText()));
+    ok(res.data.subOf[r.id] === '', '„ohne“ ging beim Export verloren');
+    reset0();
+  });
+  T('Ältere Datei beim Import: Reihenfolge und Gruppen kommen aus der Datei', () => {
+    reset0();
+    const res = importedState({v: 5, ov: {}, del: {}, made: [], order: ['Verstauchung'], subs: [{id: 'eig', cat: 'b', t: 'Eigene'}], subOf: {}, fav: []});
+    ok(res.data.order.slice(0, SEED.length).join('|') === SEED.map(r => r.id).join('|'), 'Reihenfolge nicht aus der Datei');
+    ok(res.data.subs.some(s => s.id === 'eig') && DATA_GROUPS.every(g => res.data.subs.some(s => s.id === g.id)), 'Gruppen fehlen');
+    reset0();
+  });
+  T('Der Dialog nennt die Gruppen aus der Datei', () => {
+    reset0(); load();
+    formState = {cat: 'm', title: '', desc: '', text: [], sub: '', newSub: ''};
+    const h = formHTML();
+    formState = null;
+    ok(DATA_GROUPS.filter(g => g.cat === 'm').every(g => h.includes(esc(g.t))), 'Gruppe fehlt im Dialog');
+    reset0();
+  });
+  T('Leere Gruppen aus der Datei zeigen sich nur im Bearbeitungsmodus', () => {
+    reset0(); load();
+    const leer = DATA_GROUPS.find(g => !SEED.some(r => DATA_SUBOF[r.id] === g.id));
+    if (!leer) return;   // die Datei hat gerade keine leere Gruppe
+    opened.add(leer.cat); act('view', {dataset: {v: leer.cat}});
+    setMode(true); const mit = $('#n').innerHTML.includes(esc(leer.t));
+    setMode(false); const ohne = $('#n').innerHTML.includes(esc(leer.t));
+    setMode(true); act('view', {dataset: {v: 'a'}});
+    reset0();
+    ok(mit && !ohne, 'leere Gruppe: im Bearbeiten ' + mit + ', im Zuschauermodus ' + ohne);
   });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();

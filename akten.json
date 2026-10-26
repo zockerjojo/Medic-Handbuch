@@ -221,6 +221,12 @@
     "me": []
   },
   {
+    "typ": "unterkategorie",
+    "id": "b1",
+    "cat": "b",
+    "title": "Leichte / Allgemeine Verletzungen"
+  },
+  {
     "id": "Verstauchung",
     "cat": "b",
     "title": "Verstauchung",
@@ -255,71 +261,189 @@
     ]
   },
   {
-    "id": "Gelenkpunktion",
+    "id": "Prellung",
     "cat": "b",
-    "title": "Gelenkpunktion",
+    "title": "Prellung",
     "sections": [
       {
         "h": "Erkennung",
         "mode": "bullet",
         "items": [
-          "Sehr stark angeschwollenes Gelenk, z. B. nach einer Verstauchung (siehe [[Verstauchung]])",
-          "Gelenkerguss, der die Bewegung einschränkt"
+          "Leichte Verletzung nach Sturz oder Stoß: Schmerz, Schwellung, Bluterguss",
+          "Brustbereich: auf Atembeschwerden, Kurzatmigkeit und Brustschmerzen achten und sofort untersuchen"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Sterile Umgebung vorbereiten",
-          "Gelenk desinfizieren und mit Lochtuch abdecken",
-          "Hohlnadel ins Gelenk einführen und Flüssigkeit absaugen",
-          "Einstichstelle mit Tupfer und Pflaster versorgen"
+          "Verletzte Stelle prüfen, bei Brustprellung die Atmung kontrollieren",
+          "Kühlpack auflegen",
+          "Schmerzmittel geben",
+          "Bei Brustprellung Verband oder Brustkorsett anlegen"
         ]
       }
     ],
     "me": [
-      "/me nimmt Hohlnadel, Spritze, Lochtuch, Desinfektionsmittel, Tupfer und Pflaster aus dem Sterilset",
-      "/me bereitet sterile Materialien vor und desinfiziert die Einstichstelle",
-      "/me deckt das Gelenk mit einem Lochtuch ab",
-      "/me führt die Hohlnadel vorsichtig ins Gelenk ein und saugt Flüssigkeit ab",
-      "/me versorgt die Einstichstelle mit Tupfer und Pflaster",
-      "Notiz: Abgesaugte Flüssigkeit zur Untersuchung sichern"
+      "/me nimmt Kühlpack, elastische Binde, Brustkorsett und Schmerzmittel aus dem Verbandskasten",
+      "/me untersucht die verletzte Stelle auf Schwellung und Druckschmerz",
+      "/me legt ein Kühlpack auf die Prellung",
+      "/me kontrolliert bei Brustprellung Atmung und Atemgeräusche",
+      "/me legt einen festen Verband oder ein Brustkorsett an",
+      "Notiz: Bei Atemnot oder anhaltenden Brustschmerzen sofort weiter abklären"
     ]
   },
   {
-    "id": "Glatter Bruch",
+    "id": "Verbrennung 1. Grades",
     "cat": "b",
-    "title": "Glatter Bruch",
-    "kw": "knochen fraktur schiene gips",
+    "title": "Verbrennung 1. Grades",
+    "kw": "brandwunde hitze bepanthen",
     "sections": [
       {
         "h": "Erkennung",
         "mode": "bullet",
         "items": [
-          "Starke Schmerzen, Schwellung und Druckempfindlichkeit",
-          "Fehlstellung des Gliedes"
+          "Haut gerötet und warm",
+          "Schmerzt bei Berührung, keine Blasen"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Ruhigstellen mit Schiene oder Gipsverband",
-          "Kühlpack auflegen und Glied hochlagern",
-          "Schmerzmittel geben",
-          "Kontrolle per Röntgen",
-          "Später Physiotherapie"
+          "Sofort unter fließendem Wasser kühlen",
+          "Bepanthen-Schaumspray auftragen",
+          "Mit Brandwunden-Pflaster abdecken",
+          "Schmerzmittel bei Bedarf geben"
         ]
       }
     ],
     "me": [
-      "/me nimmt Schiene, Gipsbinde, Kühlpack und Schmerzmittel aus dem Verbandskasten",
-      "/me legt vorsichtig eine Schiene oder einen Gipsverband an",
-      "/me platziert ein Kühlpack auf der verletzten Stelle",
-      "/me hebt die Extremität leicht an und stützt sie",
-      "Notiz: Gesplitterter oder verschobener Bruch: siehe [[Gesplitterter Bruch]]",
-      "/me prüft Durchblutung und Gefühl unterhalb der Bruchstelle"
+      "/me nimmt Bepanthen-Schaumspray, Brandwunden-Pflaster und Schmerzmittel aus dem Verbandskasten",
+      "/me kühlt die verbrannte Stelle unter fließendem Wasser",
+      "/me trägt Bepanthen-Schaumspray auf",
+      "/me legt Pflaster auf die Brandstelle",
+      "/me gibt Schmerzmittel",
+      "Notiz: Bei großflächiger Verbrennung unverzüglich ärztlich abklären lassen"
+    ]
+  },
+  {
+    "id": "Verbrennung 2. Grades",
+    "cat": "b",
+    "title": "Verbrennung 2. Grades",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Tieferer Hautschaden mit sichtbaren Blasen, Rötung, Schmerz und Schwellung",
+          "2a: geschlossene Blasen, heilt meist spontan",
+          "2b: offene Blasen, tiefer Schaden, lokal behandelbar"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Wunde lokal betäuben",
+          "Wunde antiseptisch spülen, bei 2b gründlich desinfizieren",
+          "Bei 2b abgestorbenes Gewebe entfernen, Haut transplantieren und einnähen",
+          "Brandsalbe auftragen, bei 2b zusätzlich Silbersulfadiazin",
+          "Mit Mullbinden verbinden und Schmerzmittel geben"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Lokalanästhetikum, Wundspülung, Brandsalbe, Silbersulfadiazin-Creme und Mullbinden aus dem Verbandskasten",
+      "/me betäubt die Wunde lokal",
+      "/me spült die Wunde antiseptisch aus",
+      "/me trägt Brandsalbe auf",
+      "/me verbindet die Wunde mit Mullbinden",
+      "/me desinfiziert die Brandwunde gründlich",
+      "Notiz: Bei 2b Gewebe entfernen und Haut transplantieren (Operation)"
+    ]
+  },
+  {
+    "typ": "unterkategorie",
+    "id": "b2",
+    "cat": "b",
+    "title": "Wunden & Trauma"
+  },
+  {
+    "id": "Platzwunde",
+    "cat": "b",
+    "title": "Platzwunde",
+    "kw": "wunde nähen blutung",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "items": [
+          "Offene Wunde mit klaffenden Wundrändern",
+          "Blutung je nach Gefäßbeteiligung, meist gut kontrollierbar",
+          "Verschmutzung und Fremdkörper prüfen"
+        ],
+        "mode": "bullet"
+      },
+      {
+        "h": "Ablauf",
+        "items": [
+          "Vitalwerte prüfen und Blutung kontrollieren",
+          "Wunde spülen und großzügig desinfizieren",
+          "Wundrand mit Lidocain betäuben",
+          "Wunde mit Einzelknopfnähten verschließen",
+          "Steriler Verband, Nachsorge erklären"
+        ],
+        "mode": "number"
+      }
+    ],
+    "me": [
+      "/me nimmt Lidocain, Wundspülung, sterile Tücher, Nahtmaterial und Verbandmaterial aus dem Sterilset",
+      "/me spült die Wunde gründlich mit steriler Lösung",
+      "/me desinfiziert die Wunde und die umliegende Haut",
+      "/me betäubt den Wundrand mit Lidocain",
+      "/me verschließt die Wunde mit Einzelknopfnähten",
+      "/me legt einen sterilen Wundverband an",
+      "Notiz: Lidocain nach Körpergewicht dosieren, Höchstmenge beachten",
+      "Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen"
+    ]
+  },
+  {
+    "id": "Streifschuss, Stichwunde, Bisswunde",
+    "cat": "b",
+    "title": "Streifschuss, Stichwunde, Bisswunde",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Streifschuss: oberflächlich, oft starker Blutverlust",
+          "Stichwunde: kleine Öffnung, die tief reichen kann",
+          "Biss (z. B. SCP-939, SCP-682, Hunde): verschmutzt, hohes Infektionsrisiko",
+          "Zeichen: Rötung, Schwellung, Eiter, Schmerzen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Blutung mit Druckverband stillen",
+          "Wunde gründlich reinigen und desinfizieren",
+          "Infizierte Wunde unter lokaler Betäubung chirurgisch reinigen, ggf. Eiter entfernen",
+          "Fremdkörper und abgestorbenes Gewebe entfernen",
+          "Wunde vernähen oder Drainage legen",
+          "Antibiotikum geben, Impfstatus prüfen und impfen"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Druckverband, Desinfektionsmittel, Lokalanästhetikum, Nahtmaterial, Drainage und Antibiotika aus dem Notfallkoffer",
+      "/me stillt die Blutung mit einem Druckverband",
+      "/me reinigt die Wunde gründlich und desinfiziert sie",
+      "/me injiziert ein Lokalanästhetikum vor der chirurgischen Reinigung",
+      "/me entfernt Fremdkörper und abgestorbenes Gewebe",
+      "/me vernäht die Wunde oder legt eine Drainage",
+      "/me verabreicht Antibiotika und prüft den Impfstatus",
+      "Notiz: Impfstatus vor der Entlassung dokumentieren"
     ]
   },
   {
@@ -361,108 +485,71 @@
     ]
   },
   {
-    "id": "Platzwunde",
+    "id": "Glatter Bruch",
     "cat": "b",
-    "title": "Platzwunde",
-    "kw": "wunde nähen blutung",
-    "sections": [
-      {
-        "h": "Erkennung",
-        "items": [
-          "Offene Wunde mit klaffenden Wundrändern",
-          "Blutung je nach Gefäßbeteiligung, meist gut kontrollierbar",
-          "Verschmutzung und Fremdkörper prüfen"
-        ],
-        "mode": "bullet"
-      },
-      {
-        "h": "Ablauf",
-        "items": [
-          "Vitalwerte prüfen und Blutung kontrollieren",
-          "Wunde spülen und großzügig desinfizieren",
-          "Wundrand mit Lidocain betäuben",
-          "Wunde mit Einzelknopfnähten verschließen",
-          "Steriler Verband, Nachsorge erklären"
-        ],
-        "mode": "number"
-      }
-    ],
-    "me": [
-      "/me nimmt Lidocain, Wundspülung, sterile Tücher, Nahtmaterial und Verbandmaterial aus dem Sterilset",
-      "/me spült die Wunde gründlich mit steriler Lösung",
-      "/me desinfiziert die Wunde und die umliegende Haut",
-      "/me betäubt den Wundrand mit Lidocain",
-      "/me verschließt die Wunde mit Einzelknopfnähten",
-      "/me legt einen sterilen Wundverband an",
-      "Notiz: Lidocain nach Körpergewicht dosieren, Höchstmenge beachten",
-      "Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen"
-    ]
-  },
-  {
-    "id": "Verbrennung 1. Grades",
-    "cat": "b",
-    "title": "Verbrennung 1. Grades",
-    "kw": "brandwunde hitze bepanthen",
+    "title": "Glatter Bruch",
+    "kw": "knochen fraktur schiene gips",
     "sections": [
       {
         "h": "Erkennung",
         "mode": "bullet",
         "items": [
-          "Haut gerötet und warm",
-          "Schmerzt bei Berührung, keine Blasen"
+          "Starke Schmerzen, Schwellung und Druckempfindlichkeit",
+          "Fehlstellung des Gliedes"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Sofort unter fließendem Wasser kühlen",
-          "Bepanthen-Schaumspray auftragen",
-          "Mit Brandwunden-Pflaster abdecken",
-          "Schmerzmittel bei Bedarf geben"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Bepanthen-Schaumspray, Brandwunden-Pflaster und Schmerzmittel aus dem Verbandskasten",
-      "/me kühlt die verbrannte Stelle unter fließendem Wasser",
-      "/me trägt Bepanthen-Schaumspray auf",
-      "/me legt Pflaster auf die Brandstelle",
-      "/me gibt Schmerzmittel",
-      "Notiz: Bei großflächiger Verbrennung unverzüglich ärztlich abklären lassen"
-    ]
-  },
-  {
-    "id": "Prellung",
-    "cat": "b",
-    "title": "Prellung",
-    "sections": [
-      {
-        "h": "Erkennung",
-        "mode": "bullet",
-        "items": [
-          "Leichte Verletzung nach Sturz oder Stoß: Schmerz, Schwellung, Bluterguss",
-          "Brustbereich: auf Atembeschwerden, Kurzatmigkeit und Brustschmerzen achten und sofort untersuchen"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Verletzte Stelle prüfen, bei Brustprellung die Atmung kontrollieren",
-          "Kühlpack auflegen",
+          "Ruhigstellen mit Schiene oder Gipsverband",
+          "Kühlpack auflegen und Glied hochlagern",
           "Schmerzmittel geben",
-          "Bei Brustprellung Verband oder Brustkorsett anlegen"
+          "Kontrolle per Röntgen",
+          "Später Physiotherapie"
         ]
       }
     ],
     "me": [
-      "/me nimmt Kühlpack, elastische Binde, Brustkorsett und Schmerzmittel aus dem Verbandskasten",
-      "/me untersucht die verletzte Stelle auf Schwellung und Druckschmerz",
-      "/me legt ein Kühlpack auf die Prellung",
-      "/me kontrolliert bei Brustprellung Atmung und Atemgeräusche",
-      "/me legt einen festen Verband oder ein Brustkorsett an",
-      "Notiz: Bei Atemnot oder anhaltenden Brustschmerzen sofort weiter abklären"
+      "/me nimmt Schiene, Gipsbinde, Kühlpack und Schmerzmittel aus dem Verbandskasten",
+      "/me legt vorsichtig eine Schiene oder einen Gipsverband an",
+      "/me platziert ein Kühlpack auf der verletzten Stelle",
+      "/me hebt die Extremität leicht an und stützt sie",
+      "Notiz: Gesplitterter oder verschobener Bruch: siehe [[Gesplitterter Bruch]]",
+      "/me prüft Durchblutung und Gefühl unterhalb der Bruchstelle"
+    ]
+  },
+  {
+    "id": "Gelenkpunktion",
+    "cat": "b",
+    "title": "Gelenkpunktion",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "bullet",
+        "items": [
+          "Sehr stark angeschwollenes Gelenk, z. B. nach einer Verstauchung (siehe [[Verstauchung]])",
+          "Gelenkerguss, der die Bewegung einschränkt"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Sterile Umgebung vorbereiten",
+          "Gelenk desinfizieren und mit Lochtuch abdecken",
+          "Hohlnadel ins Gelenk einführen und Flüssigkeit absaugen",
+          "Einstichstelle mit Tupfer und Pflaster versorgen"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Hohlnadel, Spritze, Lochtuch, Desinfektionsmittel, Tupfer und Pflaster aus dem Sterilset",
+      "/me bereitet sterile Materialien vor und desinfiziert die Einstichstelle",
+      "/me deckt das Gelenk mit einem Lochtuch ab",
+      "/me führt die Hohlnadel vorsichtig ins Gelenk ein und saugt Flüssigkeit ab",
+      "/me versorgt die Einstichstelle mit Tupfer und Pflaster",
+      "Notiz: Abgesaugte Flüssigkeit zur Untersuchung sichern"
     ]
   },
   {
@@ -503,43 +590,10 @@
     ]
   },
   {
-    "id": "Streifschuss, Stichwunde, Bisswunde",
+    "typ": "unterkategorie",
+    "id": "b3",
     "cat": "b",
-    "title": "Streifschuss, Stichwunde, Bisswunde",
-    "sections": [
-      {
-        "h": "Erkennung",
-        "mode": "bullet",
-        "items": [
-          "Streifschuss: oberflächlich, oft starker Blutverlust",
-          "Stichwunde: kleine Öffnung, die tief reichen kann",
-          "Biss (z. B. SCP-939, SCP-682, Hunde): verschmutzt, hohes Infektionsrisiko",
-          "Zeichen: Rötung, Schwellung, Eiter, Schmerzen"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Blutung mit Druckverband stillen",
-          "Wunde gründlich reinigen und desinfizieren",
-          "Infizierte Wunde unter lokaler Betäubung chirurgisch reinigen, ggf. Eiter entfernen",
-          "Fremdkörper und abgestorbenes Gewebe entfernen",
-          "Wunde vernähen oder Drainage legen",
-          "Antibiotikum geben, Impfstatus prüfen und impfen"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Druckverband, Desinfektionsmittel, Lokalanästhetikum, Nahtmaterial, Drainage und Antibiotika aus dem Notfallkoffer",
-      "/me stillt die Blutung mit einem Druckverband",
-      "/me reinigt die Wunde gründlich und desinfiziert sie",
-      "/me injiziert ein Lokalanästhetikum vor der chirurgischen Reinigung",
-      "/me entfernt Fremdkörper und abgestorbenes Gewebe",
-      "/me vernäht die Wunde oder legt eine Drainage",
-      "/me verabreicht Antibiotika und prüft den Impfstatus",
-      "Notiz: Impfstatus vor der Entlassung dokumentieren"
-    ]
+    "title": "Umwelt, Gifte & Spezielle Einwirkungen"
   },
   {
     "id": "Unterkühlung",
@@ -653,40 +707,10 @@
     ]
   },
   {
-    "id": "Verbrennung 2. Grades",
+    "typ": "unterkategorie",
+    "id": "b4",
     "cat": "b",
-    "title": "Verbrennung 2. Grades",
-    "sections": [
-      {
-        "h": "Erkennung",
-        "mode": "bullet",
-        "items": [
-          "Tieferer Hautschaden mit sichtbaren Blasen, Rötung, Schmerz und Schwellung",
-          "2a: geschlossene Blasen, heilt meist spontan",
-          "2b: offene Blasen, tiefer Schaden, lokal behandelbar"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Wunde lokal betäuben",
-          "Wunde antiseptisch spülen, bei 2b gründlich desinfizieren",
-          "Bei 2b abgestorbenes Gewebe entfernen, Haut transplantieren und einnähen",
-          "Brandsalbe auftragen, bei 2b zusätzlich Silbersulfadiazin",
-          "Mit Mullbinden verbinden und Schmerzmittel geben"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Lokalanästhetikum, Wundspülung, Brandsalbe, Silbersulfadiazin-Creme und Mullbinden aus dem Verbandskasten",
-      "/me betäubt die Wunde lokal",
-      "/me spült die Wunde antiseptisch aus",
-      "/me trägt Brandsalbe auf",
-      "/me verbindet die Wunde mit Mullbinden",
-      "/me desinfiziert die Brandwunde gründlich",
-      "Notiz: Bei 2b Gewebe entfernen und Haut transplantieren (Operation)"
-    ]
+    "title": "Spezielle SCP-Fälle & Tiere"
   },
   {
     "id": "SCP-527 und Kopfverletzungen",
@@ -822,6 +846,12 @@
     ]
   },
   {
+    "typ": "unterkategorie",
+    "id": "o1",
+    "cat": "o",
+    "title": "OP-Grundlagen & Narkose"
+  },
+  {
     "id": "Narkose richtig einleiten",
     "cat": "o",
     "title": "Narkose richtig einleiten",
@@ -864,54 +894,10 @@
     ]
   },
   {
-    "id": "Herzinfarkt",
+    "typ": "unterkategorie",
+    "id": "o2",
     "cat": "o",
-    "title": "Herzinfarkt",
-    "desc": "Ein Herzinfarkt entsteht, wenn ein Herzmuskelbereich nicht mehr ausreichend mit Sauerstoff versorgt wird, weil ein Blutgefäß verengt oder verschlossen ist. Dies kann zu bleibenden Schäden am Herzmuskel führen, wenn nicht schnell gehandelt wird. Die Behandlung zielt darauf ab, das verschlossene Gefäß zu öffnen und die Durchblutung wiederherzustellen.",
-    "sections": [
-      {
-        "h": "Geräte",
-        "mode": "bullet",
-        "items": [
-          "Katheter zur Einführung in die Arterie",
-          "Röntgengerät zur Lokalisierung des verengten Gefäßes",
-          "Kontrastmittel zur Darstellung der Blutgefäße",
-          "Miniaturballon + Stent für die Gefäßstütze"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Patient erhält Medikament zur Gefäßerweiterung (z. B. Lisinopril-2,5)",
-          "Einleitung der Narkose, um schmerzfreie Durchführung zu ermöglichen",
-          "Katheter über die Armarterie bis zum verengten Herzgefäß einführen",
-          "Kontrastmittel spritzen und Position durch Röntgen überprüfen",
-          "Miniaturballon aufblähen und Stent platzieren, um die Arterie offen zu halten",
-          "Katheter entfernen, Wunde versorgen mit Tupfern/Pflaster",
-          "Narkose beenden, Patient überwachen auf Stabilität und Herzfunktion"
-        ]
-      },
-      {
-        "h": "Wichtige Werte und Geräte",
-        "mode": "bullet",
-        "items": [
-          "Röntgen + Kontrastmittel: exakte Positionierung des Stents",
-          "Überwachung der Vitalwerte während Narkose: Puls, Blutdruck, Atmung, Sauerstoffsättigung",
-          "Stent und Ballon: Öffnen des Gefäßes und Sicherstellung der Durchblutung"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Katheter, Ballon, Stent, Kontrastmittel, Röntgengerät und Gefäßmedikation aus dem Herzkatheterlabor",
-      "/me gibt dem Patienten die Tablette Lisinopril-2,5",
-      "/me legt den Patienten für die Narkose bereit",
-      "/me führt den Katheter vorsichtig über die Armarterie ein",
-      "/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät",
-      "/me platziert den Stent und bläst den Miniaturballon auf",
-      "/me entfernt den Katheter und versorgt die Wunde",
-      "/me überwacht die Vitalwerte, während der Patient aus der Narkose erwacht"
-    ]
+    "title": "Traumatologie & Orthopädie"
   },
   {
     "id": "Gesplitterter Bruch",
@@ -1005,6 +991,244 @@
       "/me saugt überschüssige Flüssigkeit ab und verschließt die Dura",
       "/me klammert die Kopfhaut und legt einen sterilen Verband an",
       "Notiz: Anschließend werden Vitalwerte, ICP und Sprachfunktion kontrolliert."
+    ]
+  },
+  {
+    "id": "Hüftersatz",
+    "cat": "o",
+    "title": "Hüftersatz",
+    "desc": "Ein Hüftersatz ist ein chirurgischer Eingriff, bei dem ein beschädigtes oder schmerzhaftes Hüftgelenk durch eine künstliche Hüfte ersetzt wird. Ziel ist es, Schmerzen zu lindern, Beweglichkeit wiederherzustellen und die Lebensqualität zu verbessern.",
+    "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Röntgen oder CT für präoperative Planung",
+          "Chirurgisches Instrumentarium für Osteotomie und Protheseenfixierung"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Einleitung der Narkose und Abstimmung des Schmerzmanagements",
+          "Reinigung der Operationsstelle",
+          "Zurückklappen von Haut und Weichgewebe, um die Hüfte freizulegen",
+          "Osteotomie: Entfernen des beschädigten Gelenks und Schneiden der Knochen für die Prothese",
+          "Einsetzen des Prothesenkopfes in den Oberschenkelknochen",
+          "Fixierung des Prothesenkörpers im Beckenkamm mit Schrauben oder Befestigungsmitteln",
+          "Vernähen von Haut und Weichgewebe",
+          "Postoperative Überwachung zur Kontrolle von Vitalwerten und Schmerzmanagement"
+        ]
+      },
+      {
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
+        "items": [
+          "Röntgen/CT: genaue Planung der Prothesenposition",
+          "Narkose: schmerzfreie Durchführung des Eingriffs",
+          "Chirurgische Instrumente: präzises Entfernen und Fixieren der Prothese",
+          "Tupfer und Nahtmaterial: saubere Wundversorgung, Infektionsprävention"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Prothese, chirurgisches Instrumentarium, Tupfer und Nahtmaterial aus dem OP-Set",
+      "/me bereitet die Operationsstelle vor und desinfiziert sie",
+      "/me legt Haut und Weichgewebe zurück",
+      "/me entfernt das beschädigte Gelenk und schneidet die Knochen zu",
+      "/me setzt die Prothese ein und fixiert sie",
+      "/me vernäht die Haut und kontrolliert die Wundheilung"
+    ]
+  },
+  {
+    "id": "Amputation",
+    "cat": "o",
+    "title": "Amputation",
+    "desc": "Eine Amputation ist die chirurgische Entfernung eines Körperteils, notwendig bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel ist es, Lebensgefahr abzuwenden und eine gesunde Wundheilung zu ermöglichen.",
+    "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Narkoseausrüstung für sichere Sedierung",
+          "Tourniquet zur Blutstillung",
+          "Chirurgische Instrumente (Skalpell, Kauterpinzette)",
+          "Splint oder Fixationsmaterial zur Stabilität",
+          "Nahtmaterial und sterile Verbände"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Einleitung der Narkose und ggf. Plexusblockade zur Schmerzreduktion",
+          "Anlegen eines Tourniquets oberhalb des amputierenden Bereichs",
+          "Zylindrisches Ausschneiden der Haut für Zugang zum Gelenk oder Knochen",
+          "Trennung des Gelenks und Abtrennung der Knochen, Kürzen und Abstumpfen",
+          "Fixierung des Knochens mit einem Splint",
+          "Veröden von Blutgefäßen mit Kauterpinzette",
+          "Verschluss der Haut über dem Knochen durch sorgfältiges Vernähen",
+          "Aufwachen aus der Narkose und Überwachung der Vitalwerte"
+        ]
+      },
+      {
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
+        "items": [
+          "Tourniquet: verhindert Blutverlust während der Operation",
+          "Kauterpinzette: kontrolliert Blutungen durch gezieltes Veröden von Gefäßen",
+          "Splint: stabilisiert den Stumpf für Heilung und spätere Prothesenversorgung",
+          "Narkose: ermöglicht schmerzfreien Eingriff"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial und sterile Verbände aus dem OP-Set",
+      "/me leitet die Narkose ein und legt den Tourniquet an",
+      "/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe",
+      "/me fixiert den Knochen mit einem Splint und verödet Gefäße",
+      "/me vernäht die Haut und legt sterile Verbände an",
+      "/me überwacht den Patienten beim Erwachen aus der Narkose"
+    ]
+  },
+  {
+    "id": "Unterschenkelprothese",
+    "cat": "o",
+    "title": "Unterschenkelprothese",
+    "desc": "Eine Unterschenkelprothese ersetzt nach Amputation das entfernte Bein, ermöglicht Mobilität und Druckverteilung auf den Stumpf.",
+    "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Silikonhaftschaft als Verbindung zwischen Stumpf und Prothese",
+          "Protheseenschaft und Schraubverbindungen",
+          "Gelanwendung zur Druckverteilung"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Auftragen des Silikongels auf den Stumpf und den Haftschaft",
+          "Anlegen des Silikonhaftschafts am Stumpf",
+          "Befestigung der Prothese am Schaft über den Haftschaft",
+          "Kontrolle auf Druckstellen und korrekte Sitzposition"
+        ]
+      },
+      {
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
+        "items": [
+          "Silikonhaftschaft: verteilt den Druck gleichmäßig, schützt vor Reibung",
+          "Protheseenschaft: stellt sichere Verbindung für Gehfähigkeit her"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Silikonhaftschaft, Prothesenschaft, Gel und Schraubverbindungen aus dem Prothesenlager",
+      "/me trägt Gel auf den Stumpf auf und setzt den Silikonhaftschaft",
+      "/me befestigt die Prothese am Schaft und prüft den Sitz",
+      "/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten"
+    ]
+  },
+  {
+    "typ": "unterkategorie",
+    "id": "o3",
+    "cat": "o",
+    "title": "Thorax, Herz & Organe"
+  },
+  {
+    "id": "Lebertrauma",
+    "cat": "o",
+    "title": "Lebertrauma",
+    "desc": "Ein Lebertrauma ist eine Verletzung der Leber, die durch stumpfe Gewalt (z. B. Unfall, Sturz, Schlag) oder penetrierende Gewalt (z. B. Messerstich, Schusswunde) verursacht wird. Da die Leber sehr stark durchblutet ist, können selbst kleine Risse lebensgefährliche innere Blutungen auslösen.",
+    "sections": [
+      {
+        "h": "Erkennung",
+        "mode": "text",
+        "items": [
+          "Die Diagnose erfolgt meist durch Ultraschall oder CT, besonders bei sichtbaren Bauchverletzungen, großflächigen Blutergüssen oder Verdacht auf innere Blutungen."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Blutabsaugung: Nach Hautschnitt und Eröffnung des Bauches wird vorhandenes Blut abgesaugt.",
+          "Leichte Blutungen: Auf die verletzte Stelle wird vorsichtig Druck mit sterilen Tüchern ausgeübt, anschließend Fibrinkleber aufgetragen, um die Blutung zu stoppen.",
+          "Schwere Blutungen: Verletzte Arterien oder Venen werden chirurgisch verschlossen."
+        ]
+      },
+      {
+        "h": "Wichtige Werte",
+        "mode": "bullet",
+        "items": [
+          "GOT (AST): Normalwert ca. < 35 U/l → Erhöht bei Leberverletzungen",
+          "GPT (ALT): Normalwert ca. < 45 U/l → Marker für Leberzellschäden",
+          "Bilirubin gesamt: Normalwert ca. 0,3 – 1,2 mg/dl → Erhöht bei gestörter Leberfunktion oder Gallenabbau"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Ultraschallgerät, Fibrinkleber, sterile Tücher, Absauggerät und Blutabnahmeset aus dem OP-Set",
+      "/me untersucht den Bauchraum per Ultraschall auf freie Flüssigkeit",
+      "/me legt einen venösen Zugang und bereitet Blutabnahme für Leberwerte vor",
+      "/me öffnet vorsichtig den Bauchraum und saugt Blut ab",
+      "/me trägt Fibrinkleber auf die verletzte Stelle auf",
+      "/me kontrolliert abschließend die Vitalwerte und dokumentiert die Leberwerte",
+      "Notiz: Eine schnelle Versorgung ist entscheidend, um Schock, Organversagen oder lebensbedrohlichen Blutverlust zu verhindern."
+    ]
+  },
+  {
+    "id": "Herzinfarkt",
+    "cat": "o",
+    "title": "Herzinfarkt",
+    "desc": "Ein Herzinfarkt entsteht, wenn ein Herzmuskelbereich nicht mehr ausreichend mit Sauerstoff versorgt wird, weil ein Blutgefäß verengt oder verschlossen ist. Dies kann zu bleibenden Schäden am Herzmuskel führen, wenn nicht schnell gehandelt wird. Die Behandlung zielt darauf ab, das verschlossene Gefäß zu öffnen und die Durchblutung wiederherzustellen.",
+    "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Katheter zur Einführung in die Arterie",
+          "Röntgengerät zur Lokalisierung des verengten Gefäßes",
+          "Kontrastmittel zur Darstellung der Blutgefäße",
+          "Miniaturballon + Stent für die Gefäßstütze"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Patient erhält Medikament zur Gefäßerweiterung (z. B. Lisinopril-2,5)",
+          "Einleitung der Narkose, um schmerzfreie Durchführung zu ermöglichen",
+          "Katheter über die Armarterie bis zum verengten Herzgefäß einführen",
+          "Kontrastmittel spritzen und Position durch Röntgen überprüfen",
+          "Miniaturballon aufblähen und Stent platzieren, um die Arterie offen zu halten",
+          "Katheter entfernen, Wunde versorgen mit Tupfern/Pflaster",
+          "Narkose beenden, Patient überwachen auf Stabilität und Herzfunktion"
+        ]
+      },
+      {
+        "h": "Wichtige Werte und Geräte",
+        "mode": "bullet",
+        "items": [
+          "Röntgen + Kontrastmittel: exakte Positionierung des Stents",
+          "Überwachung der Vitalwerte während Narkose: Puls, Blutdruck, Atmung, Sauerstoffsättigung",
+          "Stent und Ballon: Öffnen des Gefäßes und Sicherstellung der Durchblutung"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Katheter, Ballon, Stent, Kontrastmittel, Röntgengerät und Gefäßmedikation aus dem Herzkatheterlabor",
+      "/me gibt dem Patienten die Tablette Lisinopril-2,5",
+      "/me legt den Patienten für die Narkose bereit",
+      "/me führt den Katheter vorsichtig über die Armarterie ein",
+      "/me spritzt Kontrastmittel und überprüft die Position am Röntgengerät",
+      "/me platziert den Stent und bläst den Miniaturballon auf",
+      "/me entfernt den Katheter und versorgt die Wunde",
+      "/me überwacht die Vitalwerte, während der Patient aus der Narkose erwacht"
     ]
   },
   {
@@ -1160,97 +1384,98 @@
     ]
   },
   {
-    "id": "Korrosion - Pocket Dimension (SCP-106)",
+    "typ": "unterkategorie",
+    "id": "o4",
     "cat": "o",
-    "title": "Korrosion - Pocket Dimension (SCP-106)",
-    "desc": "Der Korrosionseffekt von SCP-106 verursacht eine rapide Gewebebeschädigung, die einer nekrotisierenden Hautinfektion ähnelt. Er betrifft vor allem lebendes Gewebe und führt bei schweren Komplikationen. Typische Symptome sind starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbungen (von blass zu rötlich bis bräunlich/schwarz) sowie Schwellungen. Unbehandelt kann der Zustand schnell zu einer Sepsis führen.",
-    "sections": [
-      {
-        "h": "Geräte",
-        "mode": "bullet",
-        "items": [
-          "Steriles OP-Besteck (Skalpell, Klemmen, Pinzetten)",
-          "Infusionssystem mit Kochsalzlösung",
-          "Material für Hauttransplantationen (Vollhautlappen)",
-          "Kunststoffimplantate für größere Defekte",
-          "Vitalwertmonitor (EKG, Blutdruck, Puls)"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Vorbereitung des Patienten und sterile Abdeckung des betroffenen Bereichs",
-          "Intravenöse Gabe von Kochsalzlösung zur Stabilisierung des Kreislaufs",
-          "Präzises Einschneiden der betroffenen Bereiche, um das Ausmaß der Nekrose festzustellen",
-          "Entfernen des abgestorbenen Gewebes, um gesundes Gewebe zu erhalten",
-          "Entscheidung, ob eine Amputation notwendig ist",
-          "Transplantation von Vollhaut an besonders wichtigen Stellen (z. B. Gesicht, Hände, Gelenke)",
-          "Einsetzen von Kunststoffimplantaten an den verbleibenden Bereichen",
-          "Auftragen von heilungsfördernder Salbe und Anlegen steriler Verbände",
-          "Gabe von Antibiotika zur Infektionsprophylaxe (nur RP)",
-          "Überwachung der Vitalwerte und Kontrolle der Wundheilung"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Kochsalzlösung, Vollhaut, Kunststoffimplantate, Heilsalbe und Verbandmaterial aus dem OP-Set",
-      "/me prüft die betroffene Stelle auf Ausmaß der Korrosion",
-      "/me macht präzise Einschnitte, um totes Gewebe zu entfernen",
-      "/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut",
-      "/me setzt Kunststoffimplantate an den betroffenen Stellen ein",
-      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte und Kontrolle der Wundheilung"
-    ]
+    "title": "Notfallchirurgie & Infektionen"
   },
   {
-    "id": "Amputation",
+    "id": "Blutvergiftung (Sepsis)",
     "cat": "o",
-    "title": "Amputation",
-    "desc": "Eine Amputation ist die chirurgische Entfernung eines Körperteils, notwendig bei schweren Verletzungen, Infektionen oder Durchblutungsstörungen. Ziel ist es, Lebensgefahr abzuwenden und eine gesunde Wundheilung zu ermöglichen.",
+    "title": "Blutvergiftung (Sepsis)",
+    "desc": "Eine Blutvergiftung (Sepsis) ist eine lebensbedrohliche Reaktion des Körpers auf eine Infektion. Dabei gelangen Bakterien oder deren Giftstoffe ins Blut und führen zu einer schweren Entzündungsreaktion. Mögliche Ursachen sind infizierte Wunden, Lungenentzündungen, Harnwegsinfekte oder Bauchinfektionen. Typische Symptome sind Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck und Verwirrtheit.",
     "sections": [
       {
         "h": "Geräte",
         "mode": "bullet",
         "items": [
-          "Narkoseausrüstung für sichere Sedierung",
-          "Tourniquet zur Blutstillung",
-          "Chirurgische Instrumente (Skalpell, Kauterpinzette)",
-          "Splint oder Fixationsmaterial zur Stabilität",
-          "Nahtmaterial und sterile Verbände"
+          "Intravenöser Zugang (z. B. Shaldon-Katheter) zur Medikamentengabe und Dialyse",
+          "Infusionssysteme für Kochsalzlösung und Heparin",
+          "Blutkulturen und Laboranalysen zur Identifikation der Infektionsquelle",
+          "Dialysegerät zur Blutreinigung, EKG, Blutdruck- und Sauerstoffmonitor",
+          "OP-Besteck zur Entfernung infizierten Gewebes"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Einleitung der Narkose und ggf. Plexusblockade zur Schmerzreduktion",
-          "Anlegen eines Tourniquets oberhalb des amputierenden Bereichs",
-          "Zylindrisches Ausschneiden der Haut für Zugang zum Gelenk oder Knochen",
-          "Trennung des Gelenks und Abtrennung der Knochen, Kürzen und Abstumpfen",
-          "Fixierung des Knochens mit einem Splint",
-          "Veröden von Blutgefäßen mit Kauterpinzette",
-          "Verschluss der Haut über dem Knochen durch sorgfältiges Vernähen",
-          "Aufwachen aus der Narkose und Überwachung der Vitalwerte"
+          "Legen eines venösen Zugangs für Infusionen und Medikamente",
+          "Gabe von Kochsalzlösung zur Stabilisierung des Kreislaufs",
+          "Verabreichung von Breitbandantibiotika zur Bekämpfung der Infektion",
+          "Einleitung einer Dialyse zur Entfernung giftiger Substanzen und überschüssiger Flüssigkeit",
+          "Operative Entfernung der Infektionsquelle, falls möglich",
+          "Bei starkem Blutverlust: Durchführung einer Bluttransfusion"
         ]
       },
       {
         "h": "Wichtige Werte und Geräte",
         "mode": "bullet",
         "items": [
-          "Tourniquet: verhindert Blutverlust während der Operation",
-          "Kauterpinzette: kontrolliert Blutungen durch gezieltes Veröden von Gefäßen",
-          "Splint: stabilisiert den Stumpf für Heilung und spätere Prothesenversorgung",
-          "Narkose: ermöglicht schmerzfreien Eingriff"
+          "Vitalwertmonitor: Überwacht Herzfrequenz, Blutdruck und Sauerstoffversorgung",
+          "Dialysegerät: Entfernt Giftstoffe und unterstützt die Nierenfunktion",
+          "Antibiotikagabe: Stoppt das Wachstum der Bakterien"
         ]
       }
     ],
     "me": [
-      "/me nimmt Tourniquet, Skalpell, Kauterpinzette, Splint, Nahtmaterial und sterile Verbände aus dem OP-Set",
-      "/me leitet die Narkose ein und legt den Tourniquet an",
-      "/me schneidet die Haut zylindrisch aus und trennt Knochen und Gewebe",
-      "/me fixiert den Knochen mit einem Splint und verödet Gefäße",
-      "/me vernäht die Haut und legt sterile Verbände an",
-      "/me überwacht den Patienten beim Erwachen aus der Narkose"
+      "/me nimmt Shaldon-Katheter, Infusionssysteme, Kochsalzlösung, Breitbandantibiotika und Blutkulturen aus dem Intensivraum",
+      "/me legt einen venösen Zugang für Infusionen und Medikamente",
+      "/me verabreicht Kochsalzlösung und Antibiotika",
+      "/me platziert einen Shaldon-Katheter und startet die Dialyse",
+      "/me entfernt operativ die Infektionsquelle, falls erforderlich",
+      "/me überwacht die Vitalwerte und passt die Therapie an"
+    ]
+  },
+  {
+    "id": "Behandlung von Verätzungen",
+    "cat": "o",
+    "title": "Behandlung von Verätzungen",
+    "desc": "Eine Verätzung entsteht durch direkten Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen. Ursachen können Laborunfälle, industrielle Chemikalien oder Vorfälle bei gefährlichen SCPs sein. Symptome sind starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden und ggf. systemische Reaktionen bei großflächigen Verletzungen.",
+    "sections": [
+      {
+        "h": "Geräte",
+        "mode": "bullet",
+        "items": [
+          "Steriles Spülset (NaCl oder Wasser) zur Sofortreinigung",
+          "Sterile Wundverbände und Brandwundenauflagen",
+          "Pinzetten und Skalpell zum Entfernen abgestorbenen Gewebes",
+          "Schmerzmedikation und Antibiotikatherapie",
+          "Vitalwertmonitor zur Überwachung von Puls, Blutdruck und Sauerstoff",
+          "Gegebenenfalls Transplantationsbesteck bei schweren Verätzungen"
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Sofortiges Spülen der betroffenen Haut mit viel Wasser oder NaCl, mindestens 15–20 Minuten",
+          "Vorsichtiges Entfernen kontaminierter Kleidung und Rückstände",
+          "Bei leichten Verätzungen (1. Grad): Reinigung, Kühlung, Auftragen schmerzlindernder Salbe",
+          "Bei mittleren Verätzungen (2. Grad): Entfernen abgestorbenen Gewebes, sterile Abdeckung, Gabe von Schmerzmitteln und Antibiotika",
+          "Bei schweren Verätzungen (3. und 4. Grad): Chirurgische Entfernung von Nekrosen, ggf. Hauttransplantation, engmaschige Überwachung",
+          "Fixierung der Verbände und regelmäßige Kontrolle des Heilungsverlaufs",
+          "Antibiotikatherapie: Verhindert Infektionen bei offenen Wunden"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt steriles Spülset mit NaCl, Wundverbände, Brandwundenauflagen, Pinzette und Schmerzmittel aus dem Verbandskasten",
+      "/me spült die betroffene Hautpartie gründlich mit sterilem Wasser",
+      "/me entfernt kontaminierte Kleidung und Rückstände vorsichtig",
+      "/me trägt Salbe oder Gel auf und deckt die Wunde steril ab",
+      "/me entfernt abgestorbenes Gewebe bei tieferen Verätzungen",
+      "/me legt neue sterile Verbände an und überwacht die Vitalwerte"
     ]
   },
   {
@@ -1303,96 +1528,6 @@
       "/me führt Katheter über die Leistenarterie ein",
       "/me navigiert den Stent-Retriever mithilfe von Kontrastmittel und Röntgenbildern",
       "/me entfernt das Blutgerinnsel und überprüft die Durchblutung"
-    ]
-  },
-  {
-    "id": "Lebertrauma",
-    "cat": "o",
-    "title": "Lebertrauma",
-    "desc": "Ein Lebertrauma ist eine Verletzung der Leber, die durch stumpfe Gewalt (z. B. Unfall, Sturz, Schlag) oder penetrierende Gewalt (z. B. Messerstich, Schusswunde) verursacht wird. Da die Leber sehr stark durchblutet ist, können selbst kleine Risse lebensgefährliche innere Blutungen auslösen.",
-    "sections": [
-      {
-        "h": "Erkennung",
-        "mode": "text",
-        "items": [
-          "Die Diagnose erfolgt meist durch Ultraschall oder CT, besonders bei sichtbaren Bauchverletzungen, großflächigen Blutergüssen oder Verdacht auf innere Blutungen."
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Blutabsaugung: Nach Hautschnitt und Eröffnung des Bauches wird vorhandenes Blut abgesaugt.",
-          "Leichte Blutungen: Auf die verletzte Stelle wird vorsichtig Druck mit sterilen Tüchern ausgeübt, anschließend Fibrinkleber aufgetragen, um die Blutung zu stoppen.",
-          "Schwere Blutungen: Verletzte Arterien oder Venen werden chirurgisch verschlossen."
-        ]
-      },
-      {
-        "h": "Wichtige Werte",
-        "mode": "bullet",
-        "items": [
-          "GOT (AST): Normalwert ca. < 35 U/l → Erhöht bei Leberverletzungen",
-          "GPT (ALT): Normalwert ca. < 45 U/l → Marker für Leberzellschäden",
-          "Bilirubin gesamt: Normalwert ca. 0,3 – 1,2 mg/dl → Erhöht bei gestörter Leberfunktion oder Gallenabbau"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Ultraschallgerät, Fibrinkleber, sterile Tücher, Absauggerät und Blutabnahmeset aus dem OP-Set",
-      "/me untersucht den Bauchraum per Ultraschall auf freie Flüssigkeit",
-      "/me legt einen venösen Zugang und bereitet Blutabnahme für Leberwerte vor",
-      "/me öffnet vorsichtig den Bauchraum und saugt Blut ab",
-      "/me trägt Fibrinkleber auf die verletzte Stelle auf",
-      "/me kontrolliert abschließend die Vitalwerte und dokumentiert die Leberwerte",
-      "Notiz: Eine schnelle Versorgung ist entscheidend, um Schock, Organversagen oder lebensbedrohlichen Blutverlust zu verhindern."
-    ]
-  },
-  {
-    "id": "Hüftersatz",
-    "cat": "o",
-    "title": "Hüftersatz",
-    "desc": "Ein Hüftersatz ist ein chirurgischer Eingriff, bei dem ein beschädigtes oder schmerzhaftes Hüftgelenk durch eine künstliche Hüfte ersetzt wird. Ziel ist es, Schmerzen zu lindern, Beweglichkeit wiederherzustellen und die Lebensqualität zu verbessern.",
-    "sections": [
-      {
-        "h": "Geräte",
-        "mode": "bullet",
-        "items": [
-          "Röntgen oder CT für präoperative Planung",
-          "Chirurgisches Instrumentarium für Osteotomie und Protheseenfixierung"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Einleitung der Narkose und Abstimmung des Schmerzmanagements",
-          "Reinigung der Operationsstelle",
-          "Zurückklappen von Haut und Weichgewebe, um die Hüfte freizulegen",
-          "Osteotomie: Entfernen des beschädigten Gelenks und Schneiden der Knochen für die Prothese",
-          "Einsetzen des Prothesenkopfes in den Oberschenkelknochen",
-          "Fixierung des Prothesenkörpers im Beckenkamm mit Schrauben oder Befestigungsmitteln",
-          "Vernähen von Haut und Weichgewebe",
-          "Postoperative Überwachung zur Kontrolle von Vitalwerten und Schmerzmanagement"
-        ]
-      },
-      {
-        "h": "Wichtige Werte und Geräte",
-        "mode": "bullet",
-        "items": [
-          "Röntgen/CT: genaue Planung der Prothesenposition",
-          "Narkose: schmerzfreie Durchführung des Eingriffs",
-          "Chirurgische Instrumente: präzises Entfernen und Fixieren der Prothese",
-          "Tupfer und Nahtmaterial: saubere Wundversorgung, Infektionsprävention"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Prothese, chirurgisches Instrumentarium, Tupfer und Nahtmaterial aus dem OP-Set",
-      "/me bereitet die Operationsstelle vor und desinfiziert sie",
-      "/me legt Haut und Weichgewebe zurück",
-      "/me entfernt das beschädigte Gelenk und schneidet die Knochen zu",
-      "/me setzt die Prothese ein und fixiert sie",
-      "/me vernäht die Haut und kontrolliert die Wundheilung"
     ]
   },
   {
@@ -1498,134 +1633,59 @@
     ]
   },
   {
-    "id": "Blutvergiftung (Sepsis)",
+    "typ": "unterkategorie",
+    "id": "o5",
     "cat": "o",
-    "title": "Blutvergiftung (Sepsis)",
-    "desc": "Eine Blutvergiftung (Sepsis) ist eine lebensbedrohliche Reaktion des Körpers auf eine Infektion. Dabei gelangen Bakterien oder deren Giftstoffe ins Blut und führen zu einer schweren Entzündungsreaktion. Mögliche Ursachen sind infizierte Wunden, Lungenentzündungen, Harnwegsinfekte oder Bauchinfektionen. Typische Symptome sind Fieber, Schüttelfrost, beschleunigter Puls, niedriger Blutdruck und Verwirrtheit.",
+    "title": "SCP-Spezialoperationen"
+  },
+  {
+    "id": "Korrosion - Pocket Dimension (SCP-106)",
+    "cat": "o",
+    "title": "Korrosion - Pocket Dimension (SCP-106)",
+    "desc": "Der Korrosionseffekt von SCP-106 verursacht eine rapide Gewebebeschädigung, die einer nekrotisierenden Hautinfektion ähnelt. Er betrifft vor allem lebendes Gewebe und führt bei schweren Komplikationen. Typische Symptome sind starke Schmerzen, hohes Fieber, schneller Puls, Hautverfärbungen (von blass zu rötlich bis bräunlich/schwarz) sowie Schwellungen. Unbehandelt kann der Zustand schnell zu einer Sepsis führen.",
     "sections": [
       {
         "h": "Geräte",
         "mode": "bullet",
         "items": [
-          "Intravenöser Zugang (z. B. Shaldon-Katheter) zur Medikamentengabe und Dialyse",
-          "Infusionssysteme für Kochsalzlösung und Heparin",
-          "Blutkulturen und Laboranalysen zur Identifikation der Infektionsquelle",
-          "Dialysegerät zur Blutreinigung, EKG, Blutdruck- und Sauerstoffmonitor",
-          "OP-Besteck zur Entfernung infizierten Gewebes"
+          "Steriles OP-Besteck (Skalpell, Klemmen, Pinzetten)",
+          "Infusionssystem mit Kochsalzlösung",
+          "Material für Hauttransplantationen (Vollhautlappen)",
+          "Kunststoffimplantate für größere Defekte",
+          "Vitalwertmonitor (EKG, Blutdruck, Puls)"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Legen eines venösen Zugangs für Infusionen und Medikamente",
-          "Gabe von Kochsalzlösung zur Stabilisierung des Kreislaufs",
-          "Verabreichung von Breitbandantibiotika zur Bekämpfung der Infektion",
-          "Einleitung einer Dialyse zur Entfernung giftiger Substanzen und überschüssiger Flüssigkeit",
-          "Operative Entfernung der Infektionsquelle, falls möglich",
-          "Bei starkem Blutverlust: Durchführung einer Bluttransfusion"
-        ]
-      },
-      {
-        "h": "Wichtige Werte und Geräte",
-        "mode": "bullet",
-        "items": [
-          "Vitalwertmonitor: Überwacht Herzfrequenz, Blutdruck und Sauerstoffversorgung",
-          "Dialysegerät: Entfernt Giftstoffe und unterstützt die Nierenfunktion",
-          "Antibiotikagabe: Stoppt das Wachstum der Bakterien"
+          "Vorbereitung des Patienten und sterile Abdeckung des betroffenen Bereichs",
+          "Intravenöse Gabe von Kochsalzlösung zur Stabilisierung des Kreislaufs",
+          "Präzises Einschneiden der betroffenen Bereiche, um das Ausmaß der Nekrose festzustellen",
+          "Entfernen des abgestorbenen Gewebes, um gesundes Gewebe zu erhalten",
+          "Entscheidung, ob eine Amputation notwendig ist",
+          "Transplantation von Vollhaut an besonders wichtigen Stellen (z. B. Gesicht, Hände, Gelenke)",
+          "Einsetzen von Kunststoffimplantaten an den verbleibenden Bereichen",
+          "Auftragen von heilungsfördernder Salbe und Anlegen steriler Verbände",
+          "Gabe von Antibiotika zur Infektionsprophylaxe (nur RP)",
+          "Überwachung der Vitalwerte und Kontrolle der Wundheilung"
         ]
       }
     ],
     "me": [
-      "/me nimmt Shaldon-Katheter, Infusionssysteme, Kochsalzlösung, Breitbandantibiotika und Blutkulturen aus dem Intensivraum",
-      "/me legt einen venösen Zugang für Infusionen und Medikamente",
-      "/me verabreicht Kochsalzlösung und Antibiotika",
-      "/me platziert einen Shaldon-Katheter und startet die Dialyse",
-      "/me entfernt operativ die Infektionsquelle, falls erforderlich",
-      "/me überwacht die Vitalwerte und passt die Therapie an"
+      "/me nimmt Kochsalzlösung, Vollhaut, Kunststoffimplantate, Heilsalbe und Verbandmaterial aus dem OP-Set",
+      "/me prüft die betroffene Stelle auf Ausmaß der Korrosion",
+      "/me macht präzise Einschnitte, um totes Gewebe zu entfernen",
+      "/me entfernt abgestorbenes Gewebe und transplantiert gesunde Haut",
+      "/me setzt Kunststoffimplantate an den betroffenen Stellen ein",
+      "/me trägt Salbe auf, legt sterile Verbände an und überwacht die Vitalwerte und Kontrolle der Wundheilung"
     ]
   },
   {
-    "id": "Unterschenkelprothese",
+    "typ": "unterkategorie",
+    "id": "o6",
     "cat": "o",
-    "title": "Unterschenkelprothese",
-    "desc": "Eine Unterschenkelprothese ersetzt nach Amputation das entfernte Bein, ermöglicht Mobilität und Druckverteilung auf den Stumpf.",
-    "sections": [
-      {
-        "h": "Geräte",
-        "mode": "bullet",
-        "items": [
-          "Silikonhaftschaft als Verbindung zwischen Stumpf und Prothese",
-          "Protheseenschaft und Schraubverbindungen",
-          "Gelanwendung zur Druckverteilung"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Auftragen des Silikongels auf den Stumpf und den Haftschaft",
-          "Anlegen des Silikonhaftschafts am Stumpf",
-          "Befestigung der Prothese am Schaft über den Haftschaft",
-          "Kontrolle auf Druckstellen und korrekte Sitzposition"
-        ]
-      },
-      {
-        "h": "Wichtige Werte und Geräte",
-        "mode": "bullet",
-        "items": [
-          "Silikonhaftschaft: verteilt den Druck gleichmäßig, schützt vor Reibung",
-          "Protheseenschaft: stellt sichere Verbindung für Gehfähigkeit her"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Silikonhaftschaft, Prothesenschaft, Gel und Schraubverbindungen aus dem Prothesenlager",
-      "/me trägt Gel auf den Stumpf auf und setzt den Silikonhaftschaft",
-      "/me befestigt die Prothese am Schaft und prüft den Sitz",
-      "/me kontrolliert die Druckverteilung und Beweglichkeit des Patienten"
-    ]
-  },
-  {
-    "id": "Behandlung von Verätzungen",
-    "cat": "o",
-    "title": "Behandlung von Verätzungen",
-    "desc": "Eine Verätzung entsteht durch direkten Kontakt der Haut mit ätzenden Chemikalien wie Säuren oder Laugen. Ursachen können Laborunfälle, industrielle Chemikalien oder Vorfälle bei gefährlichen SCPs sein. Symptome sind starke Schmerzen, Rötung, Blasenbildung, Gewebeschäden und ggf. systemische Reaktionen bei großflächigen Verletzungen.",
-    "sections": [
-      {
-        "h": "Geräte",
-        "mode": "bullet",
-        "items": [
-          "Steriles Spülset (NaCl oder Wasser) zur Sofortreinigung",
-          "Sterile Wundverbände und Brandwundenauflagen",
-          "Pinzetten und Skalpell zum Entfernen abgestorbenen Gewebes",
-          "Schmerzmedikation und Antibiotikatherapie",
-          "Vitalwertmonitor zur Überwachung von Puls, Blutdruck und Sauerstoff",
-          "Gegebenenfalls Transplantationsbesteck bei schweren Verätzungen"
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Sofortiges Spülen der betroffenen Haut mit viel Wasser oder NaCl, mindestens 15–20 Minuten",
-          "Vorsichtiges Entfernen kontaminierter Kleidung und Rückstände",
-          "Bei leichten Verätzungen (1. Grad): Reinigung, Kühlung, Auftragen schmerzlindernder Salbe",
-          "Bei mittleren Verätzungen (2. Grad): Entfernen abgestorbenen Gewebes, sterile Abdeckung, Gabe von Schmerzmitteln und Antibiotika",
-          "Bei schweren Verätzungen (3. und 4. Grad): Chirurgische Entfernung von Nekrosen, ggf. Hauttransplantation, engmaschige Überwachung",
-          "Fixierung der Verbände und regelmäßige Kontrolle des Heilungsverlaufs",
-          "Antibiotikatherapie: Verhindert Infektionen bei offenen Wunden"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt steriles Spülset mit NaCl, Wundverbände, Brandwundenauflagen, Pinzette und Schmerzmittel aus dem Verbandskasten",
-      "/me spült die betroffene Hautpartie gründlich mit sterilem Wasser",
-      "/me entfernt kontaminierte Kleidung und Rückstände vorsichtig",
-      "/me trägt Salbe oder Gel auf und deckt die Wunde steril ab",
-      "/me entfernt abgestorbenes Gewebe bei tieferen Verätzungen",
-      "/me legt neue sterile Verbände an und überwacht die Vitalwerte"
-    ]
+    "title": "Weitere Operationen"
   },
   {
     "id": "Verbrennung 3./4. Grades",
@@ -1710,6 +1770,106 @@
       "/me wertet die Laborwerte aus und dokumentiert sie",
       "Notiz: Richtwerte gelten für Erwachsene und können je nach Labor abweichen"
     ]
+  },
+  {
+    "typ": "unterkategorie",
+    "id": "m1",
+    "cat": "m",
+    "title": "Schmerzmittel & Anästhesie"
+  },
+  {
+    "id": "Fentanyl",
+    "cat": "m",
+    "title": "Fentanyl",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **0,14–0,35 mg**",
+          "Tageshöchstdosis: **keine Angabe**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Opioid, ca. 100-fach stärker als Morphin; Schmerzmittel und Narkose, i.v. Nebenwirkungen: Kopfschmerzen, Übelkeit, Verwirrtheit."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Fentanyl und die nötigen Hilfsmittel aus dem Medikamentenschrank",
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Fentanyl nach ärztlicher Anordnung vor",
+      "/me verabreicht Fentanyl nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "id": "Propofol",
+    "cat": "m",
+    "title": "Propofol",
+    "sections": [
+      {
+        "h": "Dosis",
+        "items": [
+          "Einzeldosis: **4–12 mg pro kg KG und Stunde (Erwachsene: 560 mg pro Stunde)**",
+          "Tageshöchstdosis: **keine Angabe**"
+        ]
+      },
+      {
+        "h": "Wirkung",
+        "items": [
+          "Beruhigungs- und Narkosemittel, i.v. Nebenwirkungen: Schmerz an der Einstichstelle, Blutdruckabfall, Muskelzucken."
+        ]
+      },
+      {
+        "h": "Ablauf",
+        "mode": "number",
+        "items": [
+          "Indikation und Vorerkrankungen des Patienten prüfen",
+          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
+          "Medikament nach Anordnung vorbereiten und verabreichen",
+          "Wirkung und Nebenwirkungen beobachten"
+        ]
+      }
+    ],
+    "me": [
+      "/me nimmt Propofol und die nötigen Hilfsmittel aus dem Medikamentenschrank",
+      "/me prüft Indikation und Vorerkrankungen des Patienten",
+      "/me bereitet Propofol nach ärztlicher Anordnung vor",
+      "/me verabreicht Propofol nach ärztlicher Anordnung",
+      "/me überwacht Wirkung und Verträglichkeit",
+      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
+    ]
+  },
+  {
+    "typ": "unterkategorie",
+    "id": "m2",
+    "cat": "m",
+    "title": "Notfallmedikamente & Infusionen"
+  },
+  {
+    "typ": "unterkategorie",
+    "id": "m3",
+    "cat": "m",
+    "title": "Antibiotika & Infektionsschutz"
+  },
+  {
+    "typ": "unterkategorie",
+    "id": "m4",
+    "cat": "m",
+    "title": "Weitere Medikamente"
   },
   {
     "id": "Paracetamol",
@@ -1897,82 +2057,6 @@
       "/me prüft Indikation und Vorerkrankungen des Patienten",
       "/me bereitet Morphin nach ärztlicher Anordnung vor",
       "/me verabreicht Morphin nach ärztlicher Anordnung",
-      "/me überwacht Wirkung und Verträglichkeit",
-      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
-    ]
-  },
-  {
-    "id": "Fentanyl",
-    "cat": "m",
-    "title": "Fentanyl",
-    "sections": [
-      {
-        "h": "Dosis",
-        "items": [
-          "Einzeldosis: **0,14–0,35 mg**",
-          "Tageshöchstdosis: **keine Angabe**"
-        ]
-      },
-      {
-        "h": "Wirkung",
-        "items": [
-          "Opioid, ca. 100-fach stärker als Morphin; Schmerzmittel und Narkose, i.v. Nebenwirkungen: Kopfschmerzen, Übelkeit, Verwirrtheit."
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Indikation und Vorerkrankungen des Patienten prüfen",
-          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
-          "Medikament nach Anordnung vorbereiten und verabreichen",
-          "Wirkung und Nebenwirkungen beobachten"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Fentanyl und die nötigen Hilfsmittel aus dem Medikamentenschrank",
-      "/me prüft Indikation und Vorerkrankungen des Patienten",
-      "/me bereitet Fentanyl nach ärztlicher Anordnung vor",
-      "/me verabreicht Fentanyl nach ärztlicher Anordnung",
-      "/me überwacht Wirkung und Verträglichkeit",
-      "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
-    ]
-  },
-  {
-    "id": "Propofol",
-    "cat": "m",
-    "title": "Propofol",
-    "sections": [
-      {
-        "h": "Dosis",
-        "items": [
-          "Einzeldosis: **4–12 mg pro kg KG und Stunde (Erwachsene: 560 mg pro Stunde)**",
-          "Tageshöchstdosis: **keine Angabe**"
-        ]
-      },
-      {
-        "h": "Wirkung",
-        "items": [
-          "Beruhigungs- und Narkosemittel, i.v. Nebenwirkungen: Schmerz an der Einstichstelle, Blutdruckabfall, Muskelzucken."
-        ]
-      },
-      {
-        "h": "Ablauf",
-        "mode": "number",
-        "items": [
-          "Indikation und Vorerkrankungen des Patienten prüfen",
-          "Ärztliche Anordnung und Dosis abgleichen (siehe Abschnitt Dosis)",
-          "Medikament nach Anordnung vorbereiten und verabreichen",
-          "Wirkung und Nebenwirkungen beobachten"
-        ]
-      }
-    ],
-    "me": [
-      "/me nimmt Propofol und die nötigen Hilfsmittel aus dem Medikamentenschrank",
-      "/me prüft Indikation und Vorerkrankungen des Patienten",
-      "/me bereitet Propofol nach ärztlicher Anordnung vor",
-      "/me verabreicht Propofol nach ärztlicher Anordnung",
       "/me überwacht Wirkung und Verträglichkeit",
       "Notiz: Dosierung siehe Abschnitt Dosis, Anwendung nur nach ärztlicher Anordnung"
     ]

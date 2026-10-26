@@ -4,7 +4,7 @@ Diese Anleitung ist für eine KI oder eine Person gedacht, die Akten für das Me
 
 ## 1. Was die Datei ist
 
-- `akten.json` enthält **alle Akten** des Medic-Handbuchs als **ein JSON-Array**, also eine Liste in eckigen Klammern `[ … ]`.
+- `akten.json` enthält **alle Akten** des Medic-Handbuchs als **ein JSON-Array**, also eine Liste in eckigen Klammern `[ … ]`. Darin stehen auch die Unterkategorien von Behandlungen, Operationen und Medikamenten, als eigene Einträge in derselben Liste (Abschnitt 3a).
 - Die Seite `index.html` lädt diese Datei beim Start. Sie prüft jede Akte und überspringt fehlerhafte Einträge. Die übrigen Akten werden trotzdem angezeigt.
 - Die Seite **schreibt nie in `akten.json`**. Änderungen, die Nutzer im Browser machen, werden im Browser gespeichert (siehe Abschnitt 10).
 
@@ -36,7 +36,7 @@ Diese Anleitung ist für eine KI oder eine Person gedacht, die Akten für das Me
 
 Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf nicht verwendet werden.
 
-**Unterkategorien.** Für `"b"`, `"o"` und `"m"` können Nutzer im Browser Unterkategorien anlegen. Die Unterkategorien stehen nicht in `akten.json`. Die Datei enthält nur die Akten selbst, ohne Angaben zu Unterkategorien.
+**Unterkategorien.** Für `"b"`, `"o"` und `"m"` gibt es Unterkategorien. Sie stehen als eigene Einträge in `akten.json`, direkt vor den Akten, die zu ihnen gehören (Abschnitt 3a).
 
 **Abschnitte (`sections`).** Jeder Abschnitt ist ein Objekt mit diesen Feldern:
 
@@ -47,6 +47,33 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
   - `"number"`: Zahlenfolge 1., 2., 3.
   - `"text"`: Fließtext. Jede Zeile wird als eigener Absatz angezeigt.
   - Standard: `"number"` bei der Überschrift „Ablauf“, sonst `"bullet"`. Andere Werte werden ignoriert.
+
+## 3a. Unterkategorien (Behandlungen, Operationen, Medikamente)
+
+Unterkategorien gliedern die Akten der Kategorien `"b"`, `"o"` und `"m"` in der Seitenleiste. Sie stehen als eigene Einträge in derselben Liste, direkt vor den Akten, die zu ihnen gehören. Ein solcher Eintrag ist **keine Akte**. Für ihn gilt die Regel „Kennung und Titel sind identisch“ nicht.
+
+| Feld | Pflicht | Inhalt |
+|---|---|---|
+| `typ` | ja | Genau `"unterkategorie"`. So erkennt die Seite, dass es keine Akte ist. |
+| `id` | ja | Eindeutige Kennung, z. B. `"b1"`. Sie wird nie geändert, sonst gehen Nutzeränderungen an dieser Unterkategorie verloren. |
+| `cat` | ja | `"b"`, `"o"` oder `"m"`. |
+| `title` | ja | Name in der Seitenleiste, z. B. `"Wunden & Trauma"`. Höchstens 60 Zeichen, innerhalb der Kategorie eindeutig. |
+
+Regeln:
+
+- Eine Unterkategorie gilt für alle folgenden Akten derselben Kategorie, bis die nächste Unterkategorie oder eine Akte einer anderen Kategorie kommt.
+- Die Reihenfolge in der Datei ist die Reihenfolge in der Seitenleiste.
+- Eine Unterkategorie ohne Akten ist erlaubt, etwa wenn Akten noch fehlen. Sie erscheint nur im Bearbeitungsmodus.
+- Akten, vor denen in ihrer Kategorie keine Unterkategorie steht, erscheinen ohne Unterkategorie ganz oben.
+
+Beispiel (Unterkategorie mit einer Akte):
+
+```json
+[
+  {"typ": "unterkategorie", "id": "b1", "cat": "b", "title": "Leichte / Allgemeine Verletzungen"},
+  {"id": "Beispielwunde", "title": "Beispielwunde", "cat": "b", "sections": [{"h": "Erkennung", "items": ["Offene Wunde mit klaffenden Wundrändern"]}], "me": ["/me nimmt Verbandmaterial aus dem Verbandskasten"]}
+]
+```
 
 ## 4. Die untere Box (`me`): Handlungen und Notizen
 
@@ -79,6 +106,8 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 | Kategorie `"n"` (alte Kennung der Narkose) | wird als `"t"` übernommen |
 | `id` oder `title` fehlt oder ist leer | Akte wird übersprungen |
 | `id` oder `title` kommt doppelt vor | die zweite Akte wird übersprungen |
+| Unterkategorie (`typ` `"unterkategorie"`) mit anderer Kategorie als `b`, `o`, `m`, ohne `id` oder ohne `title` | die Unterkategorie wird übersprungen, die folgenden Akten stehen ohne Unterkategorie |
+| Unterkategorie mit doppelter `id` oder doppeltem `title` in derselben Kategorie | die zweite Unterkategorie wird übersprungen, die folgenden Akten stehen ohne Unterkategorie |
 | Zeile in `items` oder `me` ist kein Text, z. B. eine Zahl oder ein Objekt | Akte wird übersprungen |
 | Abschnitt ohne `h` oder ohne `items` | Akte wird übersprungen |
 | `table` mit falschem Format, z. B. Zeilen, die keine Listen sind | Akte wird übersprungen |
@@ -180,6 +209,7 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 
 - [ ] Die Ausgabe ist ein einziges JSON-Array. Es beginnt mit `[` und endet mit `]`.
 - [ ] Jede Akte hat `id`, `title` (identisch) und `cat` (`t`, `v`, `b`, `o` oder `m`).
+- [ ] Jede Unterkategorie hat `typ` (`"unterkategorie"`), `id`, `cat` (`b`, `o` oder `m`) und `title`. Sie steht vor ihren Akten. Kennungen und Titel der Unterkategorien sind innerhalb ihrer Kategorie eindeutig.
 - [ ] `sections` ist eine Liste. Jeder Abschnitt hat `h` (Text) und `items` (Liste von Texten).
 - [ ] `me` ist eine Liste von Texten. Handlungen beginnen mit `/me `, Notizen mit `Notiz: `.
 - [ ] Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile (`/me nimmt …`).
@@ -198,4 +228,5 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 2. Beide Dateien auf GitHub Pages hochladen (Commit und Push). Danach die Seite neu laden.
 3. Lokal nicht per Doppelklick öffnen, denn dann lädt der Browser `akten.json` nicht. Entweder den Ordner mit `python3 -m http.server` starten und `http://localhost:8000` öffnen, oder auf der Seite die Datei über das angebotene Auswahlfeld laden.
 4. Die Seite schreibt nicht in `akten.json`. Nutzeränderungen werden im Browser gespeichert und haben Vorrang vor der Datei. Eine Akte, die jemand selbst bearbeitet hat, zeigt seine Fassung. Mit „Original wiederherstellen“ (Schaltfläche beim Überfahren der Überschrift) kehrt er zur Fassung aus `akten.json` zurück. Neue Zeilen wie die Material-Zeile erscheinen bei einer Akte, die schon im Browser bearbeitet wurde, erst nach „Original wiederherstellen“.
-5. Unterkategorien für Behandlungen, Operationen und Medikamente legen die Nutzer im Bearbeitungsmodus selbst an, in der Seitenleiste oder beim Erstellen einer Akte. Sie können sie umbenennen, verschieben und löschen. Eine gelöschte Unterkategorie lässt ihre Akten bestehen, die Akten stehen danach ohne Unterkategorie. Diese Angaben gehören zu den Browser-Änderungen und stehen nicht in `akten.json`. Beim Exportieren der Änderungen werden sie mitgespeichert.
+5. Unterkategorien: Reihenfolge und Zuordnung kommen aus `akten.json` (Abschnitt 3a). Im Bearbeitungsmodus können Nutzer Unterkategorien umbenennen, verschieben und löschen, neue anlegen und Akten in eine andere Unterkategorie legen. Das bleibt im Browser und wird beim Exportieren mitgespeichert. Eine umbenannte Unterkategorie behält ihren Namen, auch wenn sich der Titel in der Datei ändert. Eine gelöschte Unterkategorie kommt nach dem Neuladen nicht zurück, ihre Akten stehen danach ohne Unterkategorie. „Ohne Unterkategorie“ bleibt auch dann, wenn die Datei eine andere Unterkategorie nennt.
+6. Einmalige Umstellung: Ein Browserstand von vor dieser Umstellung übernimmt beim ersten Öffnen einmal die Reihenfolge und die Unterkategorien aus `akten.json`. Dabei werden eigene Verschiebungen von Akten zurückgesetzt. Eigene Akten und eigene Unterkategorien bleiben erhalten.
