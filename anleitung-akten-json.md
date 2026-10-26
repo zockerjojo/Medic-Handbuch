@@ -41,7 +41,7 @@ Felder, die nicht in dieser Tabelle stehen, werden ignoriert. Das Feld `k` darf 
 
 **Abschnitte (`sections`).** Jeder Abschnitt ist ein Objekt mit diesen Feldern:
 
-- `h`: die Überschrift. Pflicht, nicht leer, z. B. `"Erkennung"`, `"Ablauf"` oder für Sonderfälle `"Geräte"`. Einen Abschnitt „Behandlung“ gibt es nicht mehr.
+- `h`: die Überschrift. Pflicht, nicht leer, z. B. `"Erkennung"`, `"Ablauf"` oder für Sonderfälle `"Geräte"`. Einen Abschnitt „Behandlung“ gibt es nicht mehr. Beim Import verlieren Akten-Dateien diesen Abschnitt. Ausnahme ist die Originalakte „Streifschuss, Stichwunde, Bisswunde“: Ihre Originaldatei enthält den Abschnitt, daher bleibt er dort erhalten.
 - `items`: die Zeilen des Abschnitts. Pflicht. Eine Liste von Texten, jede Zeile ist ein Eintrag, keine leeren Zeilen.
 - `mode` (optional): die Darstellung.
   - `"bullet"`: Stichpunkte
@@ -78,11 +78,12 @@ Beispiel (Unterkategorie mit einer Akte):
 
 ## 4. Die untere Box (`me`): Handlungen und Notizen
 
-- **Material-Zeile:** Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile. Sie beginnt mit `/me nimmt` und nennt die Gegenstände, die die Behandlung braucht, z. B. `/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten`. Übersichtsakten ohne eigene Behandlung haben nur diese Zeile. Die Box `me` heißt standardmäßig „Durchführung“. Mit dem Feld `meTitle` in `akten.json` (Feldtabelle oben) gilt ein anderer Titel als Standard. Im Browser lässt sich der Titel mit dem Stift ändern; ein leerer Titel stellt den Titel aus der Datei wieder her, sonst „Durchführung“ (Abschnitt 10).
+- **Material-Zeile:** Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile. Ausgenommen sind die Narkose-Akte „Narkose richtig einleiten“ und die Originalakten „Streifschuss, Stichwunde, Bisswunde“ und „Steckschuss“, deren Originaldateien keine Material-Zeile haben. Sie beginnt mit `/me nimmt` und nennt die Gegenstände, die die Behandlung braucht, z. B. `/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten`. Übersichtsakten ohne eigene Behandlung haben nur diese Zeile. Die Box `me` heißt standardmäßig „Durchführung“. Mit dem Feld `meTitle` in `akten.json` (Feldtabelle oben) gilt ein anderer Titel als Standard. Im Browser lässt sich der Titel mit dem Stift ändern; ein leerer Titel stellt den Titel aus der Datei wieder her, sonst „Durchführung“ (Abschnitt 10).
 - **Zeile mit `/me`** ist eine Handlung, die man im Rollenspiel per Klick kopieren kann. Sie beginnt mit `/me ` (Schrägstrich, `me`, Leerzeichen). Danach folgt die Handlung im Präsens in der dritten Person, z. B. `/me desinfiziert die Wunde und die umliegende Haut`.
 - **Zeile ohne `/me`** ist eine Notiz und nicht kopierbar. Notizen beginnen mit `Notiz: `, z. B. `Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen`.
 - **Eine Notiz darf das Wort `/me` nirgends enthalten.** Sonst würde sie als kopierbare Zeile behandelt.
 - **Trennlinie** ist eine Zeile, die genau aus `---` besteht. Sie wird als waagerechte Linie angezeigt, ist keine Textstelle und lässt sich nicht kopieren. Sie zählt weder zu den /me-Zeilen noch zur Material-Zeile. Trennlinien gliedern die Handlungen in Phasen, z. B. vor und nach einem Eingriff. Wer im Browser `---` als Text in eine Zeile schreibt, erhält ebenfalls eine Trennlinie.
+- **Standard-EKG-Überwachung:** Die zusätzliche Box „Überwachung des EKGs“ in der Akte „Narkose richtig einleiten“ ist die Quelle des EKG-Symbols neben jedem Akten-Titel (Abschnitt 10). Ihr Titel muss genau so lauten. Sonst zeigt das Symbol nur einen Hinweis.
 
 ## 5. Stil für Erkennung, Ablauf und Durchführung
 
@@ -214,12 +215,12 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 - [ ] Jede Unterkategorie hat `typ` (`"unterkategorie"`), `id`, `cat` (`b`, `o` oder `m`) und `title`. Sie steht vor ihren Akten. Kennungen und Titel der Unterkategorien sind innerhalb ihrer Kategorie eindeutig.
 - [ ] `sections` ist eine Liste. Jeder Abschnitt hat `h` (Text) und `items` (Liste von Texten).
 - [ ] `me` ist eine Liste von Texten. Handlungen beginnen mit `/me `, Notizen mit `Notiz: `.
-- [ ] Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile (`/me nimmt …`).
+- [ ] Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile (`/me nimmt …`), außer bei den Ausnahmen aus Abschnitt 4.
 - [ ] Keine Notiz enthält das Wort `/me`.
 - [ ] Eine Trennlinie ist genau `---` in einer eigenen Zeile. Sie zählt nicht zu den /me-Zeilen.
 - [ ] `table` hat `h` (Liste von Texten) und `r` (Liste von Zeilen, jede Zeile ist eine Liste von Texten).
 - [ ] Es gibt keine doppelten Kennungen und keine doppelten Titel.
-- [ ] Es gibt keinen Abschnitt „Behandlung“. Standardabschnitte sind Erkennung und Ablauf, dazu die Durchführung (`me`).
+- [ ] Es gibt keinen Abschnitt „Behandlung“ (Ausnahme: die Originalakte „Streifschuss, Stichwunde, Bisswunde“, siehe Abschnitt 3). Standardabschnitte sind Erkennung und Ablauf, dazu die Durchführung (`me`).
 - [ ] Keine Dosierungen, Mengen oder erfundenen Angaben.
 - [ ] Keine HTML-Tags. Verweise nur als `[[Titel]]` auf vorhandene Akten.
 - [ ] Keine Kommentare, keine nachgestellten Kommas, nur gerade Anführungszeichen.
@@ -236,3 +237,6 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 7. Titel und Trennlinien im Browser: Im Bearbeitungsmodus lässt sich der Titel jeder /me-Box mit dem Stift ändern, auch der Titel der Hauptbox. Mit „+ Trennlinie“ wird eine Trennlinie ans Ende einer Box gesetzt, ▲ und ▼ verschieben sie, ✕ entfernt sie. Die zusätzlichen /me-Boxen einer Akte lassen sich in ihrer Kopfzeile ebenfalls mit ▲ und ▼ in der Reihenfolge verschieben. Diese Änderungen werden im Browser gespeichert, beim Exportieren mitgegeben und mit „Original wiederherstellen“ zurückgesetzt.
 8. Zeilenumbrüche in Abschnitten: Im Bearbeitungsmodus lässt sich eine Zeile eines Abschnitts mit Shift + Enter über mehrere Zeilen schreiben. Enter beendet die Bearbeitung. Der Zeilenumbruch wird im Browser gespeichert, nicht in `akten.json`. Titel, Überschriften und die Zeilen der /me-Box bleiben einzeilig.
 9. /me-Boxen ein- und ausklappen: Jede /me-Box, auch die Hauptbox, hat in ihrer Kopfzeile einen Pfeil (▾ offen, ▸ zugeklappt). Er funktioniert auch im Zuschauermodus und ändert nichts an der Akte. Die Grundeinstellung „/me-Boxen beim Öffnen“ in den Einstellungen (Standard: ausgeklappt) gilt, sobald eine Akte geöffnet wird, und bleibt im Browser gespeichert. Ändert man sie, gilt sie für alle Boxen. Einzelne Boxen lassen sich danach mit dem Pfeil umschalten. Diese Umschaltung gilt nur für die laufende Ansicht und wird weder gespeichert noch exportiert. Eine neu angelegte Box ist immer offen.
+10. EKG-Symbol: Neben dem Titel jeder Akte steht ein EKG-Symbol. Ein Klick öffnet die Standard-EKG-Überwachung mit Puls, Blutdruck und Sauerstoffsättigung samt ihren /me-Zeilen. Die Zeilen stammen aus der Box „Überwachung des EKGs“ der Akte „Narkose richtig einleiten“ und lassen sich im Fenster wie in den Akten durch Klick kopieren. Das Fenster schließt mit ✕, mit Escape oder mit einem Klick daneben. Das Symbol funktioniert auch im Zuschauermodus und ändert nichts an der Akte. Ist die Box umbenannt oder entfernt, zeigt das Fenster einen Hinweis. Zeilen mit „→ Normalwert:“ erscheinen im Fenster als gelbe Überschriften und lassen sich nicht kopieren. Im dunklen Design ist die Farbe #D9A748, im hellen Design ein dunkleres Gelb, damit die Schrift lesbar bleibt.
+11. Kennzeichnung der Akten: Neben dem Titel jeder Akte steht eine kleine Marke. „Original“ heißt: unverändert aus `akten.json`. „bearbeitet“ heißt: eine mitgelieferte Akte mit Änderungen im Browser. „selbst erstellt“ kennzeichnet eigene Akten. Die Marke dient nur der Anzeige. Auch im Papierkorb trägt jede Akte ihre Marke.
+12. Alle mitgelieferten Akten zurücksetzen: In den Einstellungen gibt es die Schaltfläche „Alle mitgelieferten Akten auf Original zurücksetzen“. Sie ist nur im Bearbeitungsmodus aktiv und fragt vorher nach. Zurückgesetzt werden Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien und der Papierkorb der mitgelieferten Akten. Eigene Akten, eigene Unterkategorien und Favoriten bleiben erhalten, und eigene Akten behalten ihren Platz in der Liste. Mit Strg+Z lässt sich das Zurücksetzen rückgängig machen.

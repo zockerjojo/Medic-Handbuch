@@ -354,27 +354,25 @@
         ]
       },
       {
-        "h": "Ablauf",
+        "h": "Behandlung",
         "mode": "number",
         "items": [
-          "Blutung mit Druckverband stillen",
-          "Wunde gründlich reinigen und desinfizieren",
-          "Infizierte Wunde unter lokaler Betäubung chirurgisch reinigen, ggf. Eiter entfernen",
-          "Fremdkörper und abgestorbenes Gewebe entfernen",
-          "Wunde vernähen oder Drainage legen",
-          "Antibiotikum geben, Impfstatus prüfen und impfen"
+          "Betäubt die Wunde mit Lidocain",
+          "Desinfiziere und Säubere die Wunde",
+          "Entferne abgestobenes Gewebe aus der Wunde",
+          "Leg ein Drainage",
+          "Vernähe die Wunde und Gib Antbiotikum"
         ]
       }
     ],
     "me": [
-      "/me nimmt Druckverband, Desinfektionsmittel, Lokalanästhetikum, Nahtmaterial, Drainage und Antibiotika aus dem Notfallkoffer",
-      "/me stillt die Blutung mit einem Druckverband",
-      "/me reinigt die Wunde gründlich und desinfiziert sie",
-      "/me injiziert ein Lokalanästhetikum vor der chirurgischen Reinigung",
-      "/me entfernt Fremdkörper und abgestorbenes Gewebe",
-      "/me vernäht die Wunde oder legt eine Drainage",
-      "/me verabreicht Antibiotika und prüft den Impfstatus",
-      "Notiz: Impfstatus vor der Entlassung dokumentieren"
+      "/me betäubt die Wunde mit der Lokalanästhetika (Lidocain)",
+      "Warte drauf bis die Btäubung wirkt",
+      "/me desinfiziert und säubert die Wunde",
+      "/me entfernt abgestorbenes Gewebe aus der Wunde",
+      "/me legt eine Drainage in die Wunde",
+      "/me vernäht die Wunde",
+      "/me verabreicht Antibiotikum um eine Infektion zu verhindern"
     ]
   },
   {
@@ -396,23 +394,24 @@
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Druckverband anlegen und die Blutung stillen",
-          "Lokale Betäubung mit Lidocain",
-          "Wunde mit einer Knopfkanüle ausspülen und die Kugel mit steriler Pinzette entfernen",
-          "Blut absaugen und erneut desinfizieren",
-          "Wundverschluss mit Klammern, Nähten oder Klebestreifen",
-          "Schmerzmittel und Antibiotikum geben"
+          "Wunde und umliegende Haut desinfizieren",
+          "Mit Lidocain lokal betäuben und Einwirkzeit abwarten",
+          "Projektil vorsichtig mit einer Pinzette entfernen",
+          "Wunde mit Knopfkanüle ausspülen und überschüssiges Blut absaugen",
+          "Wunde erneut desinfizieren und vernähen"
         ]
       }
     ],
     "me": [
-      "/me nimmt Druckverband, Lidocain, Knopfkanüle, sterile Pinzette, Klammern und Nahtmaterial aus dem Notfallkoffer",
-      "/me legt einen sterilen Druckverband an, um die Blutung zu stillen",
-      "/me betäubt die Wunde mit Lidocain",
-      "/me spült die Wunde mit einer Knopfkanüle aus",
-      "/me entfernt die Kugel mit einer sterilen Pinzette",
-      "/me führt den Wundverschluss mit Klammern, Nähten oder Klebestreifen durch",
-      "Notiz: Auf Blutungen und Anzeichen einer Infektion überwachen"
+      "/me desinfiziert die Wunde und die Haut drumherum",
+      "/me zieht Lidocain in eine Spritze",
+      "/me Spritzt das Lidocain in die WUnde für eine Lokalanästhetika",
+      "Warten bis die Betäubung wirkt",
+      "/me Spühlt die wunde mit einer Knopfkanüle aus",
+      "/me holt die Kugel mit einer Pinzette aus der Wunde",
+      "/me saugt überschüssiges Blut ab",
+      "/me desinfiziert die Wunde",
+      "/me vernäht die Wunde"
     ]
   },
   {

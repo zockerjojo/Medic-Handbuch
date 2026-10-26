@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCP-RP Medic Handbuch</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iI2QzMmYyZiIgZD0iTTIyIDRoMjB2MThoMTh2MjBINDJ2MThIMjJWNDJINFYyMmgxOHoiLz48L3N2Zz4="><link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAlElEQVR4nOzawQmAMBTG4AiuI+4/hjiQ3vVqwZJ8I4S+y09X5FbkCoDcsADnvl98aDuOhQF6AcgVALkCIFcA5AqAXAGQKwByBUBOH+C1sny95PzNc1nqBJArAHIFQK4AyBUAuQIgVwDkCoBcAZBrE2SQfolNogDIFQC5AiBXAOQKgFwBkCsAcgVAbtgiNItOADl9gBsAAP//W2rMdAAAAAZJREFUAwBMqAz4rxi1EQAAAABJRU5ErkJggg==">
 <style>
-:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;color-scheme:dark}
-:root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);color-scheme:light}
+:root{--bg:#121a24;--p:#1a2431;--l:#2b3a4c;--t:#e7edf3;--m:#93a3b5;--a:#f2b84b;--me:#0d141c;--r:#e06c5b;--card-a:#1b2736;--card-b:#151e2b;--cardb:#34475c;--ok:#9fd3a4;--on-a:#241a05;--shadow:rgba(0,0,0,.28);--bg-rgb:18,26,36;--gelb:#D9A748;color-scheme:dark}
+:root[data-theme="light"]{--bg-rgb:243,239,230;--bg:#f3efe6;--p:#ffffff;--l:#dcd4c3;--t:#1c2431;--m:#5d6878;--a:#a86f0d;--me:#f6f2ea;--r:#b8382a;--card-a:#ffffff;--card-b:#faf7f0;--cardb:#d6ccb8;--ok:#237a45;--on-a:#ffffff;--shadow:rgba(60,45,20,.14);--gelb:#9a6b00;color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;display:flex;height:100vh;background:var(--bg);color:var(--t);font:16px/1.55 system-ui,"Segoe UI",sans-serif}
 nav{width:250px;flex:none;display:flex;flex-direction:column;background:var(--p);border-right:1px solid var(--l);padding:20px 12px;overflow:auto}
@@ -45,10 +45,12 @@ button:hover{border-color:var(--a)}
 .ibtn:disabled{opacity:.35;cursor:default}
 .htitle{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}   /* Titel und EKG-Symbol: das Symbol sitzt direkt hinter dem Titel */
 .htitle>.tx{min-width:0}
+@media(max-width:560px){.htitle{flex-wrap:wrap;row-gap:4px}.htitle>.tx{flex:0 1 auto;overflow-wrap:break-word;hyphens:auto}}   /* auf dem Handy rutschen Symbol und Kennzeichnung bei Platzmangel in eine neue Zeile, lange Titel werden silbenweise umbrochen */
 .ekg{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--l);border-radius:50%;background:none;color:var(--m);font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .ekg svg{width:15px;height:15px}
 .ekg:hover,.ekg:focus-visible{color:var(--a);border-color:var(--a)}
 .me.ekgbody{margin-top:0}
+.ekgh{margin:16px 0 6px;font-size:17px;line-height:1.35;color:var(--gelb)}   /* Normalwerte im EKG-Fenster: gelbe Überschriften, nicht kopierbar */
 @media(max-width:560px){.lbl{display:none}}
 #l{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:26px;align-items:start;padding-bottom:20px}
 @media(max-width:700px){#l{grid-template-columns:minmax(0,1fr)}}
@@ -127,7 +129,9 @@ mark{background:rgba(242,184,75,.38);color:inherit;border-radius:3px;padding:0 .
 #wm{position:fixed;right:12px;bottom:8px;font-size:12px;color:var(--m);opacity:.6;pointer-events:none;user-select:none;z-index:1;letter-spacing:.02em}
 .brand{display:flex;align-items:center;gap:8px}
 .cross{width:20px;height:20px;flex:none}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--a);opacity:.8;flex:none;align-self:center}
+.stand{flex:none;align-self:center;padding:4px 8px;border:1px solid var(--l);border-radius:999px;color:var(--m);font:600 12px/1 system-ui,"Segoe UI",sans-serif;white-space:nowrap}   /* kleine Kennzeichnung neben dem Titel: Original, bearbeitet oder selbst erstellt */
+.stand.bearb{color:var(--a);border-color:var(--a)}
+.stand.eigen{color:var(--ok);border-color:var(--ok)}
 .mtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 2px}
 .mtop .tx,.bhead .tx{color:var(--a);font-weight:700;font-size:15px}
 body:not(.edit) .only-edit{display:none!important}
@@ -557,6 +561,20 @@ function subAct(name, d){   // Unterkategorien: anlegen, umbenennen, verschieben
 const trash = id => { S.del[id] = 1; save(); };
 const restore = id => { delete S.del[id]; save(); };
 const reset = id => { delete S.ov[id]; clearBoxes(id); save(); };
+// Alle mitgelieferten Akten zurück in den Originalzustand (die Rückfrage steht in act „resetall“). Eigene Akten, eigene Unterkategorien und Favoriten bleiben.
+// Eigene Akten behalten ihren Platz in der Liste, die mitgelieferten Akten füllen die übrigen Plätze in der Reihenfolge der Datei.
+function resetStandard(){
+  const mine = new Set(S.made.map(m => m.id)), datei = SEED.map(r => r.id);
+  let k = 0;
+  S.order = orderFix(S.order.map(id => (mine.has(id) ? id : datei[k++])));
+  Object.keys(S.ov).forEach(id => { if (!mine.has(id)) delete S.ov[id]; });
+  Object.keys(S.del).forEach(id => { if (!mine.has(id)) delete S.del[id]; });
+  Object.keys(S.subOf).forEach(id => { if (!mine.has(id)) delete S.subOf[id]; });
+  S.subs = DATA_GROUPS.map(g => ({id: g.id, cat: g.cat, t: g.t, src: 'd'})).concat(S.subs.filter(s => s.src !== 'd' && !own(DATA_GROUP, s.id)));
+  S.subDel = [];
+  secOv.clear(); boxOv.clear();
+  save();
+}
 const fav = id => { S.fav = S.fav.includes(id) ? S.fav.filter(x => x !== id) : S.fav.concat(id); save(); };
 function purge(id){
   if (!S.made.some(r => r.id === id)) return;   // mitgelieferte Akten nur wiederherstellbar
@@ -730,6 +748,12 @@ const secOpen = (id, k) => secOv.has(id + '|' + k) ? secOv.get(id + '|' + k) : S
 const boxOpen = (id, k) => boxOv.has(id + '|' + k) ? boxOv.get(id + '|' + k) : SET.me === 'open';
 function toggleBox(id, k){ boxOv.set(id + '|' + k, !boxOpen(id, k)); }
 function clearBoxes(id){ [...boxOv.keys()].forEach(x => { if (x.startsWith(id + '|')) boxOv.delete(x); }); }
+// Kennzeichnung neben dem Titel: selbst erstellt, bearbeitet (mitgelieferte Akte mit Änderungen) oder Original (unverändert)
+function standOf(r){
+  if (S.made.some(m => m.id === r.id)) return '<span class="stand eigen" title="Von dir selbst erstellt">selbst erstellt</span>';
+  if (!own(BASE, r.id)) return '';
+  return S.ov[r.id] ? '<span class="stand bearb" title="Mitgelieferte Akte, von dir bearbeitet">bearbeitet</span>' : '<span class="stand" title="Mitgelieferte Akte, unverändert">Original</span>';
+}
 function card(r){
   const id = esc(r.id), ro = !!RO[r.cat], starred = S.fav.includes(r.id), shut = folded.has(r.id);
   const can = EDIT && !ro;   // Bearbeiten erlaubt: Bearbeitungsmodus an und bearbeitbare Akte
@@ -742,10 +766,9 @@ function card(r){
   const ord = (s, i) => b('move', '▲', 'Nach oben', `data-s="${s}" data-i="${i}" data-d="-1"`) + b('move', '▼', 'Nach unten', `data-s="${s}" data-i="${i}" data-d="1"`) + b('remove', '✕', 'Entfernen', `data-s="${s}" data-i="${i}"`);
   const arrow = `<span class="arw" data-act="fold" data-id="${id}" title="Ein- und ausklappen" aria-label="Ein- und ausklappen">${shut ? '▸' : '▾'}</span>`;
   const barw = (k, open) => `<span class="sarw" data-act="boxopen" data-id="${id}" data-bk="${esc(k)}" title="Auf- und zuklappen" aria-label="Auf- und zuklappen">${open ? '▾' : '▸'}</span>`;   // Pfeil einer /me-Box, wie bei den Abschnitten
-  const edited = !!BASE[r.id] && !!S.ov[r.id];   // Standard-Akte, die du geändert hast
-  const dot = edited ? '<span class="dot" title="Von dir angepasst" aria-label="Von dir angepasst"></span>' : '';
+  const stand = standOf(r);   // Kennzeichnung: Original, bearbeitet oder selbst erstellt
   const ekgBtn = `<button class="ekg" data-act="ekg" title="EKG-Überwachung" aria-label="EKG-Überwachung">${EKG_ICON}</button>`;   // direkt hinter dem Titel, öffnet die Standard-EKG-Überwachung
-  const head = `<h2>${arrow}${dot}<span class="row" data-hold><span class="htitle">${tx('title', r.title, hlEsc(r.title))}${ekgBtn}</span>${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
+  const head = `<h2>${arrow}<span class="row" data-hold><span class="htitle">${tx('title', r.title, hlEsc(r.title))}${ekgBtn}${stand}</span>${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
   // Werkzeuge der ganzen Akte: fest unter dem Kopf, nur im Bearbeitungsmodus
   const ctools = can ? `<div class="ctools">${b('recmove', '▲ Nach oben', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼ Nach unten', 'Akte nach unten', 'data-d="1"')}${SUBCATS.includes(r.cat) ? subSelHTML(r, id) : ''}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}${b('trash', 'In den Papierkorb', 'In den Papierkorb legen')}</div>` : '';
   // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar; die Akten ganz oben haben keine Kategorie
@@ -783,7 +806,7 @@ function trashCard(r){
   const id = esc(r.id), mine = S.made.some(x => x.id === r.id);
   const acts = !EDIT ? '<span class="c">Zum Wiederherstellen in den Bearbeitungsmodus wechseln.</span>'
     : `<button data-act="restore" data-id="${id}">Wiederherstellen</button> ${mine ? `<button class="danger" data-act="purge" data-id="${id}">Endgültig löschen</button>` : '<span class="c">Mitgelieferte Akten lassen sich nur wiederherstellen.</span>'}`;
-  return `<article class="card gone" data-rec="${id}"><h2>${esc(r.title)}</h2><p>${acts}</p></article>`;
+  return `<article class="card gone" data-rec="${id}"><h2>${esc(r.title)} ${standOf(r)}</h2><p>${acts}</p></article>`;
 }
 function renderNav(){
   const L = live(), item = (v, label, n) => `<div class="cr${view === v ? ' on' : ''}" data-act="view" data-v="${v}"><span>${label}</span><i>${n}</i></div>`;
@@ -810,13 +833,17 @@ function segRow(label, hint, k, opts){
 function colsRow(){   // Schieberegler für die Spalten (1 bis 4), mit der gewählten Zahl daneben
   return `<div class="srow"><p class="slabel">Spalten pro Reihe</p><div class="srange"><span class="rnum">1</span><input type="range" id="colsrange" data-set="cols" min="1" max="4" step="1" value="${SET.cols}" list="colticks" aria-label="Spalten pro Reihe"><span class="rnum">4</span><output id="colsout" for="colsrange">Spalten: ${SET.cols}</output></div><datalist id="colticks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option></datalist><p class="shint">Wie viele Akten-Karten nebeneinander stehen (1 bis 4). Auf dem Handy ist immer eine Spalte.</p></div>`;
 }
+// Zurücksetzen aller mitgelieferten Akten: nur im Bearbeitungsmodus, mit Rückfrage (act „resetall“)
+function resetRow(){
+  return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall"${EDIT ? '' : ' disabled'}>Alle mitgelieferten Akten auf Original zurücksetzen</button><p class="shint">Setzt Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien und Papierkorb aller mitgelieferten Akten auf den Stand aus der Datei zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben unverändert. Vorher kommt eine Rückfrage.${EDIT ? '' : ' Zum Zurücksetzen in den Bearbeitungsmodus wechseln.'}</p></div>`;
+}
 function renderSettings(){
   $('#mbody').innerHTML =
     segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
     colsRow() +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
-    segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]);
+    segRow('Kompakte Karten', 'Weniger Abstand innerhalb der Akten-Karten.', 'compact', [['on', 'An'], ['off', 'Aus']]) + resetRow();
 }
 function secFormHTML(sf, id){
   const err = k => (sf.errors && sf.errors[k]) ? `<p class="err">${esc(sf.errors[k])}</p>` : '';
@@ -968,6 +995,7 @@ function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar 
   const lines = ekgLines() || [];
   const rows = lines.map(m => m === DIVIDER
     ? '<div class="ml tl"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>'
+    : m.includes('→ Normalwert:') ? `<h4 class="ekgh">${hlEsc(m)}</h4>` /* Normalwerte: gelbe Überschrift, nicht kopierbar */
     : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${hlEsc(m)}</span></div>`).join('');
   $('#mtitle').textContent = 'EKG-Überwachung';
   $('#mbody').innerHTML = lines.length
@@ -993,7 +1021,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel', 'resetall']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -1033,6 +1061,7 @@ function act(name, b){
   else if (name === 'restore') restore(id);
   else if (name === 'purge') { if (confirm('Akte endgültig löschen? Das lässt sich nicht rückgängig machen.')) purge(id); }
   else if (name === 'reset') { if (confirm('Eigene Änderungen an dieser Akte verwerfen?')) reset(id); }
+  else if (name === 'resetall') { if (confirm('Alle mitgelieferten Akten auf den Originalzustand zurücksetzen?\n\nDeine Änderungen an diesen Akten gehen verloren (Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien). Mitgelieferte Akten im Papierkorb kommen zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben erhalten. Mit Strg+Z lässt sich das rückgängig machen.')) { resetStandard(); closeModal(); toast('Mitgelieferte Akten sind wieder im Originalzustand'); } }
   else if (name === 'newform') formState = formState ? null : {cat: (C[view] && !RO[view]) ? view : 'b', title: '', desc: '', text: [], sub: '', newSub: ''};
   else if (name === 'closeform') formState = null;
   else if (name === 'secform') sectionForm = (sectionForm && sectionForm.id === id) ? null : {id, name: '', text: '', mode: 'bullet', errors: null};
@@ -1409,8 +1438,8 @@ function runTests(){
   T('Unter der /me-Box steht kein Hinweistext, kopierbare Zeilen bleiben', () => { reset0(); const c = card(get(id())); ok(!c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis steht noch da'); ok(c.includes('class="ml cp"'), 'keine kopierbare Zeile'); });
   T('Papierkorb hat ein Symbol und eine Trennlinie davor', () => { render(); const h = $('#n').innerHTML, s = h.lastIndexOf('class="sep"'); ok(h.includes('class="ic"'), 'Symbol fehlt'); ok(s > h.indexOf('Medikamente') && s < h.indexOf('Papierkorb'), 'Trennlinie an falscher Stelle'); });
   T('KI-Hinweis steht unten rechts und blockiert keine Klicks', () => { const w = $('#wm'); ok(w && w.textContent.includes('Mit KI erstellt'), 'Hinweis fehlt'); ok(getComputedStyle(w).pointerEvents === 'none', 'Hinweis fängt Klicks ab'); });
-  // Ausnahme: die Narkose-Akte aus der Vorlage hat keine Material-Zeile
-  T('Jede bearbeitbare Akte beginnt mit einer Material-Zeile', () => { const ohne = SEED.filter(r => !RO[r.cat] && r.title !== 'Narkose richtig einleiten' && !/^\/me nimmt /.test((r.me || [])[0] || '')).map(r => r.title); ok(!ohne.length, 'ohne Material-Zeile: ' + ohne.join(', ')); });
+  // Ausnahmen: die Narkose-Akte und die beiden Akten aus den Originaldateien haben keine Material-Zeile
+  T('Jede bearbeitbare Akte beginnt mit einer Material-Zeile', () => { const ohne = SEED.filter(r => !RO[r.cat] && !['Narkose richtig einleiten', 'Streifschuss, Stichwunde, Bisswunde', 'Steckschuss'].includes(r.title) && !/^\/me nimmt /.test((r.me || [])[0] || '')).map(r => r.title); ok(!ohne.length, 'ohne Material-Zeile: ' + ohne.join(', ')); });
   T('Suchtreffer werden markiert', () => { reset0(); const r = E(); const w = (r.sections[0].items[0].split(' ')[0] || '').replace(/[^\p{L}]/gu, ''); query = w; const c = card(get(r.id)); query = ''; ok(w && c.includes('<mark>'), 'keine Markierung für ' + w); });
   T('Treffer im Text bleiben als HTML sicher', () => { query = 'b'; const out = hlEsc('<i>b</i>'); query = ''; ok(out === '&lt;i&gt;<mark>b</mark>&lt;/i&gt;', out); });
   T('Zusätzliche /me-Box anlegen, befüllen, entfernen', () => { reset0(); const i = id(), path = addBox(i); ok(get(i).boxes.length === 1 && path === 'x:0:0', 'nicht angelegt'); setText(i, path, '/me Test-Box'); ok(get(i).boxes[0].me[0] === '/me Test-Box', 'Zeile nicht gespeichert'); const c = card(get(i)); ok(c.includes('Zusätzliche Box') && c.includes('data-s="x0"'), 'nicht angezeigt'); removeBox(i, 0); ok(get(i).boxes.length === 0, 'nicht entfernt'); });
@@ -1419,7 +1448,55 @@ function runTests(){
   T('Boxen mit falschem Format werden erkannt', () => ok(parseData([{id: 'bx', cat: 'b', title: 'BX', boxes: 'kaputt'}]).problems.length === 1, 'kaputte Box nicht erkannt'));
   T('Titel in der Seitenleiste ohne Bindestrich, mit rotem Kreuz', () => { const h = $('#n').innerHTML; ok(h.includes('Medic Handbuch') && !h.includes('Medic-Handbuch'), 'Titel falsch'); ok(h.includes('<svg'), 'Kreuz fehlt'); });
   T('Browser-Titel ohne Textsymbol, Symbol im Reiter', () => { ok(document.title === 'SCP-RP Medic Handbuch', document.title); ok(!document.title.includes('✚'), 'Textsymbol im Titel'); ok(!!document.querySelector('link[rel="icon"]'), 'Symbol im Reiter fehlt'); });
-  T('Angepasste Akten bekommen einen dezenten Punkt, Originale nicht', () => { reset0(); const i = id(); ok(!card(get(i)).includes('class="dot"'), 'Punkt ohne Änderung'); setText(i, 'i:0:0', 'Punkt-Test'); ok(card(get(i)).includes('class="dot"'), 'kein Punkt nach Änderung'); reset(i); ok(!card(get(i)).includes('class="dot"'), 'Punkt nach dem Zurücksetzen'); });
+  T('Jede Akte zeigt, woher sie kommt: Original, bearbeitet oder selbst erstellt', () => {
+    reset0(); const i = id(), marke = h => ((h.match(/<span class="stand[^"]*"[^>]*>([^<]+)<\/span>/) || [])[1] || '');
+    ok(marke(card(get(i))) === 'Original', 'Original fehlt: ' + marke(card(get(i))));
+    setText(i, 'i:0:0', 'Marken-Test'); ok(marke(card(get(i))) === 'bearbeitet', 'bearbeitet fehlt');
+    reset(i); ok(marke(card(get(i))) === 'Original', 'Original nach dem Zurücksetzen fehlt');
+    const neu = create({cat: 'b', title: 'Marken-Test ' + Date.now(), sections: [{h: 'Erkennung', text: 'x'}]}).id;
+    ok(marke(card(get(neu))) === 'selbst erstellt', 'selbst erstellt fehlt');
+    ok(marke(trashCard(get(neu))) === 'selbst erstellt', 'im Papierkorb fehlt die Kennzeichnung');
+  });
+  T('Zurücksetzen aller mitgelieferten Akten lässt eigene Akten, Favoriten und Unterkategorien stehen', () => {
+    reset0(); const i = id(), j = all().find(r => own(BASE, r.id) && r.id !== i && !RO[r.cat]).id;
+    setText(i, 'i:0:0', 'Eigene Änderung'); trash(j); S.fav = [i]; save();
+    const sub = subAdd('b', 'Reset-Gruppe').id, m = create({cat: 'b', title: 'Reset-Akte ' + Date.now(), sections: [{h: 'Erkennung', text: 'x'}], sub}).id;
+    const platz = S.order.indexOf(m);
+    resetStandard();
+    ok(!own(S.ov, i) && !own(S.del, j), 'mitgelieferte Akte nicht zurückgesetzt');
+    ok(S.made.some(x => x.id === m) && S.order.indexOf(m) === platz, 'eigene Akte verloren oder verschoben');
+    ok(S.fav.includes(i), 'Favorit verloren');
+    ok(S.subOf[m] === sub && S.subs.some(s => s.id === sub), 'eigene Unterkategorie verloren');
+    ok(DATA_GROUPS.every(g => S.subs.some(s => s.id === g.id)) && S.subDel.length === 0, 'Unterkategorien der Datei nicht wiederhergestellt');
+    ok(S.order.filter(x => x !== m).join('|') === SEED.map(r => r.id).join('|'), 'Reihenfolge der Akten aus der Datei weicht ab');
+    undo(); ok(get(i).sections[0].items[0] === 'Eigene Änderung' && own(S.del, j), 'Rückgängig stellt den Stand nicht wieder her');
+  });
+  T('Zurücksetzen fragt nach, Abbrechen ändert nichts', () => {
+    reset0(); const i = id(), orig = BASE[i].sections[0].items[0], keep = window.confirm; setText(i, 'i:0:0', 'Bleibt?');
+    window.confirm = () => false;
+    try { act('resetall', {dataset: {}}); } finally { window.confirm = keep; }
+    ok(get(i).sections[0].items[0] === 'Bleibt?', 'Abbrechen hat zurückgesetzt');
+    window.confirm = () => true;
+    try { act('resetall', {dataset: {}}); } finally { window.confirm = keep; }
+    ok(get(i).sections[0].items[0] === orig, 'Bestätigen hat nicht zurückgesetzt');
+  });
+  T('Zurücksetzen gibt es nur im Bearbeitungsmodus', () => {
+    reset0(); const i = id(), keep = window.confirm; setText(i, 'i:0:0', 'Zuschauer'); let aus = false;
+    window.confirm = () => true; setMode(false);
+    try { act('resetall', {dataset: {}}); act('settings', {dataset: {}}); aus = $('#mbody').innerHTML.includes('data-act="resetall" disabled'); act('closemodal', {dataset: {}}); }
+    finally { window.confirm = keep; setMode(true); }
+    ok(get(i).sections[0].items[0] === 'Zuschauer', 'im Zuschauermodus zurückgesetzt');
+    ok(aus, 'Schaltfläche im Zuschauermodus nicht gesperrt');
+    act('settings', {dataset: {}}); const an = $('#mbody').innerHTML; act('closemodal', {dataset: {}});
+    ok(an.includes('data-act="resetall"') && !an.includes('data-act="resetall" disabled'), 'im Bearbeitungsmodus gesperrt');
+  });
+  T('Normalwerte im EKG-Fenster sind gelbe Überschriften, nicht kopierbar', () => {
+    act('ekg', {dataset: {}});
+    const hs = [...$('#mbody').querySelectorAll('h4.ekgh')].map(h => h.textContent);
+    ok(hs.length === 3 && ['Puls → Normalwert: 60–80 Schläge/min', 'Blutdruck → Normalwert: 120/80 mmHg', 'Sauerstoffsättigung (SpO2) → Normalwert: 98–100 %'].every(t => hs.includes(t)), 'Überschriften: ' + hs.join(' | '));
+    ok(![...$('#mbody').querySelectorAll('.ml.cp')].some(x => x.textContent.includes('Normalwert')), 'Normalwert ist kopierbar');
+    act('closemodal', {dataset: {}});
+  });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
   T('Ungültige Akten-Dateien werden abgelehnt', () => { ok(akteImport({format: 'medic-handbuch'}).errors, 'falsches Format angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'v', title: 'X', sections: [{h: 'A', items: ['x']}]}}).errors.cat, 'schreibgeschützte Kategorie angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Leer', sections: []}}).errors.sections, 'Akte ohne Abschnitte angenommen'); });
   T('Die Hauptbox heißt Durchführung und lässt sich umbenennen', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel fehlt'); setText(i, 'mt', 'Vor Ort'); ok(get(i).meTitle === 'Vor Ort' && card(get(i)).includes('Vor Ort'), 'nicht umbenannt'); setText(i, 'mt', ''); ok(get(i).meTitle === undefined && card(get(i)).includes('Durchführung'), 'nicht auf den Standard zurückgesetzt'); });
@@ -1471,7 +1548,8 @@ function runTests(){
   T('Gespeicherte Einstellung „Eine Spalte“ wird zu einer Spalte', () => { store.setItem(SETKEY, JSON.stringify({grid: 'one'})); loadSet(); const eine = SET.cols === 1; store.removeItem(SETKEY); ok(eine, 'alte Einstellung nicht übernommen'); });
   T('Schieberegler ändert die Spalten und die Anzeige sofort', () => { renderSettings(); const r = document.querySelector('#mbody input[data-set="cols"]'); r.value = '3'; r.dispatchEvent(new Event('input', {bubbles: true})); const wirkt = SET.cols === 3 && document.getElementById('colsout').textContent === 'Spalten: 3' && document.body.style.getPropertyValue('--cols').trim() === '3'; setOpt('cols', '2'); ok(wirkt, 'Regler wirkt nicht'); ok(SET.cols === 2 && document.getElementById('colsout').textContent === 'Spalten: 2', 'Rückstellung fehlgeschlagen'); });
   T('Standardabschnitte neuer Akten sind Erkennung und Ablauf', () => ok(JSON.stringify(DEFAULT_FORM) === JSON.stringify(['Erkennung', 'Ablauf']), 'Standard falsch: ' + JSON.stringify(DEFAULT_FORM)));
-  T('Den Abschnitt Behandlung gibt es in keiner Akte mehr', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung')), 'Behandlung noch in einer Akte'));
+  // Ausnahme: die Originaldatei von Streifschuss enthält den Abschnitt Behandlung und bleibt so, wie sie ist
+  T('Den Abschnitt Behandlung hat nur die Originalakte Streifschuss', () => ok(SEED.every(r => r.sections.every(s => s.h !== 'Behandlung') || r.title === 'Streifschuss, Stichwunde, Bisswunde') && SEED.some(r => r.title === 'Streifschuss, Stichwunde, Bisswunde' && r.sections.some(s => s.h === 'Behandlung')), 'Behandlung an falscher Stelle'));
   T('Gespeicherte Änderungen verlieren den Abschnitt Behandlung einmalig', () => { reset0(); const i = id(); S.ov[i] = {sections: [{h: 'Behandlung', items: ['alt']}, {h: 'Erkennung', items: ['neu']}]}; S.v = 0; migrate(); const ok1 = !S.ov[i].sections.some(s => s.h === 'Behandlung') && S.v === 7 && S.ov[i].sections.length === 1; reset0(); ok(ok1, 'Migration fehlgeschlagen'); });
   T('Import entfernt den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import ohne Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.length === 1 && hs[0] === 'Erkennung', 'Behandlung nicht entfernt: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
