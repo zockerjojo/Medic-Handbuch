@@ -790,39 +790,84 @@
     "sections": [
       {
         "h": "Ablauf",
-        "mode": "text",
         "items": [
-          "Die Einleitung beginnt mit der Gabe von reinem Sauerstoff, um eine Reserve vor der Intubation aufzubauen. Anschließend wird ein venöser Zugang gelegt, über den Medikamente verabreicht werden:",
-          "Fentanyl → starkes Schmerzmittel",
-          "Propofol → hochdosiertes Schlafmittel",
-          "Der Patient wird über ein EKG überwacht, um Herzaktivität und Kreislauf kontinuierlich im Blick zu behalten. Bei Bedarf wird ein zusätzlicher Zugang für Bluttransfusionen eingerichtet. Nach der Medikamentengabe schläft der Patient innerhalb weniger Sekunden ein und wird intubiert, um die Atmung während der Operation zu sichern."
-        ]
+          "Vorbereitung: Es wird ein venöser Zugang in einen Arm gelegt und der Patient an das EKG angeschlossen, um die Vitalwerte im Blick zu behalten.",
+          "Präoxygenierung: Dem Patienten wird eine Sauerstoffmaske aufgesetzt, um vor der Narkose eine wichtige Sauerstoffreserve im Körper aufzubauen.",
+          "Medikamentengabe: Über den Zugang werden nacheinander die Narkosemittel verabreicht",
+          "Einleitung: Der Patient wird gebeten, von 10 rückwärts zu zählen, bis die Narkose einsetzt und er das Bewusstsein verliert.",
+          "Intubation: Sobald der Patient tief schläft, wird der Tubus (Beatmungsschlauch) vorsichtig in die Luftröhre eingeführt und die künstliche Beatmung gestartet."
+        ],
+        "mode": "number"
       },
       {
         "h": "Überwachung",
-        "mode": "bullet",
         "items": [
-          "Puls → Kontrolle der Herzfrequenz",
-          "Blutdruck → Stabilität des Kreislaufs",
-          "Sauerstoffsättigung → Überprüfung der Atemfunktion",
-          "Atmung → Sicherstellung einer ausreichenden Beatmung"
-        ]
+          "Puls → Kontrolle der Herzfrequenz und des Herzrhythmus\nNormalwert: 60–80 Schläge/min",
+          "Blutdruck → Überprüfung der Kreislaufstabilität\nNormalwert: 120/80 mmHg",
+          "Sauerstoffsättigung (SpO2) → Kontrolle der Atemfunktion\nNormalwert: 98–100 %",
+          "Atmung / Beatmung → Sicherstellung einer korrekten künstlichen Beatmung über den Tubus\nNormalwert: 12–16 Atemzüge/min"
+        ],
+        "mode": "bullet"
       },
       {
         "h": "Ende",
-        "mode": "text",
         "items": [
-          "Nach der Operation wird die Narkose schrittweise beendet. Der Patient wacht auf, der Beatmungsschlauch wird entfernt (Extubation) und die Überwachung wird bis zur vollständigen Stabilisierung fortgeführt."
-        ]
+          "Gegenmittel: Verabreichung des Narkose-Gegenmittels über den venösen Zugang.",
+          "Warten: Beobachtung des Patienten, bis er das Bewusstsein langsam wiedererlangt und eigenständig zu atmen beginnt.",
+          "Extubation: Vorsichtiges Entfernen des Beatmungsschlauchs (Tubus) aus der Luftröhre.",
+          "Finale Kontrolle: Überprüfung der Vitalwerte und des EKG auf absolute Stabilität.",
+          "Abbau: Entfernen der EKG-Elektroden, der Sauerstoffmaske und des venösen Zugangs inklusive Anbringen eines Pflasters auf der Einstichstelle."
+        ],
+        "mode": "number"
       }
     ],
     "me": [
-      "/me nimmt Narkosemittel, Beatmungsbeutel, Intubationsbesteck, Sauerstoff und EKG-Elektroden aus dem Narkosewagen",
-      "/me legt vorsichtig einen venösen Zugang",
-      "/me verabreicht Fentanyl und Propofol",
-      "/me überwacht die Vitalwerte auf dem EKG",
-      "Notiz: Anschließend kann die Narkosespritze im RP verabreicht werden. Bitte beachtet auch die Narkose-Aufklärung, die im Dokument zum OP-Bericht zu finden ist."
-    ]
+      "/me legt einen Zugang über eine Vene am Arm",
+      "/me schließt den Patienten am EKG an",
+      "/me setzt dem Patienten eine Sauerstoffmaske auf, um eine Sauerstoffreserve aufzubauen",
+      "Narkose-Medikamente verabreichen",
+      "/me verabreicht Fentanyl als Schmerzmittel",
+      "/me verabreicht Propofol als hochdosiertes Schlafmittel",
+      "/me verabreicht Rocuronium zur Muskelentspannung",
+      "Den Patienten bitten, von 10 rückwärts zu zählen, bis die Narkose einsetzt",
+      "/me schiebt den Tubus (Beatmungsschlauch) vorsichtig in die Luftröhre ein und startet die künstliche Beatmung",
+      "/me überwacht die Vitalwerte (Puls, Blutdruck, Sauerstoffsättigung) kontinuierlich über das EKG"
+    ],
+    "boxes": [
+      {
+        "t": "Narkose Benden",
+        "me": [
+          "/me verabreicht über den Zugang ein Narkose-Gegenmittel",
+          "Warten, bis der Patient das Bewusstsein langsam wiedererlangt und eigenständig atmet",
+          "/me zieht den Tubus (Beatmungsschlauch) vorsichtig aus der Luftröhre",
+          "/me überprüft die Vitalwerte und das EKG auf Stabilität",
+          "/me entfernt das EKG",
+          "/me zieht den Zugang aus der Vene",
+          "/me klebt ein Pflaster auf die Einstichstelle"
+        ]
+      },
+      {
+        "t": "Überwachung des EKGs",
+        "me": [
+          "Puls → Normalwert: 60–80 Schläge/min",
+          "Wenn Puls zu niedrig:",
+          "/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
+          "Wenn Puls zu Hoch:",
+          "/me verabreicht Fentanyl über den Zugang, um den Puls zu senken",
+          "---",
+          "Blutdruck → Normalwert: 120/80 mmHg",
+          "Wenn Blutdruck zu niedrig:",
+          "/me verabreicht Kochsalzlösung über den Zugang, um den Bludruck zu erhöhen",
+          "Wenn Blutdruck zu hoch:",
+          "/me verabreicht Propofol über den Zugang, um den Blutdruck zu Steigern",
+          "---",
+          "Sauerstoffsättigung (SpO2) → Normalwert: 98–100 %",
+          "Wenn Sauerstoffsättigung zu Niedrig:",
+          "/me erhöht die Sauerstoffzufuhr, um die Sauerstoffsättigung auf Normnalwert zu bringen"
+        ]
+      }
+    ],
+    "meTitle": "Narkose Starten"
   },
   {
     "id": "Lokalanästhesie",
