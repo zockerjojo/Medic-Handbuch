@@ -77,10 +77,11 @@ Beispiel (Unterkategorie mit einer Akte):
 
 ## 4. Die untere Box (`me`): Handlungen und Notizen
 
-- **Material-Zeile:** Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile. Sie beginnt mit `/me nimmt` und nennt die Gegenstände, die die Behandlung braucht, z. B. `/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten`. Übersichtsakten ohne eigene Behandlung haben nur diese Zeile. Die Box `me` heißt in der Anzeige immer „Durchführung“.
+- **Material-Zeile:** Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile. Sie beginnt mit `/me nimmt` und nennt die Gegenstände, die die Behandlung braucht, z. B. `/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten`. Übersichtsakten ohne eigene Behandlung haben nur diese Zeile. Die Box `me` heißt standardmäßig „Durchführung“. Im Browser lässt sich dieser Titel mit dem Stift ändern; ein leerer Titel gilt wieder als „Durchführung“. Der Titel steht nicht in `akten.json`, sondern nur im Browser (Abschnitt 10).
 - **Zeile mit `/me`** ist eine Handlung, die man im Rollenspiel per Klick kopieren kann. Sie beginnt mit `/me ` (Schrägstrich, `me`, Leerzeichen). Danach folgt die Handlung im Präsens in der dritten Person, z. B. `/me desinfiziert die Wunde und die umliegende Haut`.
 - **Zeile ohne `/me`** ist eine Notiz und nicht kopierbar. Notizen beginnen mit `Notiz: `, z. B. `Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen`.
 - **Eine Notiz darf das Wort `/me` nirgends enthalten.** Sonst würde sie als kopierbare Zeile behandelt.
+- **Trennlinie** ist eine Zeile, die genau aus `---` besteht. Sie wird als waagerechte Linie angezeigt, ist keine Textstelle und lässt sich nicht kopieren. Sie zählt weder zu den /me-Zeilen noch zur Material-Zeile. Trennlinien gliedern die Handlungen in Phasen, z. B. vor und nach einem Eingriff. Wer im Browser `---` als Text in eine Zeile schreibt, erhält ebenfalls eine Trennlinie.
 
 ## 5. Stil für Erkennung, Ablauf und Durchführung
 
@@ -214,6 +215,7 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 - [ ] `me` ist eine Liste von Texten. Handlungen beginnen mit `/me `, Notizen mit `Notiz: `.
 - [ ] Die erste Zeile von `me` ist in jeder bearbeitbaren Akte die Material-Zeile (`/me nimmt …`).
 - [ ] Keine Notiz enthält das Wort `/me`.
+- [ ] Eine Trennlinie ist genau `---` in einer eigenen Zeile. Sie zählt nicht zu den /me-Zeilen.
 - [ ] `table` hat `h` (Liste von Texten) und `r` (Liste von Zeilen, jede Zeile ist eine Liste von Texten).
 - [ ] Es gibt keine doppelten Kennungen und keine doppelten Titel.
 - [ ] Es gibt keinen Abschnitt „Behandlung“. Standardabschnitte sind Erkennung und Ablauf, dazu die Durchführung (`me`).
@@ -230,3 +232,4 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 4. Die Seite schreibt nicht in `akten.json`. Nutzeränderungen werden im Browser gespeichert und haben Vorrang vor der Datei. Eine Akte, die jemand selbst bearbeitet hat, zeigt seine Fassung. Mit „Original wiederherstellen“ (Schaltfläche beim Überfahren der Überschrift) kehrt er zur Fassung aus `akten.json` zurück. Neue Zeilen wie die Material-Zeile erscheinen bei einer Akte, die schon im Browser bearbeitet wurde, erst nach „Original wiederherstellen“.
 5. Unterkategorien: Reihenfolge und Zuordnung kommen aus `akten.json` (Abschnitt 3a). Im Bearbeitungsmodus können Nutzer Unterkategorien umbenennen, verschieben und löschen, neue anlegen und Akten in eine andere Unterkategorie legen. Das bleibt im Browser und wird beim Exportieren mitgespeichert. Eine umbenannte Unterkategorie behält ihren Namen, auch wenn sich der Titel in der Datei ändert. Eine gelöschte Unterkategorie kommt nach dem Neuladen nicht zurück, ihre Akten stehen danach ohne Unterkategorie. „Ohne Unterkategorie“ bleibt auch dann, wenn die Datei eine andere Unterkategorie nennt. Neue Unterkategorien aus der Datei erscheinen an der Stelle, an der sie in der Datei stehen, auch in Browserständen, die es schon gibt.
 6. Einmalige Umstellungen: Ein Browserstand von vor Stand 6 übernimmt beim ersten Öffnen einmal die Reihenfolge und die Unterkategorien aus `akten.json`. Dabei werden eigene Verschiebungen von Akten zurückgesetzt. Eigene Akten und eigene Unterkategorien bleiben erhalten. Ein Browserstand von Stand 6 setzt beim ersten Öffnen nur Lokalanästhesie sowie Regional-, Plexus- und Spinalanästhesie hinter „Narkose richtig einleiten“; alle übrigen Verschiebungen bleiben.
+7. Titel und Trennlinien im Browser: Im Bearbeitungsmodus lässt sich der Titel jeder /me-Box mit dem Stift ändern, auch der Titel der Hauptbox. Mit „+ Trennlinie“ wird eine Trennlinie ans Ende einer Box gesetzt, ▲ und ▼ verschieben sie, ✕ entfernt sie. Diese Änderungen werden im Browser gespeichert, beim Exportieren mitgegeben und mit „Original wiederherstellen“ zurückgesetzt.

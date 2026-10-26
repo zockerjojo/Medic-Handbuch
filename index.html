@@ -90,6 +90,9 @@ h4{margin:14px 0 4px;color:var(--a);font-size:15px}
 .ml small{display:block;padding:2px 4px}
 .ml.nt{cursor:default;color:var(--m);font-style:italic}
 .ml.nt:hover{background:none}
+.ml.tl{padding:8px 6px;cursor:default}.ml.tl:hover{background:none}
+.ml.tl .row{align-items:center}
+.tl-line{flex:1 1 auto;min-width:0;height:1px;background:var(--m);opacity:.5}
 .ad{margin:6px 0 2px;padding:4px 12px;border-radius:14px;border-color:var(--a);color:var(--a)}
 .form{max-width:760px;display:grid;gap:10px;padding:16px;margin:0 0 24px;background:var(--p);border:1px solid var(--l);border-radius:8px}
 .form h3{margin:0;font:700 20px Georgia,serif}
@@ -117,8 +120,7 @@ mark{background:rgba(242,184,75,.38);color:inherit;border-radius:3px;padding:0 .
 .cross{width:20px;height:20px;flex:none}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--a);opacity:.8;flex:none;align-self:center}
 .mtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 2px}
-.mtitle{color:var(--a);font-weight:700;font-size:15px}
-.bhead .tx{color:var(--a);font-weight:700;font-size:15px}
+.mtop .tx,.bhead .tx{color:var(--a);font-weight:700;font-size:15px}
 body:not(.edit) .only-edit{display:none!important}
 .mbtn{height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--l);background:var(--p);color:var(--m);font:inherit;font-size:14px;white-space:nowrap;flex:none;cursor:pointer}
 .mbtn:hover{color:var(--a);border-color:var(--a)}
@@ -170,6 +172,8 @@ const cleanT = s => String(s || '').replace(/\s+/g, ' ').trim().slice(0, 60);   
 const RO = {v: 1};                                  // schreibgeschützte Kategorien
 const FORM = {m: ['Dosis', 'Wirkung']};             // Formularabschnitte je Kategorie
 const DEFAULT_FORM = ['Erkennung', 'Ablauf'];   // Standardabschnitte neuer Akten; die Durchführung ist die /me-Box
+const ME_TITLE = 'Durchführung';   // Standardtitel der Hauptbox, im Browser umbenennbar (leer = wieder dieser Titel)
+const DIVIDER = '---';   // Trennlinie in einer /me-Liste: eine Zeile mit genau diesem Text, ohne Textstelle und ohne Kopieren
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 const KEY = 'medic-handbuch-v2';
 const SETKEY = 'medic-handbuch-einstellungen-v2';   // v2: die neuen Standardwerte gelten einmal für alle
@@ -345,6 +349,7 @@ function setText(id, path, text){
   if (!r) return;
   if (p[0] === 'title') { if (text) patch(id, 'title', text); }
   else if (p[0] === 'desc') patch(id, 'desc', text);
+  else if (p[0] === 'mt') { if (text) patch(id, 'meTitle', text); else clearField(id, 'meTitle'); }   // Titel der Hauptbox; leer = wieder „Durchführung“
   else if (p[0] === 'm') {
     const me = r.me.slice();
     if (!text || text === '/me' || text === 'Notiz:') me.splice(+p[1], 1); else me[+p[1]] = text;
@@ -400,6 +405,16 @@ function removeBox(id, bi){
   const boxes = boxesOf(get(id));
   if (!boxes[bi]) return;
   boxes.splice(bi, 1); patch(id, 'boxes', boxes);
+}
+function addDivider(id, s){   // Trennlinie als eigener Eintrag ans Ende der /me-Liste (Hauptbox oder zusätzliche Box), ohne Textfeld
+  if (s === 'm') patch(id, 'me', get(id).me.concat(DIVIDER));
+  else if (boxAt(s) >= 0) { const boxes = boxesOf(get(id)), bi = boxAt(s); if (boxes[bi]) { boxes[bi].me.push(DIVIDER); patch(id, 'boxes', boxes); } }
+}
+function clearField(id, field){   // entfernt ein eigenes Feld: wieder der Standard, und die Akte gilt nicht als geändert
+  const m = S.made.find(r => r.id === id);
+  if (m) delete m[field];
+  else if (S.ov[id]) { delete S.ov[id][field]; if (!Object.keys(S.ov[id]).length) delete S.ov[id]; }
+  save();
 }
 function delSection(id, s){ const secs = clone(get(id).sections); secs.splice(s, 1); patch(id, 'sections', secs); }
 /* ===== Unterkategorien (Behandlungen, Operationen, Medikamente): Titel, Trennlinien, Reihenfolge ===== */
@@ -554,11 +569,11 @@ function create(f){
 function akteExportObj(id){   // die Akte so, wie sie gerade angezeigt wird (mit deinen Änderungen), ohne interne Schlüssel
   const r = get(id);
   if (!r) return null;
-  return {format: 'medic-akte', version: 1, akte: {
-    cat: r.cat, title: r.title, desc: r.desc || '',
+  const a = {cat: r.cat, title: r.title, desc: r.desc || '',
     sections: r.sections.map(s => { const o = {h: s.h, items: s.items.slice()}; if (s.mode) o.mode = s.mode; return o; }),
-    me: r.me.slice(), boxes: boxesOf(r)
-  }};
+    me: r.me.slice(), boxes: boxesOf(r)};
+  if (r.meTitle) a.meTitle = r.meTitle;   // eigener Titel der Hauptbox
+  return {format: 'medic-akte', version: 1, akte: a};
 }
 function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; ungültige Angaben werden abgelehnt
   if (!d || typeof d !== 'object' || d.format !== 'medic-akte' || !d.akte || typeof d.akte !== 'object') return {errors: {file: 'Das ist keine Akten-Datei dieses Handbuchs.'}};
@@ -570,8 +585,10 @@ function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; 
   let title = title0, n = 0;
   while (all().some(r => nf(r.title) === nf(title))) { n++; title = title0 + (n === 1 ? ' (importiert)' : ' (importiert ' + n + ')'); }
   const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  S.made.push({id, cat, title, desc: typeof a.desc === 'string' ? a.desc.trim() : '', kw: '', sections: secs,
-    me: (Array.isArray(a.me) ? a.me : []).filter(t => typeof t === 'string'), boxes: cleanBoxes(a.boxes), table: null, widget: false});
+  const rec = {id, cat, title, desc: typeof a.desc === 'string' ? a.desc.trim() : '', kw: '', sections: secs,
+    me: (Array.isArray(a.me) ? a.me : []).filter(t => typeof t === 'string'), boxes: cleanBoxes(a.boxes), table: null, widget: false};
+  if (cleanText(a.meTitle)) rec.meTitle = cleanText(a.meTitle);
+  S.made.push(rec);
   placeAt(id, cat, null);   // ans Ende ihrer Kategorie, ohne Unterkategorie
   save();
   return {id, title, renamed: n > 0};
@@ -713,11 +730,15 @@ function card(r){
     return `<div class="sec${open ? ' open' : ''}"><h4 data-rec="${id}" data-sk="${sk}">${sarw}<span class="row" data-hold>${tx('h:' + si, s.h, hlEsc(s.h))}${sctl}</span></h4><div class="sbody"><${tag}>${s.items.map((t, ii) => `<${it}><span class="row" data-hold>${tx(`i:${si}:${ii}`, t, fmt(t))}${tools(ed + ord(si, ii))}</span></${it}>`).join('')}</${tag}></div></div>`;
   }).join('');
   const blood = r.widget ? `<h4>Patient wählen</h4><select data-blood><option value="">Blutgruppe</option>${Object.keys(BG).map(k => `<option>${k}</option>`).join('')}</select><p class="bo"></p><p class="c">AB+ ist Universalempfänger, 0- ist Universalspender.</p>` : '';
-  // /me-Boxen: die Hauptbox heißt immer „Durchführung“, zusätzliche Boxen tragen einen Titel
-  const lineRow = (m, path, s, i) => `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}${tools(ed + ord(s, i))}</span></div>`;
-  const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button>`;
-  const hint = r.me.length ? '<small class="c">Zeile mit /me anklicken zum Kopieren</small>' : '';
-  const me = ro ? '' : `<div class="me"><div class="mtop"><span class="mtitle">Durchführung</span></div>${hint}${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
+  // /me-Boxen: die Hauptbox trägt den Titel „Durchführung“ (im Browser umbenennbar), zusätzliche Boxen einen eigenen Titel
+  // Eine Zeile mit genau --- ist eine Trennlinie: keine Textstelle, nicht kopierbar, nur verschiebbar und entfernbar
+  const lineRow = (m, path, s, i) => m === DIVIDER
+    ? `<div class="ml tl"><span class="row" data-hold><span class="tl-line" role="separator" aria-label="Trennlinie"></span>${tools(ord(s, i))}</span></div>`
+    : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row" data-hold>${tx(path, m, hlEsc(m))}${tools(ed + ord(s, i))}</span></div>`;
+  const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button> <button class="ad" data-act="adddiv" data-id="${id}" data-s="${s}">+ Trennlinie</button>`;
+  const hint = r.me.some(m => m.includes('/me')) ? '<small class="c">Zeile mit /me anklicken zum Kopieren</small>' : '';
+  const mt = r.meTitle || ME_TITLE;
+  const me = ro ? '' : `<div class="me"><div class="mtop"><span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed)}</span></div>${hint}${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div>`;
   const xboxes = ro ? '' : boxesOf(r).map((box, bi) => {
     const bt = box.t || 'Zusätzliche Box';
     return `<div class="me xb"><div class="bhead"><span class="row" data-hold>${tx('xt:' + bi, bt, hlEsc(bt))}${tools(ed)}</span>${can ? `<button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : ''}</div>${box.me.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div>`;
@@ -910,7 +931,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'delsec', 'addbox', 'rmbox', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'submove', 'subdel']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -937,6 +958,7 @@ function act(name, b){
   else if (name === 'secmove') moveSection(id, +d.s, +d.d);
   else if (name === 'remove') removeLine(id, d.s, +d.i);
   else if (name === 'add') { if (/^\d+$/.test(d.s)) openSecAt(id, +d.s); pending = {id, path: addLine(id, d.s, d.start)}; }
+  else if (name === 'adddiv') addDivider(id, d.s);
   else if (name === 'addbox') pending = {id, path: addBox(id)};
   else if (name === 'rmbox') removeBox(id, +d.b);
   else if (name === 'delsec') delSection(id, +d.s);
@@ -1040,13 +1062,16 @@ function cleanMade(x, seen){
   const id = typeof x.id === 'string' ? x.id.trim() : '', title = cleanText(x.title);
   const cat = catKey(x.cat);
   if (!id || own(BASE, id) || seen.has(id) || !own(C, cat) || RO[cat] || !title) return null;
-  return {id, cat, title, desc: typeof x.desc === 'string' ? x.desc : '', kw: '', sections: cleanSections(x.sections),
+  const out = {id, cat, title, desc: typeof x.desc === 'string' ? x.desc : '', kw: '', sections: cleanSections(x.sections),
     me: Array.isArray(x.me) ? x.me.filter(t => typeof t === 'string') : [], boxes: cleanBoxes(x.boxes), table: null, widget: false};
+  const mt = cleanText(x.meTitle); if (mt) out.meTitle = mt;   // eigener Titel der Hauptbox
+  return out;
 }
 function cleanOv(x){
   const o = {};
   if (!x || typeof x !== 'object') return o;
   const t = cleanText(x.title); if (t) o.title = t;
+  const mt = cleanText(x.meTitle); if (mt) o.meTitle = mt;
   if (typeof x.desc === 'string') o.desc = x.desc;
   if (Array.isArray(x.me)) o.me = x.me.filter(v => typeof v === 'string');
   if (Array.isArray(x.boxes)) o.boxes = cleanBoxes(x.boxes);
@@ -1325,10 +1350,17 @@ function runTests(){
   T('Angepasste Akten bekommen einen dezenten Punkt, Originale nicht', () => { reset0(); const i = id(); ok(!card(get(i)).includes('class="dot"'), 'Punkt ohne Änderung'); setText(i, 'i:0:0', 'Punkt-Test'); ok(card(get(i)).includes('class="dot"'), 'kein Punkt nach Änderung'); reset(i); ok(!card(get(i)).includes('class="dot"'), 'Punkt nach dem Zurücksetzen'); });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
   T('Ungültige Akten-Dateien werden abgelehnt', () => { ok(akteImport({format: 'medic-handbuch'}).errors, 'falsches Format angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'v', title: 'X', sections: [{h: 'A', items: ['x']}]}}).errors.cat, 'schreibgeschützte Kategorie angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Leer', sections: []}}).errors.sections, 'Akte ohne Abschnitte angenommen'); });
+  T('Die Hauptbox heißt Durchführung und lässt sich umbenennen', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel fehlt'); setText(i, 'mt', 'Vor Ort'); ok(get(i).meTitle === 'Vor Ort' && card(get(i)).includes('Vor Ort'), 'nicht umbenannt'); setText(i, 'mt', ''); ok(get(i).meTitle === undefined && card(get(i)).includes('Durchführung'), 'nicht auf den Standard zurückgesetzt'); });
+  T('Der eigene Titel der Hauptbox bleibt beim Export und Import erhalten', () => { reset0(); const i = id(); setText(i, 'mt', 'Vor Ort'); const r = sanitize(JSON.parse(exportText())); ok(r.data.ov[i] && r.data.ov[i].meTitle === 'Vor Ort', 'Titel fehlt nach dem Import'); });
+  T('Akte mit eigenem Titel und Trennlinie wird als Datei exportiert und importiert', () => { reset0(); const i = id(); setText(i, 'mt', 'Vor Ort'); addDivider(i, 'm'); const o = JSON.parse(JSON.stringify(akteExportObj(i))); ok(o.akte.meTitle === 'Vor Ort' && o.akte.me.includes('---'), 'Export unvollständig'); const res = akteImport(o); ok(res.id && get(res.id).meTitle === 'Vor Ort' && get(res.id).me.includes('---'), 'Import unvollständig'); });
+  T('Trennlinie einfügen, verschieben und entfernen', () => { reset0(); const i = id(); addLine(i, 'm', '/me Vorher'); addDivider(i, 'm'); const n = get(i).me.length; ok(get(i).me[n - 1] === '---', 'nicht eingefügt'); move(i, 'm', n - 1, -1); const me = get(i).me; ok(me[n - 2] === '---' && me[n - 1] === '/me Vorher', 'nicht verschoben'); removeLine(i, 'm', n - 2); ok(get(i).me.length === n - 1 && !get(i).me.includes('---'), 'nicht entfernt'); });
+  T('Trennlinie in einer zusätzlichen Box', () => { reset0(); const i = id(); addBox(i); addDivider(i, 'x0'); const me = get(i).boxes[0].me; ok(me[me.length - 1] === '---' && card(get(i)).includes('class="ml tl"'), 'nicht eingefügt'); removeLine(i, 'x0', me.length - 1); ok(get(i).boxes[0].me.length === 1, 'nicht entfernt'); });
+  T('Trennlinien sind nicht kopierbar und haben keine Textstelle', () => { reset0(); const i = id(); addDivider(i, 'm'); const c = card(get(i)); ok(c.includes('class="ml tl"'), 'keine Trennlinie'); ok(!c.includes('class="ml cp" data-raw="---"'), 'Trennlinie ist kopierbar'); ok(!c.includes('data-path="m:' + (get(i).me.length - 1) + '"'), 'Trennlinie hat eine Textstelle'); });
+  T('Trennlinie ist ein Rückgängig-Schritt', () => { reset0(); const i = id(), n = get(i).me.length; addDivider(i, 'm'); ok(get(i).me.length === n + 1, 'nicht eingefügt'); undo(); ok(get(i).me.length === n, 'nicht zurückgenommen'); });
   T('Zuschauermodus ist der Standard', () => ok(startedInView, 'beim Start war der Bearbeitungsmodus an'));
   T('Im Zuschauermodus gibt es keine Bearbeiten-Schaltflächen', () => {
     setMode(false); reset0(); const c = card(get(id())); setMode(true);
-    ok(!/data-act="(edit|add|move|remove|trash|recmove|secmove|delsec|addbox|rmbox|secform|reset)"/.test(c), 'Bearbeiten-Schaltfläche sichtbar');
+    ok(!/data-act="(edit|add|adddiv|move|remove|trash|recmove|secmove|delsec|addbox|rmbox|secform|reset)"/.test(c), 'Bearbeiten-Schaltfläche sichtbar');
     ok(!c.includes('class="smode"') && !c.includes('+ Abschnitt hinzufügen'), 'Darstellung oder Abschnitt hinzufügen sichtbar');
     ok(c.includes('data-act="exportrec"') && c.includes('data-act="fav"') && c.includes('data-act="fold"'), 'Export, Kopieren, Favorit oder Einklappen fehlt');
   });
