@@ -172,24 +172,48 @@
         ]
       },
       {
-        "h": "Ablauf",
+        "h": "Erste Hilfe bei einer Verstauchung (PECH-Regel)",
+        "mode": "bullet",
+        "items": [
+          "**P - Pause:** → Das Gelenk ruhigstellen.",
+          "**E - Eis:** → Kühle die Stelle mit Eis, um die Schwellung und die Schmerzen zu reduzieren.",
+          "**C - Compression (Druck):** → Einen elastischen Verband anlegen, um das Gelenk zu stabilisieren.",
+          "**H - Hochlagerung:** → Das verletzte Bein hochlagern, damit weniger Blut in das Gewebe fließt."
+        ]
+      },
+      {
+        "h": "Gelenkpunktion (nur bei einer starken Schwellung)",
         "mode": "number",
         "items": [
-          "Röntgen zum Ausschluss eines Bruchs, danach Ultraschall",
-          "Pause, Eis und Kompressionsverband anlegen",
-          "Gelenk hochlagern",
-          "Bei starker Schwellung weiter nach [[Gelenkpunktion]]"
+          "Gelenk wird desinfiziert",
+          "Hohlnadel wird ins Gelenk eingeführt",
+          "Überschüssige Gelenkflüssigkeit wird abgesaugt"
         ]
       }
     ],
     "me": [
-      "/me nimmt Kühlakku, elastische Binde und Kissen aus dem Verbandskasten",
-      "/me desinfiziert die Hände und legt einen Kühlakku auf die betroffene Stelle",
-      "/me wickelt einen elastischen Verband um das verletzte Gelenk",
-      "/me lagert den Fuß oder Arm vorsichtig hoch",
-      "/me prüft Durchblutung und Gefühl unterhalb der Verletzung",
-      "Notiz: Bei Taubheit, Blässe oder kalter Haut sofort ärztlich abklären lassen"
-    ]
+      "/me stellt das Gelenk ruhig",
+      "Nimm vorher ein Kühlpack aus dem Schrank",
+      "/me nimmt ein Kühlpack aus dem Schrank",
+      "/me hält das Kühlpack auf das Gelenk",
+      "/me wickelt das Kühlpack mit einem Verband ein, um es an seiner Position zu halten",
+      "/me legt einen elastischen Verband an"
+    ],
+    "boxes": [
+      {
+        "t": "Überschüssige Gelenkflüssigkeit wird abgesaugt",
+        "me": [
+          "/me desinfiziert die bevorstehende Einstichstelle am Gelenk",
+          "Nimm vorher die Hohlnadel aus dem Schrank",
+          "/me nimmt eine Hohlnadel aus dem Schrank",
+          "/me führt die Hohlnadel in das Gelenk",
+          "/me saugt die überschüssige Gelenkflüssigkeit auf",
+          "/me zieht die Nadel aus dem Gelenk",
+          "/me tupft die Einstichstelle ab und klebt ein Pflaster drauf"
+        ]
+      }
+    ],
+    "meTitle": "PECH-Regel durchsetzen"
   },
   {
     "id": "Prellung",
@@ -239,23 +263,21 @@
         ]
       },
       {
-        "h": "Ablauf",
+        "h": "Behandlung",
         "mode": "number",
         "items": [
-          "Sofort unter fließendem Wasser kühlen",
-          "Bepanthen-Schaumspray auftragen",
-          "Mit Brandwunden-Pflaster abdecken",
-          "Schmerzmittel bei Bedarf geben"
+          "Kühle die Stelle mit Wasser oder mit einem Kühlpack",
+          "Trage Bepanthen-Schaumspray auf die Verbrennung auf",
+          "Klebe ein Pflaster auf die Verbrennung"
         ]
       }
     ],
     "me": [
-      "/me nimmt Bepanthen-Schaumspray, Brandwunden-Pflaster und Schmerzmittel aus dem Verbandskasten",
-      "/me kühlt die verbrannte Stelle unter fließendem Wasser",
-      "/me trägt Bepanthen-Schaumspray auf",
-      "/me legt Pflaster auf die Brandstelle",
-      "/me gibt Schmerzmittel",
-      "Notiz: Bei großflächiger Verbrennung unverzüglich ärztlich abklären lassen"
+      "Wenn die Stelle mit einem Kühlpack gekühlt werden soll, vorher Kühlpack aus dem Schrank nehmen",
+      "/me nimmt ein Kühlpack aus dem Schrank",
+      "/me hält das Kühlpack an die Verbrennung",
+      "/me trägt Bepanthen-Schaumspray auf die Verbrennung auf",
+      "/me klebt ein Pflaster auf die Verbrennung"
     ]
   },
   {
@@ -268,30 +290,28 @@
         "mode": "bullet",
         "items": [
           "Tieferer Hautschaden mit sichtbaren Blasen, Rötung, Schmerz und Schwellung",
-          "2a: geschlossene Blasen, heilt meist spontan",
-          "2b: offene Blasen, tiefer Schaden, lokal behandelbar"
+          "2a: Geschlossene Blasen, heilt meist spontan",
+          "2b: Offene Blasen, tiefer Schaden, lokal behandelbar"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Wunde lokal betäuben",
-          "Wunde antiseptisch spülen, bei 2b gründlich desinfizieren",
-          "Bei 2b abgestorbenes Gewebe entfernen, Haut transplantieren und einnähen",
-          "Brandsalbe auftragen, bei 2b zusätzlich Silbersulfadiazin",
-          "Mit Mullbinden verbinden und Schmerzmittel geben"
+          "Wunde lokal betäuben mit Lidocain",
+          "Verbrennung desinfizieren",
+          "Abgestorbenes Gewebe entfernen",
+          "Haut transplantieren und einnähen",
+          "Verbrennung mit einer Mullbinde verbinden"
         ]
       }
     ],
     "me": [
-      "/me nimmt Lokalanästhetikum, Wundspülung, Brandsalbe, Silbersulfadiazin-Creme und Mullbinden aus dem Verbandskasten",
-      "/me betäubt die Wunde lokal",
-      "/me spült die Wunde antiseptisch aus",
-      "/me trägt Brandsalbe auf",
-      "/me verbindet die Wunde mit Mullbinden",
-      "/me desinfiziert die Brandwunde gründlich",
-      "Notiz: Bei 2b Gewebe entfernen und Haut transplantieren (Operation)"
+      "/me betäubt die Verbrennung mit dem Lokalanästhetikum Lidocain",
+      "Warte, bis die Betäubung wirkt",
+      "/me entfernt abgestorbenes Gewebe",
+      "/me transplantiert die Haut und näht sie auf",
+      "/me verbindet die Verbrennung mit einer Mullbinde"
     ]
   },
   {
@@ -394,8 +414,8 @@
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Wunde und umliegende Haut desinfizieren",
-          "Mit Lidocain lokal betäuben und Einwirkzeit abwarten",
+          "Wunde desinfizieren",
+          "Wunde lokal betäuben mit Lidocain",
           "Projektil vorsichtig mit einer Pinzette entfernen",
           "Wunde mit Knopfkanüle ausspülen und überschüssiges Blut absaugen",
           "Wunde erneut desinfizieren und vernähen"
@@ -403,11 +423,10 @@
       }
     ],
     "me": [
-      "/me desinfiziert die Wunde und die Haut drumherum",
-      "/me zieht Lidocain in eine Spritze",
-      "/me Spritzt das Lidocain in die WUnde für eine Lokalanästhetika",
-      "Warten bis die Betäubung wirkt",
-      "/me Spühlt die wunde mit einer Knopfkanüle aus",
+      "/me desinfiziert die Wunde",
+      "/me betäubt die Wunde mit dem Lokalanästhetikum Lidocain",
+      "Warte, bis die Betäubung wirkt",
+      "/me spült die Wunde mit einer Knopfkanüle aus",
       "/me holt die Kugel mit einer Pinzette aus der Wunde",
       "/me saugt überschüssiges Blut ab",
       "/me desinfiziert die Wunde",
