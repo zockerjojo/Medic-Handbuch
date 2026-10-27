@@ -149,6 +149,18 @@ body:not(.edit) .only-edit{display:none!important}
 #f{position:absolute;top:calc(100% - 10px);left:0;width:min(100%,760px);z-index:6}
 #f .form{max-width:none;margin:0;max-height:calc(100vh - 170px);overflow:auto;box-shadow:0 14px 32px rgba(0,0,0,.35)}
 #ok{position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:4px;background:var(--a);color:var(--on-a);opacity:0;transition:opacity .2s;pointer-events:none;z-index:70}#ok.on{opacity:1}
+#intro{position:fixed;inset:0;z-index:75}
+#intro.dim{background:rgba(5,9,14,.66)}
+#intro-hl{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(5,9,14,.66);outline:2px solid var(--a);pointer-events:none;transition:left .25s,top .25s,width .25s,height .25s}
+#intro-card{position:fixed;width:min(380px,calc(100vw - 32px));box-sizing:border-box;background:var(--p);border:1px solid var(--l);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.45);padding:14px 18px 16px;color:var(--t)}
+#intro-card.unten{left:12px;right:12px;top:auto;bottom:12px;width:auto}
+#intro-card.oben{left:12px;right:12px;top:12px;bottom:auto;width:auto}
+#intro-card h3{margin:6px 0 6px;font:700 20px Georgia,serif;color:var(--a)}
+#intro-card p{margin:0 0 14px;font-size:15px;line-height:1.5}
+.intro-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:30px;color:var(--m);font-size:13px}
+.intro-x{width:30px;height:30px;padding:0;border-radius:50%;border:1px solid var(--l);background:none;color:var(--m);line-height:1;flex:none}
+.intro-nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.intro-nav .sp{flex:1}
 #modal{position:fixed;inset:0;background:rgba(5,9,14,.6);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
 #modal[hidden]{display:none}
 .mbox{width:min(460px,100%);background:var(--p);border:1px solid var(--l);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.45);padding:18px 20px 12px;max-height:calc(100vh - 32px);overflow:auto}
@@ -1045,6 +1057,76 @@ function setOpt(k, v){
 }
 function openModal(){ $('#mtitle').textContent = 'Einstellungen'; renderSettings(); $('#modal').hidden = false; focusField('#modal [data-act="closemodal"]'); }
 function closeModal(){ $('#modal').hidden = true; }
+
+/* ===== Einleitung beim ersten Besuch: eine Willkommensseite und drei markierte Stellen, jederzeit überspringbar ===== */
+const INTRO_KEY = 'medic-handbuch-einleitung';   // nur ein Vermerk im Browser: nicht Teil der Akten, nicht im Export
+const INTRO = [
+  {t: 'Willkommen im Medic Handbuch', x: 'In drei kurzen Schritten zeigen wir Ihnen die wichtigsten Stellen der Seite. Die Einleitung können Sie jederzeit mit „Überspringen“ beenden.', el: null},
+  {t: 'Die Kategorien', x: 'Die Kategorien stehen links, auf dem Handy oben. Mit einem Klick auf „Behandlungen“ kommen Sie zu allen Behandlungen.', el: () => $('#n')},
+  {t: 'Der Bearbeitungsmodus', x: 'Der Knopf oben rechts mit dem Stift ✎ schaltet den Bearbeitungsmodus ein. Auf dem Computer steht daneben das Wort „Bearbeiten“. Dann können Sie Texte ändern, Zeilen und Boxen hinzufügen und die Akten ordnen. Ohne ihn lässt sich nichts ändern oder hinzufügen.', el: () => $('#modebtn')},
+  {t: 'Die EKG-Übersicht', x: 'Neben jedem Akten-Titel steht ein EKG-Zeichen. Ein Klick darauf öffnet die Übersicht mit Puls, Blutdruck und Sauerstoffsättigung. Die Normalwerte sind gelb markiert, und ein Klick auf eine /me-Zeile kopiert ihre Handlung.', el: () => $('#l .ekg'), scroll: true}
+];
+let introAt = -1, introSicht = null;   // Schritt der laufenden Einleitung (-1: keine) und der Scroll-Stand davor
+function introGesehen(){ try { return !!localStorage.getItem(INTRO_KEY); } catch (e) { return true; } }   // ohne Browserspeicher gar keine Einleitung, sonst käme sie bei jedem Besuch
+function introStart(){
+  if (introAt >= 0) return;
+  introAt = 0; introSicht = {win: window.scrollY, main: mainEl ? mainEl.scrollTop : 0};
+  const hull = document.createElement('div'); hull.id = 'intro';
+  hull.innerHTML = '<div id="intro-hl" hidden></div><div id="intro-card" role="dialog" aria-modal="true" aria-labelledby="intro-t"></div>';
+  document.body.appendChild(hull);
+  window.addEventListener('resize', introPlatz); window.addEventListener('scroll', introPlatz, true);
+  introZeigen();
+}
+function introZeigen(){   // Text und Knöpfe des Schritts, dann Markierung und Karte an seine Stelle
+  const s = INTRO[introAt], letzter = introAt === INTRO.length - 1, karte = $('#intro-card');
+  const knoepfe = introAt === 0
+    ? '<button data-act="intro-skip">Überspringen</button><span class="sp"></span><button class="btn" data-act="intro-next">Weiter</button>'
+    : `<button data-act="intro-skip">Überspringen</button><span class="sp"></span><button data-act="intro-back">Zurück</button><button class="btn" data-act="${letzter ? 'intro-skip' : 'intro-next'}">${letzter ? 'Fertig' : 'Weiter'}</button>`;
+  karte.innerHTML = `<div class="intro-top"><span>${introAt ? 'Schritt ' + introAt + ' von ' + (INTRO.length - 1) : ''}</span><button class="intro-x" data-act="intro-skip" title="Einleitung schließen" aria-label="Einleitung schließen">✕</button></div><h3 id="intro-t">${s.t}</h3><p>${s.x}</p><div class="intro-nav">${knoepfe}</div>`;
+  introPlatz();
+  const vor = karte.querySelector('.btn'); if (vor) vor.focus({preventScroll: true});
+}
+function introPlatz(){   // Markierung auf die Stelle des Schritts legen, Karte daneben; auf dem Handy unten
+  if (introAt < 0) return;
+  const s = INTRO[introAt], hull = $('#intro'), hl = $('#intro-hl'), karte = $('#intro-card');
+  let el = s.el ? s.el() : null;
+  if (el && !el.getClientRects().length) el = null;   // nicht sichtbar: ohne Markierung
+  karte.removeAttribute('style'); karte.className = '';
+  if (!el) {   // keine Stelle: Karte mittig, der ganze Hintergrund abgedunkelt
+    hull.classList.add('dim'); hl.hidden = true;
+    karte.style.left = Math.max(16, (innerWidth - karte.offsetWidth) / 2) + 'px';
+    karte.style.top = Math.max(16, (innerHeight - karte.offsetHeight) / 2) + 'px';
+    return;
+  }
+  if (s.scroll) { const r0 = el.getBoundingClientRect(); if (r0.top < 70 || r0.bottom > innerHeight - 20) el.scrollIntoView({block: 'center'}); }
+  const r = el.getBoundingClientRect(), pad = 6;
+  hull.classList.remove('dim'); hl.hidden = false;
+  Object.assign(hl.style, {left: (r.left - pad) + 'px', top: (r.top - pad) + 'px', width: (r.width + 2 * pad) + 'px', height: (r.height + 2 * pad) + 'px'});
+  if (innerWidth < 700) {   // Handy: die Karte liegt unten, nur wenn die Stelle dort liegt, oben, damit die Markierung frei bleibt
+    karte.className = 'unten';
+    const h = karte.offsetHeight, ueberlappt = (a, b) => r.top - pad < b && r.bottom + pad > a;   // a..b ist der Bereich der Karte
+    if (ueberlappt(innerHeight - h - 12, innerHeight - 12) && !ueberlappt(12, 12 + h)) karte.className = 'oben';
+    return;
+  }
+  const w = karte.offsetWidth, h = karte.offsetHeight, g = 16, links = Math.min(Math.max(16, r.left), innerWidth - w - 16);
+  let x, y;
+  if (r.right + pad + g + w <= innerWidth - 16) { x = r.right + pad + g; y = Math.min(Math.max(16, r.top), innerHeight - h - 16); }   // rechts neben der Stelle
+  else if (r.bottom + pad + g + h <= innerHeight - 16) { x = links; y = r.bottom + pad + g; }   // darunter
+  else if (r.top - pad - g - h >= 16) { x = links; y = r.top - pad - g - h; }   // darüber
+  else { x = (innerWidth - w) / 2; y = Math.max(16, innerHeight - h - 16); }
+  karte.style.left = x + 'px'; karte.style.top = y + 'px';
+}
+function introWeiter(){ if (introAt >= 0 && introAt < INTRO.length - 1) { introAt++; introZeigen(); } }
+function introZurueck(){ if (introAt > 0) { introAt--; introZeigen(); } }
+function introEnde(){   // überspringen oder fertig: danach erscheint die Einleitung nicht mehr
+  if (introAt < 0) return;
+  try { localStorage.setItem(INTRO_KEY, '1'); } catch (e) {}
+  introAt = -1;
+  const hull = $('#intro'); if (hull) hull.remove();
+  window.removeEventListener('resize', introPlatz); window.removeEventListener('scroll', introPlatz, true);
+  if (introSicht) { window.scrollTo(0, introSicht.win); if (mainEl) mainEl.scrollTop = introSicht.main; }
+  introSicht = null;
+}
 function openBug(){   // Fenster „Fehler melden“: nur der Hinweis, wen man bei Fehlern oder Verbesserungsvorschlägen anspricht
   $('#mtitle').textContent = 'Fehler melden';
   $('#mbody').innerHTML = `<p>Sollten Sie einen Fehler gefunden haben oder einen Verbesserungsvorschlag, sprechen Sie entweder <b style="white-space:nowrap">„Dr. Joel Müller“</b> darauf an oder schreiben Sie <b>„zockerjojo“</b> in Discord an.</p>`;
@@ -1100,6 +1182,9 @@ function act(name, b){
   if (name === 'import') return $('#imp').click();
   if (name === 'mode') return setMode(!EDIT);
   if (name === 'navtoggle') { SET.nav = SET.nav === 'open' ? 'closed' : 'open'; saveSet(); return applySet(); }
+  if (name === 'intro-next') return introWeiter();
+  if (name === 'intro-back') return introZurueck();
+  if (name === 'intro-skip') return introEnde();
   if (name === 'exportrec') return exportAkte(id);
   if (name === 'importakte') return $('#impakte').click();
   if (name === 'fold') { toggleFold(id); return render(); }
@@ -1330,11 +1415,12 @@ document.addEventListener('click', e => {
   if (h && h.querySelector('.arw') && !(editing && editing.el.contains(e.target))) { toggleFold(h.parentNode.dataset.rec); return render(); }
   const ml = e.target.closest('.ml.cp');   // nur Zeilen mit /me sind kopierbar
   if (ml) { if (!editing) copy(copyText(ml.dataset.raw)); return; }
-  const box = e.target.closest('.me');   // Klick auf den Hintergrund einer offenen /me-Box kopiert alle ihre /me-Zeilen
-  if (box && !box.classList.contains('shut') && !editing && !getSelection().toString()) copyBox(box);
+  const box = e.target.closest('.me');   // Klick auf die Fläche einer offenen /me-Box kopiert alle ihre /me-Zeilen; Notizen, Titel, Überschriften und Trennlinien kopieren nichts
+  if (box && !e.target.closest('.ml.tl, .ml.nt, .ekgh, .mtop, .bhead') && !box.classList.contains('shut') && !editing && !getSelection().toString()) copyBox(box);
 });
 document.addEventListener('focusout', e => { if (editing && e.target === editing.el) finishEdit(); });
 document.addEventListener('keydown', e => {
+  if (introAt >= 0) { if (e.key === 'Escape') introEnde(); else if (e.key === 'ArrowRight') introWeiter(); else if (e.key === 'ArrowLeft') introZurueck(); return; }   // Einleitung läuft: Pfeiltasten blättern, Escape überspringt
   const mo = $('#modal');
   if (mo && mo.hidden === false) { if (e.key === 'Escape') closeModal(); return; }
   if (editing && e.target === editing.el) {
@@ -1403,6 +1489,7 @@ function startWith(res){
   applyData(res);
   load(); render();
   if (TEST) runTests();
+  else if (!introGesehen()) introStart();   // beim ersten Besuch die Einleitung, im Testmodus nicht
 }
 function dataError(msg, offerFile, problems = []){
   $('#n').innerHTML = BRAND;
@@ -1649,6 +1736,41 @@ function runTests(){
     try { box.click(); }
     finally { delete cb.writeText; }
     ok(kopiert === erwartet.join('\n'), 'Kopiert: ' + kopiert + ' | erwartet: ' + erwartet.join(' / '));
+  });
+  T('Trennlinien und Überschriften kopieren beim Klick nichts', () => {
+    reset0(); act('ekg', {dataset: {}}); getSelection().removeAllRanges();
+    const cb = navigator.clipboard; let aufrufe = 0;
+    cb.writeText = t => { aufrufe++; return Promise.resolve(); };
+    try { $('#mbody h4.ekgh').click(); $('#mbody .ml.tl').click(); }
+    finally { delete cb.writeText; act('closemodal', {dataset: {}}); }
+    ok(aufrufe === 0, 'Kopiert ' + aufrufe + ' Mal');
+  });
+  T('Notizen und Box-Titel kopieren nichts, die Fläche der Box kopiert die /me-Zeilen', () => {
+    getSelection().removeAllRanges();
+    const kasten = document.createElement('div'); kasten.className = 'me';
+    kasten.innerHTML = '<div class="mtop"><span class="tx">Titel</span></div><div class="mbody"><div class="ml nt" data-raw="Notiz: x"><span class="row">Notiz: x</span></div><div class="ml cp" data-raw="Wenn Puls zu niedrig: /me tut etwas"><span class="row">Wenn Puls zu niedrig: /me tut etwas</span></div></div>';
+    document.body.appendChild(kasten);
+    const cb = navigator.clipboard; const aufrufe = []; cb.writeText = t => { aufrufe.push(t); return Promise.resolve(); };
+    try {
+      kasten.querySelector('.tx').click(); kasten.querySelector('.ml.nt').click();
+      const vorher = aufrufe.length;
+      kasten.click();
+      ok(vorher === 0, 'Titel oder Notiz kopierten: ' + aufrufe.join(' | '));
+      ok(aufrufe.length === 1 && aufrufe[0] === '/me tut etwas', 'Box kopiert: ' + aufrufe.join(' | '));
+    } finally { delete cb.writeText; kasten.remove(); }
+  });
+  T('Die Einleitung hat eine Willkommensseite und drei markierte Stellen', () => {
+    ok(INTRO.length === 4 && INTRO[0].el === null && INTRO.slice(1).every(s => typeof s.el === 'function'), 'Aufbau der Einleitung');
+    ok($('#n') && $('#modebtn'), 'Stellen für die Markierung fehlen');
+  });
+  T('Die Einleitung läuft im Testmodus nicht und merkt sich das Überspringen im Browser', () => {
+    const alt = localStorage.getItem(INTRO_KEY);
+    try {
+      ok(introAt === -1 && !$('#intro'), 'läuft im Testmodus');
+      introStart(); ok(introAt === 0 && $('#intro'), 'startet nicht');
+      introWeiter(); ok(introAt === 1, 'Weiter zählt nicht');
+      introEnde(); ok(introAt === -1 && !$('#intro') && localStorage.getItem(INTRO_KEY) === '1', 'merkt sich das Überspringen nicht');
+    } finally { if (alt === null) localStorage.removeItem(INTRO_KEY); else localStorage.setItem(INTRO_KEY, alt); }
   });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
   T('Ungültige Akten-Dateien werden abgelehnt', () => { ok(akteImport({format: 'medic-handbuch'}).errors, 'falsches Format angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'v', title: 'X', sections: [{h: 'A', items: ['x']}]}}).errors.cat, 'schreibgeschützte Kategorie angenommen'); ok(akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Leer', sections: []}}).errors.sections, 'Akte ohne Abschnitte angenommen'); });
