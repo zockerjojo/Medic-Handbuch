@@ -49,7 +49,17 @@ button:hover{border-color:var(--a)}
 .ekg{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--l);border-radius:50%;background:none;color:var(--m);font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .ekg svg{width:15px;height:15px}
 .ekg:hover,.ekg:focus-visible{color:var(--a);border-color:var(--a)}
+.notfall{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--r);border-radius:50%;background:none;color:var(--r);font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}   /* Warnschild in jeder Akte, rechts neben dem EKG-Zeichen */
+.notfall svg{width:15px;height:15px}
+.notfall:hover,.notfall:focus-visible{background:var(--r);border-color:var(--r);color:var(--on-a)}
 .me.ekgbody{margin-top:0}
+.me.nfbody{margin-top:0}
+.nf{margin:0 0 4px}
+.nf-t{margin:14px 0 6px;font-size:17px;line-height:1.35;font-weight:700;color:var(--r)}   /* Name eines Notfall-Protokolls */
+.nf-l{margin:8px 0 2px;font-size:13px;font-weight:600;color:var(--m)}   /* Beschreibung und /me-Befehle */
+.nf-be{margin:0 0 4px;padding-left:20px;list-style:disc}
+.ml.tl.nfsep{padding:14px 6px}   /* deutliche Trennlinie zwischen den Notfall-Protokollen */
+.ml.tl.nfsep .tl-line{height:2px;opacity:.8}
 .ekgh{margin:16px 0 6px;padding:5px 10px;border-radius:6px;font-size:17px;line-height:1.35;font-weight:700;color:var(--ekg-t);background:var(--ekg-bg)}   /* Normalwerte im EKG-Fenster: gelb hervorgehoben, nicht kopierbar. Hell: gelbe Fläche mit dunkler Schrift, weil gelbe Schrift auf Weiß nicht lesbar ist */
 @media(max-width:560px){.lbl{display:none}}
 #l{padding-bottom:20px}
@@ -209,6 +219,19 @@ const ME_TITLE = 'Durchführung';   // Standardtitel der Hauptbox, im Browser um
 const DIVIDER = '---';   // Trennlinie in einer /me-Liste: eine Zeile mit genau diesem Text, ohne Textstelle und ohne Kopieren
 const EKG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4.5l1.8-4.2 3.2 9.2 2.4-7.5 1.6 2.5H22"/></svg>';   // EKG-Symbol neben dem Titel jeder Akte
 const EKG = {akte: 'Narkose richtig einleiten', box: 'Überwachung des EKGs'};   // Quelle der Standard-EKG-Überwachung: die /me-Box mit diesem Titel in dieser Akte
+const NOTFALL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';   // Warnschild (Gefahrenzeichen) des Notfall-Knopfs
+// Notfall-Protokolle: fest im Quelltext, nicht in akten.json. Ihre /me-Zeilen sind kopierbar wie in den Akten, nur im Zuschauermodus.
+const NOTFALL = [
+  {t: '1. Schwere Blutung (Massive Blutung / Tourniquet)',
+    beschr: ['Spritzende/massive Blutungen an Extremitäten', 'Greift, wenn einfacher Druck nicht ausreicht', 'Ziel: Sofortige Blutstillung & Schockvermeidung'],
+    me: ['/me übt Druck auf die Wunde aus', '/me legt das Tourniquet oberhalb der Wunde straff an und zieht es fest', '/me legt einen Druckverband über die Wunde']},
+  {t: '2. Reanimation (Kreislaufstillstand / CPR)',
+    beschr: ['Bewusstloser Patient ohne Puls & Atmung', 'Ziel: Aufrechterhaltung der Sauerstoffversorgung von Gehirn & Organen'],
+    me: ['/me überprüft Bewusstsein, Atmung und Puls des Patienten', '/me kniet sich neben den Patienten und beginnt mit der Herzdruckmassage (30x drücken)', '/me setzt die Beutel-Masken-Beatmung auf und führt 2 Beatmungshübe durch', '/me bringt die Defibrillator-Pads auf dem Brustkorb an und startet die Analyse', '/me verabreicht 1 mg Adrenalin über den venösen Zugang']},
+  {t: '3. Kreislaufkollaps (Synkope / Akuter Schock)',
+    beschr: ['Plötzliche Bewusstlosigkeit oder Schocksymptome (Puls vorhanden)', 'Stark abgefallener Blutdruck / kalter Schweiß'],
+    me: ['/me bringt den Patienten in die Schocklagerung (Beine hochlagern)', '/me überprüft die Vitalwerte des Patienten', '/me verabreicht Sauerstoff über eine Venturi-Maske (6-8 l/min)', '/me legt einen venösen Zugang und schließt eine Vollkristalloid-Infusion (Kochsalzlösung) zum Volumenersatz an']},
+];
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 const KEY = 'medic-handbuch-v2';
 const SETKEY = 'medic-handbuch-einstellungen-v2';   // v2: die neuen Standardwerte gelten einmal für alle
@@ -833,7 +856,8 @@ function card(r){
   const barw = (k, open) => `<span class="sarw" data-act="boxopen" data-id="${id}" data-bk="${esc(k)}" title="Auf- und zuklappen" aria-label="Auf- und zuklappen">${open ? '▾' : '▸'}</span>`;   // Pfeil einer /me-Box, wie bei den Abschnitten
   const stand = standOf(r);   // Kennzeichnung: Original, bearbeitet oder selbst erstellt
   const ekgBtn = `<button class="ekg" data-act="ekg" title="EKG-Überwachung" aria-label="EKG-Überwachung">${EKG_ICON}</button>`;   // direkt hinter dem Titel, öffnet die Standard-EKG-Überwachung
-  const head = `<h2>${arrow}<span class="row" data-hold><span class="htitle">${tx('title', r.title, hlEsc(r.title))}${ekgBtn}${stand}</span>${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
+  const notfallBtn = `<button class="notfall" data-act="notfall" title="Notfall-Protokolle" aria-label="Notfall-Protokolle">${NOTFALL_ICON}</button>`;   // Warnschild, direkt rechts neben dem EKG-Zeichen, in jeder Akte
+  const head = `<h2>${arrow}<span class="row" data-hold><span class="htitle">${tx('title', r.title, hlEsc(r.title))}${ekgBtn}${notfallBtn}${stand}</span>${tools(ed)}</span><span class="acts"><button class="st" data-act="fav" data-id="${id}" title="Favorit" aria-label="Favorit">${starred ? '★' : '☆'}</button>${bv('exportrec', 'Export', 'Diese Akte als eigene Datei exportieren')}</span></h2>`;
   // Werkzeuge der ganzen Akte: fest unter dem Kopf, nur im Bearbeitungsmodus
   const ctools = can ? `<div class="ctools">${b('recmove', '▲ Nach oben', 'Akte nach oben', 'data-d="-1"')}${b('recmove', '▼ Nach unten', 'Akte nach unten', 'data-d="1"')}${SUBCATS.includes(r.cat) ? subSelHTML(r, id) : ''}${S.ov[r.id] ? b('reset', 'Original', 'Original wiederherstellen') : ''}${b('trash', 'In den Papierkorb', 'In den Papierkorb legen')}</div>` : '';
   // Kategorie-Untertitel nur in "Alle" und "Favoriten", in einzelnen Kategorien ist es ohnehin klar; die Akten ganz oben haben keine Kategorie
@@ -911,6 +935,9 @@ function abstandRow(){   // Schieberegler für den Abstand in den Akten-Karten: 
 function resetRow(){
   return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall">Alle Akten zurücksetzen</button><p class="shint">Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.</p></div>`;
 }
+function introRow(){   // Einleitung noch einmal ansehen: ohne Beschreibung, direkt über dem Zurücksetzen (act „introrepeat“)
+  return `<div class="srow"><button data-act="introrepeat">Einführung zu wiederholen</button></div>`;
+}
 function renderSettings(){
   $('#mbody').innerHTML =
     colsRow() +
@@ -919,6 +946,7 @@ function renderSettings(){
     segRow('Ecken der Akten', 'Rund wie bisher oder eckig, für ein schlichteres Aussehen.', 'ecken', [['rund', 'Rund'], ['eckig', 'Eckig']]) +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
+    introRow() +
     resetRow();
 }
 function secFormHTML(sf, id){
@@ -1085,10 +1113,11 @@ function closeModal(){ $('#modal').hidden = true; }
 /* ===== Einleitung beim ersten Besuch: eine Willkommensseite und drei markierte Stellen, jederzeit überspringbar ===== */
 const INTRO_KEY = 'medic-handbuch-einleitung';   // nur ein Vermerk im Browser: nicht Teil der Akten, nicht im Export
 const INTRO = [
-  {t: 'Willkommen im Medic Handbuch', x: 'In drei kurzen Schritten zeigen wir Ihnen die wichtigsten Stellen der Seite. Die Einleitung können Sie jederzeit mit „Überspringen“ beenden.', el: null},
+  {t: 'Willkommen im Medic Handbuch', x: 'In vier kurzen Schritten zeigen wir Ihnen die wichtigsten Stellen der Seite. Die Einleitung können Sie jederzeit mit „Überspringen“ beenden.', el: null},
   {t: 'Die Kategorien', x: 'Die Kategorien stehen links, auf dem Handy oben. Mit einem Klick auf „Behandlungen“ kommen Sie zu allen Behandlungen.', el: () => $('#n')},
   {t: 'Der Bearbeitungsmodus', x: 'Der Knopf oben rechts mit dem Stift ✎ schaltet den Bearbeitungsmodus ein. Auf dem Computer steht daneben das Wort „Bearbeiten“. Dann können Sie Texte ändern, Zeilen und Boxen hinzufügen und die Akten ordnen. Ohne ihn lässt sich nichts ändern oder hinzufügen.', el: () => $('#modebtn')},
-  {t: 'Die EKG-Übersicht', x: 'Neben jedem Akten-Titel steht ein EKG-Zeichen. Ein Klick darauf öffnet die Übersicht mit Puls, Blutdruck und Sauerstoffsättigung. Die Normalwerte sind gelb markiert. Im Zuschauermodus kopiert ein Klick auf eine /me-Zeile ihre Handlung.', el: () => $('#l .ekg'), scroll: true}
+  {t: 'Die EKG-Übersicht', x: 'Neben jedem Akten-Titel steht ein EKG-Zeichen. Ein Klick darauf öffnet die Übersicht mit Puls, Blutdruck und Sauerstoffsättigung. Die Normalwerte sind gelb markiert. Im Zuschauermodus kopiert ein Klick auf eine /me-Zeile ihre Handlung.', el: () => $('#l .ekg'), scroll: true},
+  {t: 'Der Notfall-Knopf', x: 'Neben dem EKG-Zeichen steht bei jeder Akte ein Warnschild. Ein Klick darauf öffnet sofort die drei Notfall-Protokolle für lebensbedrohliche Situationen: schwere Blutung, Reanimation und Kreislaufkollaps. So ist das Wichtigste auch in einer Notlage mit einem Klick erreichbar. Die /me-Zeilen dort lassen sich im Zuschauermodus anklicken und kopieren.', el: () => $('#l .notfall'), scroll: true}
 ];
 let introAt = -1, introSicht = null;   // Schritt der laufenden Einleitung (-1: keine) und der Scroll-Stand davor
 function introGesehen(){ try { return !!localStorage.getItem(INTRO_KEY); } catch (e) { return true; } }   // ohne Browserspeicher gar keine Einleitung, sonst käme sie bei jedem Besuch
@@ -1177,6 +1206,13 @@ function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar 
   focusField('#modal [data-act="closemodal"]');
 }
 
+function openNotfall(){   // Notfall-Fenster: drei Protokolle, durch eine deutliche Trennlinie getrennt; die /me-Zeilen sind kopierbar wie in den Akten
+  $('#mtitle').textContent = 'Notfall-Protokolle';
+  $('#mbody').innerHTML = NOTFALL.map(p => `<section class="nf"><h4 class="nf-t">${hlEsc(p.t)}</h4><p class="nf-l">Beschreibung</p><ul class="nf-be">${p.beschr.map(z => `<li>${fmt(z)}</li>`).join('')}</ul><p class="nf-l">/me-Befehle</p><div class="me nfbody">${p.me.map(m => `<div class="ml cp" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('')}</div></section>`).join('<div class="ml tl nfsep"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>');
+  $('#modal').hidden = false;
+  focusField('#modal [data-act="closemodal"]');
+}
+
 /* ===== Rückgängig und Wiederholen ===== */
 function undo(){
   if (editing) finishEdit();
@@ -1203,6 +1239,8 @@ function act(name, b){
   if (name === 'create') return submit();
   if (name === 'export') return exportData();
   if (name === 'ekg') return openEkg();
+  if (name === 'notfall') return openNotfall();
+  if (name === 'introrepeat') { closeModal(); return introStart(); }   // Einstellungen zu, dann die Einleitung von vorn
   if (name === 'import') return $('#imp').click();
   if (name === 'mode') return setMode(!EDIT);
   if (name === 'navtoggle') { SET.nav = SET.nav === 'open' ? 'closed' : 'open'; saveSet(); return applySet(); }
@@ -1803,8 +1841,8 @@ function runTests(){
       ok(aufrufe.length === 1 && aufrufe[0] === '/me tut etwas', 'Im Zuschauermodus kopiert: ' + aufrufe.join(' | '));
     } finally { setMode(true); delete cb.writeText; kasten.remove(); }
   });
-  T('Die Einleitung hat eine Willkommensseite und drei markierte Stellen', () => {
-    ok(INTRO.length === 4 && INTRO[0].el === null && INTRO.slice(1).every(s => typeof s.el === 'function'), 'Aufbau der Einleitung');
+  T('Die Einleitung hat eine Willkommensseite und vier markierte Stellen', () => {
+    ok(INTRO.length === 5 && INTRO[0].el === null && INTRO.slice(1).every(s => typeof s.el === 'function'), 'Aufbau der Einleitung');
     ok($('#n') && $('#modebtn'), 'Stellen für die Markierung fehlen');
   });
   T('Die Einleitung läuft im Testmodus nicht und merkt sich das Überspringen im Browser', () => {
@@ -1814,6 +1852,58 @@ function runTests(){
       introStart(); ok(introAt === 0 && $('#intro'), 'startet nicht');
       introWeiter(); ok(introAt === 1, 'Weiter zählt nicht');
       introEnde(); ok(introAt === -1 && !$('#intro') && localStorage.getItem(INTRO_KEY) === '1', 'merkt sich das Überspringen nicht');
+    } finally { if (alt === null) localStorage.removeItem(INTRO_KEY); else localStorage.setItem(INTRO_KEY, alt); }
+  });
+  T('Der Notfall-Knopf steht rechts neben dem EKG-Knopf in jeder Akte', () => { reset0(); const c = card(get(id())); ok(/<button class="ekg"[^>]*>[\s\S]*?<\/button><button class="notfall"/.test(c), 'nicht rechts neben dem EKG-Knopf'); });
+  T('Das Notfall-Fenster: drei Protokolle, Trennlinien dazwischen, zwölf kopierbare /me-Zeilen', () => {
+    try {
+      openNotfall();
+      const mb = $('#mbody'), aufbau = [...mb.children].map(e => e.tagName + (e.classList.contains('tl') ? '-tl' : ''));
+      ok($('#mtitle').textContent === 'Notfall-Protokolle', 'Titel: ' + $('#mtitle').textContent);
+      ok(aufbau.join(',') === 'SECTION,DIV-tl,SECTION,DIV-tl,SECTION', 'Aufbau: ' + aufbau.join(','));
+      ok(mb.querySelectorAll('h4.nf-t').length === 3, 'Protokolle: ' + mb.querySelectorAll('h4.nf-t').length);
+      ok(mb.querySelectorAll('.ml.cp').length === 12, 'kopierbare Zeilen: ' + mb.querySelectorAll('.ml.cp').length);
+      ok([...mb.querySelectorAll('.ml.cp')].every(x => x.dataset.raw.startsWith('/me ')), 'Zeile ohne /me am Anfang');
+      ok(mb.textContent.includes('Sofortige Blutstillung & Schockvermeidung'), 'Text verändert');
+    } finally { closeModal(); }
+  });
+  TZ('Im Zuschauermodus kopiert im Notfall-Fenster eine Zeile ihre Handlung, die Fläche eines Protokolls alle seine Zeilen', () => {
+    getSelection().removeAllRanges();
+    const cb = navigator.clipboard; const aufrufe = []; cb.writeText = t => { aufrufe.push(t); return Promise.resolve(); };
+    try {
+      openNotfall();
+      $('#mbody .ml.cp').click();
+      ok(aufrufe.length === 1 && aufrufe[0] === '/me übt Druck auf die Wunde aus', 'Zeile kopiert: ' + aufrufe.join(' | '));
+      $('#mbody .me.nfbody').click();
+      ok(aufrufe.length === 2 && aufrufe[1] === '/me übt Druck auf die Wunde aus\n/me legt das Tourniquet oberhalb der Wunde straff an und zieht es fest\n/me legt einen Druckverband über die Wunde', 'Fläche kopiert: ' + aufrufe[1]);
+    } finally { delete cb.writeText; closeModal(); }
+  });
+  T('Im Bearbeitungsmodus kopiert im Notfall-Fenster ein Klick nichts', () => {
+    setMode(true); getSelection().removeAllRanges();
+    const cb = navigator.clipboard; const aufrufe = []; cb.writeText = t => { aufrufe.push(t); return Promise.resolve(); };
+    try {
+      openNotfall();
+      $('#mbody .ml.cp').click(); $('#mbody .me.nfbody').click();
+      ok(aufrufe.length === 0, 'kopiert: ' + aufrufe.join(' | '));
+    } finally { delete cb.writeText; closeModal(); }
+  });
+  T('Die Einstellungen haben Einführung zu wiederholen direkt über dem Zurücksetzen, ohne Beschreibung', () => {
+    renderSettings();
+    const zeilen = [...$('#mbody').querySelectorAll('.srow')], i = zeilen.findIndex(z => z.querySelector('button[data-act="introrepeat"]'));
+    ok(i >= 0 && zeilen[i].textContent.trim() === 'Einführung zu wiederholen', 'Knopf fehlt oder heißt anders');
+    ok(i >= 0 && zeilen[i].querySelectorAll('p').length === 0, 'Beschreibung steht da');
+    ok(i >= 0 && zeilen[i + 1] && zeilen[i + 1].querySelector('button[data-act="resetall"]'), 'steht nicht direkt über dem Zurücksetzen');
+  });
+  T('Einführung zu wiederholen schließt die Einstellungen und startet die Einleitung von vorn', () => {
+    const alt = localStorage.getItem(INTRO_KEY);
+    try {
+      localStorage.setItem(INTRO_KEY, '1');
+      openModal();
+      act('introrepeat', {dataset: {}});
+      ok($('#modal').hidden === true, 'Einstellungen bleiben offen');
+      ok(introAt === 0 && $('#intro'), 'startet nicht');
+      introEnde();
+      ok(introAt === -1 && !$('#intro') && localStorage.getItem(INTRO_KEY) === '1', 'Vermerk verändert');
     } finally { if (alt === null) localStorage.removeItem(INTRO_KEY); else localStorage.setItem(INTRO_KEY, alt); }
   });
   T('Einzelne Akte exportieren und als eigene Akte wieder importieren', () => { reset0(); const i = id(), src = get(i), obj = akteExportObj(i); ok(obj.format === 'medic-akte' && obj.akte.title === src.title, 'Export falsch'); ok(!JSON.stringify(obj).includes('"k"'), 'interne Schlüssel im Export'); const before = S.made.length; const res = akteImport(JSON.parse(JSON.stringify(obj))); ok(res.id && S.made.length === before + 1, 'nicht angelegt'); const m = get(res.id); ok(m.title !== src.title && m.title.includes('(importiert)'), 'Titel nicht umbenannt: ' + m.title); ok(JSON.stringify(m.sections.map(s => s.items)) === JSON.stringify(src.sections.map(s => s.items)), 'Zeilen weichen ab'); ok(m.me.join('|') === src.me.join('|'), 'Handlungen weichen ab'); });
