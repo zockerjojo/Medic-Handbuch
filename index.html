@@ -42,6 +42,7 @@ button:hover{border-color:var(--a)}
 .ibtn{width:34px;height:34px;padding:0;border-radius:50%;background:none;border:1px solid var(--l);color:var(--m);font-size:16px;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .ibtn:hover:not(:disabled){color:var(--a);border-color:var(--a)}
 .ibtn:disabled{opacity:.35;cursor:default}
+.bugic{display:block;width:17px;height:17px;flex:none}
 .htitle{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}   /* Titel und EKG-Symbol: das Symbol sitzt direkt hinter dem Titel */
 .htitle>.tx{min-width:0}
 @media(max-width:560px){.htitle{flex-wrap:wrap;row-gap:4px}.htitle>.tx{flex:0 1 auto;overflow-wrap:break-word;hyphens:auto}}   /* auf dem Handy rutschen Symbol und Kennzeichnung bei Platzmangel in eine neue Zeile, lange Titel werden silbenweise umbrochen */
@@ -65,8 +66,8 @@ body{--kgap:26px}   /* Abstand zwischen den Akten-Karten und den Unterkategorien
 body.abst-1{--kgap:14px}
 body.abst-2{--kgap:20px}
 body.eckig .card,body.eckig .me{border-radius:0}
-/* Der Titel der Unterkategorie, deren Akten gerade oben stehen: ein fester Platz direkt unter der Kopfleiste. Er bewegt sich beim Scrollen nicht, nur sein Text wechselt. */
-.grph{position:sticky;top:var(--sbh,64px);z-index:3;margin:0;height:46px;box-sizing:border-box;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);font-family:Georgia,serif;font-size:clamp(16px,4.2vw,20px);font-weight:700;line-height:26px;color:var(--a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Der Titel einer Unterkategorie steht direkt über ihren Akten. Er ist nicht fixiert und wandert beim Scrollen mit seinen Akten mit. */
+.grph{margin:0 0 var(--kgap);padding:0 4px 6px;border-bottom:2px solid var(--a);font-family:Georgia,serif;font-size:clamp(16px,4.2vw,20px);font-weight:700;line-height:1.3;color:var(--a);overflow-wrap:anywhere}
 .card.gone{opacity:.65}
 .card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px var(--shadow)}}
 .card h2{cursor:pointer}
@@ -153,6 +154,9 @@ body:not(.edit) .only-edit{display:none!important}
 .mbox{width:min(460px,100%);background:var(--p);border:1px solid var(--l);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.45);padding:18px 20px 12px;max-height:calc(100vh - 32px);overflow:auto}
 .mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .mhead h3{margin:0;font:700 22px Georgia,serif}
+.bugta{display:block;width:100%;min-height:120px;margin:8px 0 0;padding:10px 12px;border-radius:6px;border:1px solid var(--l);background:var(--bg);color:var(--t);font:inherit;resize:vertical}
+.bugrow{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:10px 0 4px}
+.bugrow .shint{margin:0;flex:1 1 180px}
 .srow{padding:12px 0;border-top:1px solid var(--l)}
 .slabel{margin:0 0 8px;font-weight:600}
 .shint{margin:6px 0 0;color:var(--m);font-size:13px;line-height:1.4}
@@ -172,8 +176,7 @@ body:not(.edit) .only-edit{display:none!important}
 </style></head><body>
 <nav id="n"><h1 class="brand"><svg class="cross" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:var(--r)" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg><span>Medic Handbuch</span></h1></nav>
 <main>
-<div id="sb"><button class="ibtn" id="navbtn" data-act="navtoggle" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden">☰</button><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
-<h3 id="gt" class="grph" hidden></h3>
+<div id="sb"><button class="ibtn" id="navbtn" data-act="navtoggle" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden">☰</button><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="bug" data-act="bug" title="Fehler melden" aria-label="Fehler melden"><svg class="bugic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><ellipse cx="12" cy="13.5" rx="5" ry="6.5"/><path d="M12 8v12.5M7 10 3.5 8M7 14H3M7.5 18 4 20.5M17 10l3.5-2M17 14h4M16.5 18 20 20.5"/></svg></button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
 <div id="l"></div>
 </main>
 <div id="ok"></div>
@@ -915,8 +918,7 @@ function render(){
   else list = sidebarOrder(view, live().filter(r => r.cat === view));
   const fh = formHTML();
   if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }   // das Formular bleibt beim Tippen in der Suche erhalten
-  // In einer Kategorie mit Unterkategorien zeigt der feste Titel unter der Kopfleiste (#gt) die Gruppe, die gerade oben steht; bei der Suche gibt es keine Gruppen.
-  // Jede Gruppe ist ein Abschnitt (section.grp) mit ihren Akten. Der Titel steht nicht in der Liste, damit er beim Scrollen nicht wandert.
+  // In einer Kategorie mit Unterkategorien steht der Titel direkt über den Akten seiner Gruppe. Er ist nicht fixiert und wandert beim Scrollen mit. Bei der Suche gibt es keine Gruppen und keine Titel.
   const titled = !t && SUBCATS.includes(view);
   const groups = [];
   list.forEach(r => {
@@ -924,11 +926,8 @@ function render(){
     if (!groups.length || sid !== groups[groups.length - 1].sid) groups.push({sid, s, cards: ''});
     groups[groups.length - 1].cards += (view === 'trash' && !t) ? trashCard(r) : card(r);
   });
-  const html = groups.map(g => `<section class="grp"${g.s ? ` data-title="${esc(g.s.t)}"` : ''}><div class="grpc">${g.cards}</div></section>`).join('');
+  const html = groups.map(g => `<section class="grp">${g.s ? `<h3 class="grph">${esc(g.s.t)}</h3>` : ''}<div class="grpc">${g.cards}</div></section>`).join('');
   $('#l').innerHTML = list.length ? html : `<p class="empty">${empty}</p>`;
-  $('#gt').hidden = !titled || !list.length;   // der feste Titel gibt es nur in Kategorien mit Unterkategorien
-  setBarHeight();
-  gtUpdate();
   if (pending) {
     const p = pending; pending = null;
     if (p.path) { const el = [...document.querySelectorAll('.tx')].find(x => x.dataset.rec === p.id && x.dataset.path === p.path); if (el) startEdit(el); }
@@ -937,27 +936,7 @@ function render(){
   }
 }
 
-function setBarHeight(){   // Höhe der Kopfleiste merken: der feste Titel klebt direkt darunter
-  const sb = $('#sb');
-  if (sb) document.documentElement.style.setProperty('--sbh', sb.offsetHeight + 'px');
-}
-window.addEventListener('resize', () => { setBarHeight(); gtUpdate(); });
-if (window.ResizeObserver && $('#sb')) new ResizeObserver(setBarHeight).observe($('#sb'));   // ändert sich die Kopfleiste selbst, etwa beim Umbruch auf dem Handy, passt sich der feste Titel an
 
-// Der feste Titel unter der Kopfleiste nennt die Unterkategorie, deren Akten gerade oben in der Liste stehen.
-// Er bewegt sich nie: beim Scrollen wechselt nur sein Text, sobald die nächste Unterkategorie an ihn heranreicht.
-function gtUpdate(){
-  const gt = $('#gt');
-  if (!gt || gt.hidden) return;
-  const linie = gt.getBoundingClientRect().bottom;   // Unterkante des festen Titels
-  let oben = null;
-  document.querySelectorAll('#l section.grp').forEach(s => { if (s.getBoundingClientRect().top <= linie + 1) oben = s; });
-  const t = oben && oben.dataset.title ? oben.dataset.title : '';
-  if (gt.textContent !== t) gt.textContent = t;
-  gt.style.visibility = t ? '' : 'hidden';   // ohne Titel bleibt der Platz frei, die Akten darunter bleiben sichtbar
-}
-$('main').addEventListener('scroll', gtUpdate, {passive: true});   // am Computer scrollt main
-window.addEventListener('scroll', gtUpdate, {passive: true});       // auf dem Handy scrollt die ganze Seite
 
 /* ===== Bearbeiten: ein Mechanismus für alle Textstellen ===== */
 function startEdit(el){
@@ -1069,6 +1048,27 @@ function setOpt(k, v){
 }
 function openModal(){ $('#mtitle').textContent = 'Einstellungen'; renderSettings(); $('#modal').hidden = false; focusField('#modal [data-act="closemodal"]'); }
 function closeModal(){ $('#modal').hidden = true; }
+function openBug(){   // Fenster „Fehler melden“: beschreiben, kopieren und bei „zockerjojo“ auf Discord schicken
+  $('#mtitle').textContent = 'Fehler melden';
+  $('#mbody').innerHTML = `<p>Bei Fehlern kannst du ganz einfach <b>„zockerjojo“</b> auf Discord anschreiben.</p>
+    <p class="shint">Schreib unten, was du gemacht hast und was passiert ist. Mit „Text kopieren“ landet deine Nachricht in der Zwischenablage, dann fügst du sie bei Discord ein.</p>
+    <textarea id="bugtext" class="bugta" rows="6" aria-label="Fehlerbeschreibung" placeholder="Was hast du gemacht? Was ist passiert, und was hättest du erwartet?"></textarea>
+    <div class="bugrow"><button class="btn" data-act="bugcopy">Text kopieren</button><span id="bugmsg" class="shint" aria-live="polite"></span></div>`;
+  $('#modal').hidden = false;
+  focusField('#bugtext');
+}
+async function copyBug(){   // Text in die Zwischenablage; geht das nicht, bleibt der Text markiert, damit man ihn selbst kopieren kann
+  const ta = $('#bugtext'), msg = $('#bugmsg');
+  const text = ta ? ta.value.trim() : '';
+  if (!text) { msg.textContent = 'Schreib zuerst, was passiert ist.'; if (ta) ta.focus(); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    msg.textContent = 'Kopiert. Schick die Nachricht an „zockerjojo“ auf Discord.';
+  } catch (err) {
+    if (ta) ta.select();
+    msg.textContent = 'Markiere den Text und kopiere ihn mit Strg+C (Cmd+C am Mac). Schick ihn dann an „zockerjojo“ auf Discord.';
+  }
+}
 function ekgLines(){   // Zeilen der Standard-Box, null wenn es sie nicht (mehr) gibt
   const r = get(EKG.akte), b = r ? boxesOf(r).find(x => x.t === EKG.box) : null;
   return b ? b.me : null;
@@ -1124,6 +1124,8 @@ function act(name, b){
   if (name === 'undo') return undo();
   if (name === 'redo') return redo();
   if (name === 'settings') return openModal();
+  if (name === 'bug') return openBug();
+  if (name === 'bugcopy') return copyBug();
   if (name === 'closemodal') return closeModal();
   if (name === 'set') return setOpt(d.k, d.v);
   if (name === 'view') { view = d.v; query = ''; $('#q').value = ''; folded.clear(); secOv.clear(); boxOv.clear(); sectionForm = null; subForm = null; if (C[d.v]) opened.add(d.v); }
@@ -1518,6 +1520,22 @@ function runTests(){
   T('Einzelnes Umschalten überschreibt den Standard', () => { reset0(); setOpt('sec', 'open'); const i = E2().id, k = get(i).sections[0].k; act('secopen', {dataset: {id: i, sk: k}}); const c = card(get(i)); ok(c.includes('<div class="sec">'), 'erster Abschnitt nicht zu'); ok(c.includes('class="sec open"'), 'andere nicht offen'); setOpt('sec', 'open'); });
   T('Abstand, Ecken und Spalten wirken auf die Ansicht', () => { setOpt('abstand', '3'); ok(document.body.classList.contains('abst-3') && !document.body.classList.contains('abst-1'), 'Abstand Weit nicht gesetzt'); setOpt('abstand', '1'); ok(document.body.classList.contains('abst-1') && !document.body.classList.contains('abst-3'), 'Abstand Eng nicht zurückgesetzt'); setOpt('ecken', 'eckig'); ok(document.body.classList.contains('eckig'), 'Ecken eckig nicht gesetzt'); setOpt('ecken', 'rund'); ok(!document.body.classList.contains('eckig'), 'Ecken rund nicht zurückgesetzt'); setOpt('cols', '3'); ok(document.body.style.getPropertyValue('--cols').trim() === '3', 'Spalten nicht gesetzt'); setOpt('cols', '2'); });
   T('Einstellungsfenster öffnet und schließt', () => { act('settings', {dataset: {}}); ok($('#modal').hidden === false, 'nicht offen'); ok($('#mbody').innerHTML.includes('Design'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); });
+  T('Fehler-Knopf sitzt links neben dem Einstellungsknopf und öffnet das Fenster', () => {
+    ok($('#bug') && $('#bug').nextElementSibling === $('#gear'), 'Knopf nicht direkt links neben den Einstellungen');
+    act('bug', {dataset: {}});
+    ok($('#modal').hidden === false, 'Fenster nicht offen');
+    ok($('#mtitle').textContent === 'Fehler melden', 'Titel falsch: ' + $('#mtitle').textContent);
+    ok($('#mbody').textContent.includes('zockerjojo') && $('#mbody').textContent.includes('Discord'), 'Hinweis auf zockerjojo auf Discord fehlt');
+    ok(!!$('#bugtext'), 'Textfeld fehlt');
+    act('closemodal', {dataset: {}});
+    ok($('#modal').hidden === true, 'nicht geschlossen');
+  });
+  T('Fehler-Text: ohne Text kommt ein Hinweis statt einer leeren Kopie', () => {
+    act('bug', {dataset: {}});
+    act('bugcopy', {dataset: {}});
+    ok($('#bugmsg').textContent.includes('Schreib zuerst'), 'kein Hinweis: ' + $('#bugmsg').textContent);
+    act('closemodal', {dataset: {}});
+  });
   T('EKG-Symbol sitzt direkt hinter dem Titel und öffnet die Standard-Überwachung', () => { reset0(); const i = id(), c = card(get(i)), tEnd = c.indexOf('</span>', c.indexOf('data-path="title"')); ok(tEnd > 0 && c.slice(tEnd + 7).startsWith('<button class="ekg" data-act="ekg"'), 'Symbol nicht direkt hinter dem Titel'); act('ekg', {dataset: {}}); ok($('#modal').hidden === false, 'Fenster nicht offen'); ok($('#mtitle').textContent === 'EKG-Überwachung', 'Titel falsch'); const cp = [...$('#mbody').querySelectorAll('.ml.cp')]; ok(cp.length >= 5 && cp.every(x => x.dataset.raw.includes('/me')), 'Zeilen nicht kopierbar'); ok($('#mbody').innerHTML.includes('verabreicht Atropin'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); act('settings', {dataset: {}}); ok($('#mtitle').textContent === 'Einstellungen', 'Titel der Einstellungen bleibt EKG'); act('closemodal', {dataset: {}}); });
   T('Ohne EKG-Box zeigt das Fenster einen Hinweis', () => { const keep = EKG.box; EKG.box = 'gibt es nicht'; try { act('ekg', {dataset: {}}); ok($('#mbody').textContent.includes('fehlt'), 'Hinweis fehlt'); } finally { EKG.box = keep; act('closemodal', {dataset: {}}); } });
   T('Akten-Daten: fehlerhafte Einträge werden erkannt', () => {
@@ -1716,15 +1734,15 @@ function runTests(){
     ok(res.id && get(res.id).meOff === true, 'nach dem Import nicht entfernt');
     reset0();
   });
-  T('Unterkategorien zeigen einen festen Titel unter der Kopfleiste, bei der Suche keinen', () => {
+  T('Unterkategorie-Titel stehen über ihren Akten, nicht am Suchfeld, und bei der Suche gibt es keine', () => {
     const v0 = view; reset0(); syncData(); view = 'b'; render();
-    document.querySelector('main').scrollTop = 0; gtUpdate();
-    const titel = [...$('#l').querySelectorAll('section.grp')].map(s => s.dataset.title).filter(Boolean);
-    ok(titel.includes('Wunden & Trauma'), 'Titel fehlt: ' + titel.join(' | '));
-    ok(!$('#gt').hidden && $('#gt').textContent === (document.querySelector('#l section.grp').dataset.title || ''), 'fester Titel nennt nicht die oberste Gruppe: ' + $('#gt').textContent);
-    ok(!$('#l h3.grph'), 'Titel steht noch in der Liste');
+    const titel = [...$('#l').querySelectorAll('h3.grph')];
+    ok(!document.getElementById('gt'), 'alter fester Titel ist noch da');
+    ok(titel.map(h => h.textContent).includes('Wunden & Trauma'), 'Titel fehlt: ' + titel.map(h => h.textContent).join(' | '));
+    ok(titel.every(h => h.nextElementSibling && h.nextElementSibling.classList.contains('grpc')), 'Titel steht nicht direkt über seinen Akten');
+    ok(titel.every(h => !['fixed', 'sticky'].includes(getComputedStyle(h).position)), 'Titel ist fixiert');
     query = 'Prellung'; render();
-    ok($('#gt').hidden && !$('#l').querySelector('section.grp[data-title]'), 'Titel auch bei der Suche');
+    ok($('#l').querySelectorAll('h3.grph').length === 0, 'Titel auch bei der Suche');
     query = ''; view = v0; render();
   });
   T('Die Narkose-Akte hat die EKG-Box mit dem Normalwert-Text', () => {

@@ -67,7 +67,7 @@ Regeln:
 - Die Reihenfolge in der Datei ist die Reihenfolge in der Seitenleiste.
 - Eine Unterkategorie ohne Akten ist erlaubt, etwa wenn Akten noch fehlen. Sie erscheint nur im Bearbeitungsmodus.
 - Akten, vor denen in ihrer Kategorie keine Unterkategorie steht, erscheinen ohne Unterkategorie ganz oben.
-- Der Titel einer Unterkategorie steht auf der Seite über ihren Akten. Beim Scrollen bleibt er unter der Kopfleiste stehen, bis der Titel der nächsten Unterkategorie darüberliegt. Bei der Suche sind die Titel ausgeblendet. Dafür muss die Datei nicht geändert werden.
+- Der Titel einer Unterkategorie steht auf der Seite direkt über ihren Akten. Er ist nicht fixiert und wandert beim Scrollen mit seinen Akten mit. Bei der Suche sind die Titel ausgeblendet. Dafür muss die Datei nicht geändert werden.
 
 Beispiel (Unterkategorie mit einer Akte):
 
@@ -248,4 +248,5 @@ Die Beispiele zeigen nur das Format. In der Ausgabe werden bestehende Akten unve
 13. Hauptbox entfernen: Im Bearbeitungsmodus hat die Hauptbox in ihrer Kopfzeile den Knopf „Box entfernen“, wie die zusätzlichen Boxen. Die Zeilen bleiben gespeichert. Mit „+ … wieder hinzufügen“ kommt die Box zurück. Die Entfernung wird im Browser gespeichert und in Exporten als `meOff` mitgegeben. Im Zuschauermodus ist eine entfernte Hauptbox nicht zu sehen. Bei einer mitgelieferten Akte holt auch „Original wiederherstellen“ die Box zurück, ebenso das Zurücksetzen aller Akten (Punkt 12).
 14. Auszeichnung im Browser: Im Bearbeitungsmodus setzt Strg+B (auf dem Mac Cmd+B) Fettschrift, Strg+U (Cmd+U) Unterstreichung. Ist Text markiert, wird er eingerahmt. Ohne Markierung stehen die Zeichen da, und der Cursor steht dazwischen. Die Tasten wirken in Beschreibung, Abschnittszeilen, /me-Zeilen und im Feld für neue Abschnitte.
 15. Abstand und Ecken der Akten: In den Einstellungen gibt es unter „Spalten pro Reihe“ den Regler „Abstand in den Akten-Karten“ (Eng, Mittel, Weit; Standard ist Mittel) und die Auswahl „Ecken der Akten“ (Rund oder Eckig). Beides gilt für alle Akten und wird im Browser gespeichert. Die frühere Einstellung „Kompakte Karten“ wird übernommen: An wird Eng, Aus wird Weit.
-16. Titel der Unterkategorien: Der Titel steht fest unter der Kopfleiste und bewegt sich beim Scrollen nicht. Er nennt die Unterkategorie, deren Akten gerade oben in der Liste stehen. Erreicht die nächste Unterkategorie den Titel, wechselt nur sein Text. Stehen oben Akten ohne Unterkategorie, bleibt der Platz zunächst leer.
+16. Titel der Unterkategorien: In einer Kategorie mit Unterkategorien steht der Titel direkt über den Akten seiner Gruppe. Er ist nicht fixiert, weder am Suchfeld noch an der Kopfleiste, und wandert beim Scrollen mit seinen Akten mit. Bei der Suche gibt es keine Titel.
+17. Fehler melden: Neben dem Einstellungsknopf (⚙) steht der Knopf mit dem Käfer-Symbol. Er öffnet ein Fenster, in dem du beschreibst, was nicht funktioniert. Mit „Text kopieren“ landet deine Beschreibung in der Zwischenablage. Bei Fehlern schreibst du ganz einfach „zockerjojo“ auf Discord an und fügst den Text dort ein. Der Knopf funktioniert in beiden Modi.
