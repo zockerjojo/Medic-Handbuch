@@ -51,20 +51,23 @@ button:hover{border-color:var(--a)}
 .me.ekgbody{margin-top:0}
 .ekgh{margin:16px 0 6px;font-size:17px;line-height:1.35;color:var(--a)}   /* Normalwerte im EKG-Fenster: gelbe Überschriften, nicht kopierbar */
 @media(max-width:560px){.lbl{display:none}}
-#l{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:26px;align-items:start;padding-bottom:20px}
-@media(max-width:700px){#l{grid-template-columns:minmax(0,1fr)}}
+#l{padding-bottom:20px}
+.grp+.grp{margin-top:var(--kgap)}   /* Abstand zwischen zwei Unterkategorien */
+.grpc{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:var(--kgap);align-items:start}
+.grph+.grpc{padding-top:var(--kgap)}   /* Abstand zwischen dem Titel und den ersten Akten */
+@media(max-width:700px){.grpc{grid-template-columns:minmax(0,1fr)}}
 body.nav-off nav{display:none}
-#l>.empty{grid-column:1/-1}
 .card{min-width:0;border:1px solid var(--cardb);border-radius:14px;padding:16px 16px 18px;background:linear-gradient(180deg,var(--card-a),var(--card-b));box-shadow:0 8px 24px var(--shadow);transition:border-color .2s,box-shadow .2s;scroll-margin-top:76px}
 .card:hover{border-color:rgba(242,184,75,.45);box-shadow:0 10px 30px var(--shadow)}
 @media(min-width:1000px){.card{padding:24px 28px 26px}}
 body.abst-1 .card{padding:12px 14px 14px}
 body.abst-2 .card{padding:14px 15px 16px}
-body.abst-1 #l{gap:14px}
-body.abst-2 #l{gap:20px}
+body{--kgap:26px}   /* Abstand zwischen den Akten-Karten und den Unterkategorien (Stufe Weit) */
+body.abst-1{--kgap:14px}
+body.abst-2{--kgap:20px}
 body.eckig .card,body.eckig .me{border-radius:0}
-/* Titel der Unterkategorien: bleibt beim Scrollen direkt unter der Kopfleiste stehen */
-.grph{grid-column:1/-1;position:sticky;top:var(--sbh,64px);z-index:3;margin:0;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);display:flex;align-items:baseline;gap:12px;font:700 20px Georgia,serif;color:var(--a)}
+/* Titel der Unterkategorien: jede Unterkategorie ist ein eigener Abschnitt (section.grp). Der Titel klebt beim Scrollen direkt unter der Kopfleiste, solange seine Akten sichtbar sind. */
+.grph{position:sticky;top:var(--sbh,64px);z-index:3;margin:0;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);display:flex;align-items:baseline;gap:12px;font:700 20px Georgia,serif;color:var(--a)}
 .card.gone{opacity:.65}
 .card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px var(--shadow)}}
 .card h2{cursor:pointer}
@@ -162,8 +165,8 @@ body:not(.edit) .only-edit{display:none!important}
 .seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--l);border-radius:8px;overflow:hidden}
 .seg button{border:0;border-radius:0;padding:6px 12px;background:none;color:var(--m)}
 .seg button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
-@media(max-width:700px){body{flex-direction:column;height:auto}nav{width:100%}}
-.errbox{grid-column:1/-1;max-width:640px;padding:18px 20px;border:1px solid var(--r);border-radius:12px;background:var(--p);line-height:1.5}
+@media(max-width:700px){body{flex-direction:column;height:auto}nav{width:100%}main{overflow:visible}}   /* auf dem Handy scrollt die ganze Seite, damit Kopfleiste und Titel oben kleben */
+.errbox{max-width:640px;padding:18px 20px;border:1px solid var(--r);border-radius:12px;background:var(--p);line-height:1.5}
 .errbox h3{margin:0 0 8px;font:700 22px Georgia,serif}
 .errbox p{margin:8px 0}
 .errbox ul{margin:8px 0;padding-left:20px;color:var(--m);font-size:14px}
@@ -211,18 +214,18 @@ let DATA_GROUPS = [], DATA_GROUP = {}, DATA_SUBOF = {};   // Unterkategorien aus
 let S, view = 'a', query = '', opened = new Set(), folded = new Set(), secOv = new Map(), boxOv = new Map(), editing = null, pending = null, formState = null, sectionForm = null;
 let undoStack = [], redoStack = [], lastSaved = null, mergeNext = false;
 let EDIT = false;   // Bearbeitungsmodus: im Standard aus, also Zuschauermodus
-let SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'};
+let SET = {theme: 'dark', cols: 2, abstand: 2, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'};
 const ABST = {1: 'Eng', 2: 'Mittel', 3: 'Weit'};   // Namen der Stufen für den Abstand in den Akten-Karten
 
 /* ===== Einstellungen (nur Darstellung, getrennt von den Akten) ===== */
 function loadSet(){
   let x = {};
   try { x = JSON.parse(store.getItem(SETKEY)) || {}; } catch (e) {}
-  // Standardwerte, solange noch nichts gespeichert ist: Dunkel, 2 Spalten, Abstand Eng, runde Ecken, Abschnitte und /me-Boxen ausgeklappt, Seitenleiste offen
+  // Standardwerte, solange noch nichts gespeichert ist: Dunkel, 2 Spalten, Abstand Mittel, runde Ecken, Abschnitte und /me-Boxen ausgeklappt, Seitenleiste offen
   // Eine frühere Einstellung „Eine Spalte“ bleibt eine Spalte, „Automatisch“ wird zu den Standard-2 Spalten.
   const cols = [1, 2, 3, 4].includes(+x.cols) ? +x.cols : (x.grid === 'one' ? 1 : 2);
   // Frühere Einstellung „Kompakte Karten“: an wird Eng, aus wird Weit
-  const abstand = [1, 2, 3].includes(+x.abstand) ? +x.abstand : (x.compact === false ? 3 : 1);
+  const abstand = [1, 2, 3].includes(+x.abstand) ? +x.abstand : (x.compact === true ? 1 : (x.compact === false ? 3 : 2));   // ohne Angabe: Mittel
   SET = {theme: x.theme === 'light' ? 'light' : 'dark', cols, abstand, ecken: x.ecken === 'eckig' ? 'eckig' : 'rund', sec: x.sec === 'closed' ? 'closed' : 'open', me: x.me === 'closed' ? 'closed' : 'open', nav: x.nav === 'closed' ? 'closed' : 'open'};
 }
 function saveSet(){ try { store.setItem(SETKEY, JSON.stringify(SET)); } catch (e) {} }
@@ -874,9 +877,9 @@ function resetRow(){
 }
 function renderSettings(){
   $('#mbody').innerHTML =
-    segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
     colsRow() +
     abstandRow() +
+    segRow('Design', 'Dunkel ist die Standardansicht. Hell eignet sich für helle Umgebungen.', 'theme', [['dark', 'Dunkel'], ['light', 'Hell']]) +
     segRow('Ecken der Akten', 'Rund wie bisher oder eckig, für ein schlichteres Aussehen.', 'ecken', [['rund', 'Rund'], ['eckig', 'Eckig']]) +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
@@ -912,17 +915,16 @@ function render(){
   else list = sidebarOrder(view, live().filter(r => r.cat === view));
   const fh = formHTML();
   if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }   // das Formular bleibt beim Tippen in der Suche erhalten
-  // In einer Kategorie mit Unterkategorien steht der Titel jeder Gruppe über ihren Akten; bei der Suche gibt es keine Gruppen
+  // In einer Kategorie mit Unterkategorien steht der Titel jeder Gruppe über ihren Akten; bei der Suche gibt es keine Gruppen.
+  // Jede Gruppe ist ein eigener Abschnitt (section.grp) mit Titel und Akten: so klebt der Titel beim Scrollen oben, solange seine Akten sichtbar sind.
   const titled = !t && SUBCATS.includes(view);
-  let html = '', lastSid = null;
+  const groups = [];
   list.forEach(r => {
-    if (titled) {
-      const s = subOfRec(r), sid = s ? s.id : null;
-      if (s && sid !== lastSid) html += groupHead(s);
-      lastSid = sid;
-    }
-    html += (view === 'trash' && !t) ? trashCard(r) : card(r);
+    const s = titled ? subOfRec(r) : null, sid = s ? s.id : null;
+    if (!groups.length || sid !== groups[groups.length - 1].sid) groups.push({sid, s, cards: ''});
+    groups[groups.length - 1].cards += (view === 'trash' && !t) ? trashCard(r) : card(r);
   });
+  const html = groups.map(g => `<section class="grp">${g.s ? groupHead(g.s) : ''}<div class="grpc">${g.cards}</div></section>`).join('');
   $('#l').innerHTML = list.length ? html : `<p class="empty">${empty}</p>`;
   setBarHeight();
   if (pending) {
@@ -941,6 +943,7 @@ function setBarHeight(){   // Höhe der Kopfleiste merken, damit die Gruppentite
   if (sb) document.documentElement.style.setProperty('--sbh', sb.offsetHeight + 'px');
 }
 window.addEventListener('resize', setBarHeight);
+if (window.ResizeObserver && $('#sb')) new ResizeObserver(setBarHeight).observe($('#sb'));   // ändert sich die Kopfleiste selbst, etwa beim Umbruch auf dem Handy, passt sich der Abstand der Titel an
 
 /* ===== Bearbeiten: ein Mechanismus für alle Textstellen ===== */
 function startEdit(el){
@@ -1035,7 +1038,7 @@ function setCols(v){   // Spalten pro Reihe (1 bis 4): Raster, Anzeige und Regle
   const rg = $('#colsrange'); if (rg && +rg.value !== SET.cols) rg.value = String(SET.cols);
 }
 function setAbstand(v){   // Abstand in den Akten-Karten: Anzeige und Schieberegler sofort aktualisieren
-  SET.abstand = [1, 2, 3].includes(+v) ? +v : 1;
+  SET.abstand = [1, 2, 3].includes(+v) ? +v : 2;
   saveSet(); applySet();
   const out = $('#abstandout'); if (out) out.textContent = ABST[SET.abstand];
   const rg = $('#abstandrange'); if (rg && +rg.value !== SET.abstand) rg.value = String(SET.abstand);
@@ -1510,8 +1513,8 @@ function runTests(){
   T('Gültige Akte bekommt eine feste Form', () => { const q = parseData([{id: 'z', cat: 'b', title: 'Z', sections: [{h: 'Erkennung', items: ['x']}]}]).records[0]; ok(q.me.length === 0 && q.table === null && q.desc === '' && q.sections[0].h === 'Erkennung' && q.widget === false, 'Form falsch'); });
   T('Abschnitte ohne Überschrift werden erkannt', () => ok(parseData([{id: 'y', cat: 'b', title: 'Y', sections: [{h: '', items: []}]}]).problems.length === 1, 'nicht erkannt'));
   T('Tabellen mit falschem Format werden erkannt', () => ok(parseData([{id: 't', cat: 'v', title: 'T', table: {h: ['a'], r: ['flach']}}]).problems.length === 1, 'nicht erkannt'));
-  T('Standard-Einstellungen: Dunkel, 2 Spalten, Abstand Eng, Ecken rund, Ausgeklappt, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.abstand === 1 && SET.ecken === 'rund' && SET.sec === 'open' && SET.me === 'open' && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
-  T('Frühere Einstellung „Kompakte Karten“ wird zu Abstand übernommen, ungültige Werte fallen zurück', () => { store.setItem(SETKEY, JSON.stringify({compact: false})); loadSet(); const weit = SET.abstand === 3; store.setItem(SETKEY, JSON.stringify({compact: true})); loadSet(); const eng = SET.abstand === 1; store.setItem(SETKEY, JSON.stringify({abstand: 2, ecken: 'eckig'})); loadSet(); const mittel = SET.abstand === 2 && SET.ecken === 'eckig'; store.setItem(SETKEY, JSON.stringify({abstand: 9, ecken: 'quadrat'})); loadSet(); const zurueck = SET.abstand === 1 && SET.ecken === 'rund'; store.removeItem(SETKEY); loadSet(); ok(weit && eng && mittel && zurueck, 'Umstellung falsch: weit ' + weit + ', eng ' + eng + ', mittel ' + mittel + ', zurück ' + zurueck); });
+  T('Standard-Einstellungen: Dunkel, 2 Spalten, Abstand Mittel, Ecken rund, Ausgeklappt, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.abstand === 2 && SET.ecken === 'rund' && SET.sec === 'open' && SET.me === 'open' && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
+  T('Frühere Einstellung „Kompakte Karten“ wird zu Abstand übernommen, ungültige Werte fallen zurück', () => { store.setItem(SETKEY, JSON.stringify({compact: false})); loadSet(); const weit = SET.abstand === 3; store.setItem(SETKEY, JSON.stringify({compact: true})); loadSet(); const eng = SET.abstand === 1; store.setItem(SETKEY, JSON.stringify({abstand: 2, ecken: 'eckig'})); loadSet(); const mittel = SET.abstand === 2 && SET.ecken === 'eckig'; store.setItem(SETKEY, JSON.stringify({abstand: 9, ecken: 'quadrat'})); loadSet(); const zurueck = SET.abstand === 2 && SET.ecken === 'rund'; store.removeItem(SETKEY); loadSet(); ok(weit && eng && mittel && zurueck, 'Umstellung falsch: weit ' + weit + ', eng ' + eng + ', mittel ' + mittel + ', zurück ' + zurueck); });
   T('Der Zurücksetzen-Knopf heißt Alle Akten zurücksetzen, und die Einstellungen erklären Text hervorheben nicht mehr', () => { renderSettings(); const b = document.querySelector('#mbody button[data-act="resetall"]'); ok(b && b.textContent.trim() === 'Alle Akten zurücksetzen', 'Beschriftung: ' + (b && b.textContent)); ok(!$('#mbody').textContent.includes('Text hervorheben'), 'Hinweis steht noch da'); });
   T('Überschriften zeigen keine Anzahl der Akten mehr', () => ok(!groupHead({t: 'Test'}).includes('<i>') && !subHead({id: 'q', t: 'Test'}).includes('<i>'), 'Anzahl steht noch in der Überschrift'));
   T('Unter der /me-Box steht kein Hinweistext, kopierbare Zeilen bleiben', () => { reset0(); const c = card(get(id())); ok(!c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis steht noch da'); ok(c.includes('class="ml cp"'), 'keine kopierbare Zeile'); });
@@ -1641,7 +1644,7 @@ function runTests(){
   T('Die Hauptbox heißt Durchführung, neue Boxen bekommen einen Titel', () => { reset0(); const i = id(); ok(card(get(i)).includes('Durchführung'), 'Titel der Hauptbox fehlt'); addBox(i); ok(get(i).boxes[0].t === 'Zusätzliche Box' && card(get(i)).includes('Zusätzliche Box'), 'Titel der neuen Box fehlt'); });
   T('Titel einer zusätzlichen Box lässt sich ändern', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'Nachsorge'); ok(get(i).boxes[0].t === 'Nachsorge' && card(get(i)).includes('Nachsorge'), 'Titel nicht geändert'); });
   T('Kein Alle-kopieren-Knopf in den /me-Boxen', () => { reset0(); const c = card(get(id())); ok(!c.includes('Alle kopieren') && !c.includes('data-act="copyall"'), 'Knopf noch da'); });
-  T('Einstellungen: Standardwerte und Schieberegler für die Spalten', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; const r = document.querySelector('#mbody input[data-set="cols"]'); ok(erster('theme') === 'dark' && erster('sec') === 'open' && erster('me') === 'open' && erster('ecken') === 'rund', 'Standard nicht links'); ok(r && r.type === 'range' && r.min === '1' && r.max === '4' && r.step === '1' && r.value === '2', 'Schieberegler falsch'); const a = document.querySelector('#mbody input[data-set="abstand"]'); ok(a && a.type === 'range' && a.min === '1' && a.max === '3' && a.value === '1' && document.querySelector('#abstandout').textContent === 'Eng', 'Abstand-Regler falsch'); });
+  T('Einstellungen: Standardwerte und Schieberegler für die Spalten', () => { renderSettings(); const erster = k => document.querySelector(`#mbody [data-k="${k}"]`).dataset.v; const r = document.querySelector('#mbody input[data-set="cols"]'); ok(erster('theme') === 'dark' && erster('sec') === 'open' && erster('me') === 'open' && erster('ecken') === 'rund', 'Standard nicht links'); ok(r && r.type === 'range' && r.min === '1' && r.max === '4' && r.step === '1' && r.value === '2', 'Schieberegler falsch'); const a = document.querySelector('#mbody input[data-set="abstand"]'); ok(a && a.type === 'range' && a.min === '1' && a.max === '3' && a.value === '2' && document.querySelector('#abstandout').textContent === 'Mittel', 'Abstand-Regler falsch'); });
   T('Spalten pro Reihe: 1 bis 4, ungültige Werte fallen auf 2 zurück', () => { setOpt('cols', '4'); ok(SET.cols === 4 && document.body.style.getPropertyValue('--cols').trim() === '4', 'vier Spalten nicht gesetzt'); setOpt('cols', '9'); ok(SET.cols === 2, 'ungültiger Wert nicht abgefangen'); setOpt('cols', '2'); });
   T('Volle Breite: die Kartenreihe hat keine Breitenbegrenzung mehr', () => ok(getComputedStyle(document.getElementById('l')).maxWidth === 'none', 'Breitenbegrenzung noch da'));
   T('Seitenleiste ein- und ausklappen', () => { SET.nav = 'open'; applySet(); act('navtoggle', {dataset: {}}); const zu = SET.nav === 'closed' && document.body.classList.contains('nav-off') && getComputedStyle(document.querySelector('nav')).display === 'none'; act('navtoggle', {dataset: {}}); ok(zu && SET.nav === 'open' && !document.body.classList.contains('nav-off'), 'Seitenleiste reagiert nicht'); });
@@ -1703,6 +1706,7 @@ function runTests(){
     const v0 = view; reset0(); syncData(); view = 'b'; render();
     const titel = [...$('#l').querySelectorAll('h3.grph')].map(h => h.querySelector('span').textContent);
     ok(titel.includes('Wunden & Trauma'), 'Titel fehlt: ' + titel.join(' | '));
+    ok([...$('#l').querySelectorAll('h3.grph')].every(h => h.parentElement.matches('section.grp') && h.parentElement.querySelector(':scope > .grpc')), 'Titel steht nicht in seinem eigenen Abschnitt');
     query = 'Prellung'; render();
     ok(!$('#l').querySelector('h3.grph'), 'Titel auch bei der Suche');
     query = ''; view = v0; render();
@@ -2075,7 +2079,7 @@ function runTests(){
   });
   // Aufräumen: Probespeicher und Anzeige auf Ausgangszustand bringen
   reset0();
-  SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
+  SET = {theme: 'dark', cols: 2, abstand: 2, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; saveSet(); applySet(); closeModal(); setMode(false);
   $('#f').innerHTML = '';
   $('#l').innerHTML = `<h2>Tests</h2><p>${res.filter(r => r[0]).length} von ${res.length} bestanden</p>` + res.map(([good, m]) => `<p class="${good ? 'okt' : 'err'}">${good ? '✓' : '✗'} ${esc(m)}</p>`).join('');
 }
