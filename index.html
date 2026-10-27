@@ -52,9 +52,8 @@ button:hover{border-color:var(--a)}
 .ekgh{margin:16px 0 6px;font-size:17px;line-height:1.35;color:var(--a)}   /* Normalwerte im EKG-Fenster: gelbe Überschriften, nicht kopierbar */
 @media(max-width:560px){.lbl{display:none}}
 #l{padding-bottom:20px}
-.grp+.grp{margin-top:var(--kgap)}   /* Abstand zwischen zwei Unterkategorien */
+.grp{padding-top:var(--kgap)}   /* Abstand über jeder Unterkategorie, ihr Titel steht darüber */
 .grpc{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:var(--kgap);align-items:start}
-.grph+.grpc{padding-top:var(--kgap)}   /* Abstand zwischen dem Titel und den ersten Akten */
 @media(max-width:700px){.grpc{grid-template-columns:minmax(0,1fr)}}
 body.nav-off nav{display:none}
 .card{min-width:0;border:1px solid var(--cardb);border-radius:14px;padding:16px 16px 18px;background:linear-gradient(180deg,var(--card-a),var(--card-b));box-shadow:0 8px 24px var(--shadow);transition:border-color .2s,box-shadow .2s;scroll-margin-top:76px}
@@ -66,8 +65,8 @@ body{--kgap:26px}   /* Abstand zwischen den Akten-Karten und den Unterkategorien
 body.abst-1{--kgap:14px}
 body.abst-2{--kgap:20px}
 body.eckig .card,body.eckig .me{border-radius:0}
-/* Titel der Unterkategorien: jede Unterkategorie ist ein eigener Abschnitt (section.grp). Der Titel klebt beim Scrollen direkt unter der Kopfleiste, solange seine Akten sichtbar sind. */
-.grph{position:sticky;top:var(--sbh,64px);z-index:3;margin:0;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);display:flex;align-items:baseline;gap:12px;font:700 20px Georgia,serif;color:var(--a)}
+/* Der Titel der Unterkategorie, deren Akten gerade oben stehen: ein fester Platz direkt unter der Kopfleiste. Er bewegt sich beim Scrollen nicht, nur sein Text wechselt. */
+.grph{position:sticky;top:var(--sbh,64px);z-index:3;margin:0;height:46px;box-sizing:border-box;padding:10px 4px 8px;background:var(--bg);border-bottom:2px solid var(--a);font-family:Georgia,serif;font-size:clamp(16px,4.2vw,20px);font-weight:700;line-height:26px;color:var(--a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card.gone{opacity:.65}
 .card.fl{animation:fl 1.4s}@keyframes fl{from{box-shadow:0 0 0 4px rgba(242,184,75,.6)}to{box-shadow:0 8px 24px var(--shadow)}}
 .card h2{cursor:pointer}
@@ -174,6 +173,7 @@ body:not(.edit) .only-edit{display:none!important}
 <nav id="n"><h1 class="brand"><svg class="cross" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:var(--r)" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg><span>Medic Handbuch</span></h1></nav>
 <main>
 <div id="sb"><button class="ibtn" id="navbtn" data-act="navtoggle" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden">☰</button><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
+<h3 id="gt" class="grph" hidden></h3>
 <div id="l"></div>
 </main>
 <div id="ok"></div>
@@ -915,8 +915,8 @@ function render(){
   else list = sidebarOrder(view, live().filter(r => r.cat === view));
   const fh = formHTML();
   if (fh !== formRendered) { $('#f').innerHTML = fh; formRendered = fh; }   // das Formular bleibt beim Tippen in der Suche erhalten
-  // In einer Kategorie mit Unterkategorien steht der Titel jeder Gruppe über ihren Akten; bei der Suche gibt es keine Gruppen.
-  // Jede Gruppe ist ein eigener Abschnitt (section.grp) mit Titel und Akten: so klebt der Titel beim Scrollen oben, solange seine Akten sichtbar sind.
+  // In einer Kategorie mit Unterkategorien zeigt der feste Titel unter der Kopfleiste (#gt) die Gruppe, die gerade oben steht; bei der Suche gibt es keine Gruppen.
+  // Jede Gruppe ist ein Abschnitt (section.grp) mit ihren Akten. Der Titel steht nicht in der Liste, damit er beim Scrollen nicht wandert.
   const titled = !t && SUBCATS.includes(view);
   const groups = [];
   list.forEach(r => {
@@ -924,9 +924,11 @@ function render(){
     if (!groups.length || sid !== groups[groups.length - 1].sid) groups.push({sid, s, cards: ''});
     groups[groups.length - 1].cards += (view === 'trash' && !t) ? trashCard(r) : card(r);
   });
-  const html = groups.map(g => `<section class="grp">${g.s ? groupHead(g.s) : ''}<div class="grpc">${g.cards}</div></section>`).join('');
+  const html = groups.map(g => `<section class="grp"${g.s ? ` data-title="${esc(g.s.t)}"` : ''}><div class="grpc">${g.cards}</div></section>`).join('');
   $('#l').innerHTML = list.length ? html : `<p class="empty">${empty}</p>`;
+  $('#gt').hidden = !titled || !list.length;   // der feste Titel gibt es nur in Kategorien mit Unterkategorien
   setBarHeight();
+  gtUpdate();
   if (pending) {
     const p = pending; pending = null;
     if (p.path) { const el = [...document.querySelectorAll('.tx')].find(x => x.dataset.rec === p.id && x.dataset.path === p.path); if (el) startEdit(el); }
@@ -935,15 +937,27 @@ function render(){
   }
 }
 
-function groupHead(s){   // Titel einer Unterkategorie über ihren Akten, ohne Anzahl
-  return `<h3 class="grph"><span>${esc(s.t)}</span></h3>`;
-}
-function setBarHeight(){   // Höhe der Kopfleiste merken, damit die Gruppentitel direkt darunter kleben bleiben
+function setBarHeight(){   // Höhe der Kopfleiste merken: der feste Titel klebt direkt darunter
   const sb = $('#sb');
   if (sb) document.documentElement.style.setProperty('--sbh', sb.offsetHeight + 'px');
 }
-window.addEventListener('resize', setBarHeight);
-if (window.ResizeObserver && $('#sb')) new ResizeObserver(setBarHeight).observe($('#sb'));   // ändert sich die Kopfleiste selbst, etwa beim Umbruch auf dem Handy, passt sich der Abstand der Titel an
+window.addEventListener('resize', () => { setBarHeight(); gtUpdate(); });
+if (window.ResizeObserver && $('#sb')) new ResizeObserver(setBarHeight).observe($('#sb'));   // ändert sich die Kopfleiste selbst, etwa beim Umbruch auf dem Handy, passt sich der feste Titel an
+
+// Der feste Titel unter der Kopfleiste nennt die Unterkategorie, deren Akten gerade oben in der Liste stehen.
+// Er bewegt sich nie: beim Scrollen wechselt nur sein Text, sobald die nächste Unterkategorie an ihn heranreicht.
+function gtUpdate(){
+  const gt = $('#gt');
+  if (!gt || gt.hidden) return;
+  const linie = gt.getBoundingClientRect().bottom;   // Unterkante des festen Titels
+  let oben = null;
+  document.querySelectorAll('#l section.grp').forEach(s => { if (s.getBoundingClientRect().top <= linie + 1) oben = s; });
+  const t = oben && oben.dataset.title ? oben.dataset.title : '';
+  if (gt.textContent !== t) gt.textContent = t;
+  gt.style.visibility = t ? '' : 'hidden';   // ohne Titel bleibt der Platz frei, die Akten darunter bleiben sichtbar
+}
+$('main').addEventListener('scroll', gtUpdate, {passive: true});   // am Computer scrollt main
+window.addEventListener('scroll', gtUpdate, {passive: true});       // auf dem Handy scrollt die ganze Seite
 
 /* ===== Bearbeiten: ein Mechanismus für alle Textstellen ===== */
 function startEdit(el){
@@ -1516,7 +1530,7 @@ function runTests(){
   T('Standard-Einstellungen: Dunkel, 2 Spalten, Abstand Mittel, Ecken rund, Ausgeklappt, Seitenleiste offen', () => { store.removeItem(SETKEY); loadSet(); ok(SET.theme === 'dark' && SET.cols === 2 && SET.abstand === 2 && SET.ecken === 'rund' && SET.sec === 'open' && SET.me === 'open' && SET.nav === 'open', 'Standard falsch: ' + JSON.stringify(SET)); });
   T('Frühere Einstellung „Kompakte Karten“ wird zu Abstand übernommen, ungültige Werte fallen zurück', () => { store.setItem(SETKEY, JSON.stringify({compact: false})); loadSet(); const weit = SET.abstand === 3; store.setItem(SETKEY, JSON.stringify({compact: true})); loadSet(); const eng = SET.abstand === 1; store.setItem(SETKEY, JSON.stringify({abstand: 2, ecken: 'eckig'})); loadSet(); const mittel = SET.abstand === 2 && SET.ecken === 'eckig'; store.setItem(SETKEY, JSON.stringify({abstand: 9, ecken: 'quadrat'})); loadSet(); const zurueck = SET.abstand === 2 && SET.ecken === 'rund'; store.removeItem(SETKEY); loadSet(); ok(weit && eng && mittel && zurueck, 'Umstellung falsch: weit ' + weit + ', eng ' + eng + ', mittel ' + mittel + ', zurück ' + zurueck); });
   T('Der Zurücksetzen-Knopf heißt Alle Akten zurücksetzen, und die Einstellungen erklären Text hervorheben nicht mehr', () => { renderSettings(); const b = document.querySelector('#mbody button[data-act="resetall"]'); ok(b && b.textContent.trim() === 'Alle Akten zurücksetzen', 'Beschriftung: ' + (b && b.textContent)); ok(!$('#mbody').textContent.includes('Text hervorheben'), 'Hinweis steht noch da'); });
-  T('Überschriften zeigen keine Anzahl der Akten mehr', () => ok(!groupHead({t: 'Test'}).includes('<i>') && !subHead({id: 'q', t: 'Test'}).includes('<i>'), 'Anzahl steht noch in der Überschrift'));
+  T('Überschriften zeigen keine Anzahl der Akten mehr', () => ok(!subHead({id: 'q', t: 'Test'}).includes('<i>'), 'Anzahl steht noch in der Überschrift'));
   T('Unter der /me-Box steht kein Hinweistext, kopierbare Zeilen bleiben', () => { reset0(); const c = card(get(id())); ok(!c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis steht noch da'); ok(c.includes('class="ml cp"'), 'keine kopierbare Zeile'); });
   T('Papierkorb hat ein Symbol und eine Trennlinie davor', () => { render(); const h = $('#n').innerHTML, s = h.lastIndexOf('class="sep"'); ok(h.includes('class="ic"'), 'Symbol fehlt'); ok(s > h.indexOf('Medikamente') && s < h.indexOf('Papierkorb'), 'Trennlinie an falscher Stelle'); });
   T('KI-Hinweis steht unten rechts und blockiert keine Klicks', () => { const w = $('#wm'); ok(w && w.textContent.includes('Mit KI erstellt'), 'Hinweis fehlt'); ok(getComputedStyle(w).pointerEvents === 'none', 'Hinweis fängt Klicks ab'); });
@@ -1702,13 +1716,15 @@ function runTests(){
     ok(res.id && get(res.id).meOff === true, 'nach dem Import nicht entfernt');
     reset0();
   });
-  T('Unterkategorien stehen als Titel über ihren Akten, bei der Suche nicht', () => {
+  T('Unterkategorien zeigen einen festen Titel unter der Kopfleiste, bei der Suche keinen', () => {
     const v0 = view; reset0(); syncData(); view = 'b'; render();
-    const titel = [...$('#l').querySelectorAll('h3.grph')].map(h => h.querySelector('span').textContent);
+    document.querySelector('main').scrollTop = 0; gtUpdate();
+    const titel = [...$('#l').querySelectorAll('section.grp')].map(s => s.dataset.title).filter(Boolean);
     ok(titel.includes('Wunden & Trauma'), 'Titel fehlt: ' + titel.join(' | '));
-    ok([...$('#l').querySelectorAll('h3.grph')].every(h => h.parentElement.matches('section.grp') && h.parentElement.querySelector(':scope > .grpc')), 'Titel steht nicht in seinem eigenen Abschnitt');
+    ok(!$('#gt').hidden && $('#gt').textContent === (document.querySelector('#l section.grp').dataset.title || ''), 'fester Titel nennt nicht die oberste Gruppe: ' + $('#gt').textContent);
+    ok(!$('#l h3.grph'), 'Titel steht noch in der Liste');
     query = 'Prellung'; render();
-    ok(!$('#l').querySelector('h3.grph'), 'Titel auch bei der Suche');
+    ok($('#gt').hidden && !$('#l').querySelector('section.grp[data-title]'), 'Titel auch bei der Suche');
     query = ''; view = v0; render();
   });
   T('Die Narkose-Akte hat die EKG-Box mit dem Normalwert-Text', () => {
