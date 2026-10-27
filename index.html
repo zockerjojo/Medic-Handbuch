@@ -52,11 +52,10 @@ button:hover{border-color:var(--a)}
 .notfall{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--r);border-radius:50%;background:none;color:var(--r);font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}   /* Warnschild in jeder Akte, rechts neben dem EKG-Zeichen */
 .notfall svg{width:15px;height:15px}
 .notfall:hover,.notfall:focus-visible{background:var(--r);border-color:var(--r);color:var(--on-a)}
-.me.ekgbody{margin-top:0}
+.me.ekgbody{margin-top:0;background:none}   /* ohne eigenen dunklen Hintergrund: die EKG-Zeilen stehen direkt auf der Fläche des Fensters */
 .me.nfbody{margin-top:0}
 .nf{margin:0 0 4px}
 .nf-t{margin:14px 0 6px;font-size:17px;line-height:1.35;font-weight:700;color:var(--r)}   /* Name eines Notfall-Protokolls */
-.nf-l{margin:8px 0 2px;font-size:13px;font-weight:600;color:var(--m)}   /* Beschreibung und /me-Befehle */
 .nf-be{margin:0 0 4px;padding-left:20px;list-style:disc}
 .ml.tl.nfsep{padding:14px 6px}   /* deutliche Trennlinie zwischen den Notfall-Protokollen */
 .ml.tl.nfsep .tl-line{height:2px;opacity:.8}
@@ -1208,7 +1207,7 @@ function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar 
 
 function openNotfall(){   // Notfall-Fenster: drei Protokolle, durch eine deutliche Trennlinie getrennt; die /me-Zeilen sind kopierbar wie in den Akten
   $('#mtitle').textContent = 'Notfall-Protokolle';
-  $('#mbody').innerHTML = NOTFALL.map(p => `<section class="nf"><h4 class="nf-t">${hlEsc(p.t)}</h4><p class="nf-l">Beschreibung</p><ul class="nf-be">${p.beschr.map(z => `<li>${fmt(z)}</li>`).join('')}</ul><p class="nf-l">/me-Befehle</p><div class="me nfbody">${p.me.map(m => `<div class="ml cp" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('')}</div></section>`).join('<div class="ml tl nfsep"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>');
+  $('#mbody').innerHTML = NOTFALL.map(p => `<section class="nf"><h4 class="nf-t">${hlEsc(p.t)}</h4><ul class="nf-be">${p.beschr.map(z => `<li>${fmt(z)}</li>`).join('')}</ul><div class="me nfbody">${p.me.map(m => `<div class="ml cp" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('')}</div></section>`).join('<div class="ml tl nfsep"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>');
   $('#modal').hidden = false;
   focusField('#modal [data-act="closemodal"]');
 }
@@ -1867,6 +1866,7 @@ function runTests(){
       ok(mb.textContent.includes('Sofortige Blutstillung & Schockvermeidung'), 'Text verändert');
     } finally { closeModal(); }
   });
+  T('Das EKG-Fenster hat in seiner Box keinen eigenen Hintergrund', () => { try { openEkg(); const c = getComputedStyle($('#mbody .me.ekgbody')); ok(c.backgroundColor === 'rgba(0, 0, 0, 0)', 'Hintergrund: ' + c.backgroundColor); } finally { closeModal(); } });
   TZ('Im Zuschauermodus kopiert im Notfall-Fenster eine Zeile ihre Handlung, die Fläche eines Protokolls alle seine Zeilen', () => {
     getSelection().removeAllRanges();
     const cb = navigator.clipboard; const aufrufe = []; cb.writeText = t => { aufrufe.push(t); return Promise.resolve(); };
