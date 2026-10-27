@@ -52,13 +52,18 @@ button:hover{border-color:var(--a)}
 .notfall{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--r);border-radius:50%;background:none;color:var(--r);font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}   /* Warnschild in jeder Akte, rechts neben dem EKG-Zeichen */
 .notfall svg{width:15px;height:15px}
 .notfall:hover,.notfall:focus-visible{background:var(--r);border-color:var(--r);color:var(--on-a)}
-.me.ekgbody{margin-top:0;background:none}   /* ohne eigenen dunklen Hintergrund: die EKG-Zeilen stehen direkt auf der Fläche des Fensters */
+.me.ekgbody{margin-top:0;background:none;border:0}   /* ohne eigenen Rahmen und ohne eigenen Hintergrund: die EKG-Zeilen stehen direkt auf der Fläche des Fensters */
 .me.nfbody{margin-top:0}
 .nf{margin:0 0 4px}
 .nf-t{margin:14px 0 6px;font-size:17px;line-height:1.35;font-weight:700;color:var(--r)}   /* Name eines Notfall-Protokolls */
 .nf-be{margin:0 0 4px;padding-left:20px;list-style:disc}
 .ml.tl.nfsep{padding:14px 6px}   /* deutliche Trennlinie zwischen den Notfall-Protokollen */
 .ml.tl.nfsep .tl-line{height:2px;opacity:.8}
+.knopfreihe{display:flex;flex-wrap:wrap;gap:8px}   /* zwei Knöpfe nebeneinander in einer Einstellungszeile: Einführung zu wiederholen und Änderungsprotokoll */
+.cl-intro{margin:0 0 6px;color:var(--m)}
+.cl-d{margin:16px 0 6px;font-size:17px;line-height:1.35;font-weight:700}   /* Datum eines Blocks im Änderungsprotokoll */
+.cl-list{margin:0 0 4px;padding-left:20px;list-style:disc}
+.cl-list li{margin:0 0 6px}
 .ekgh{margin:16px 0 6px;padding:5px 10px;border-radius:6px;font-size:17px;line-height:1.35;font-weight:700;color:var(--ekg-t);background:var(--ekg-bg)}   /* Normalwerte im EKG-Fenster: gelb hervorgehoben, nicht kopierbar. Hell: gelbe Fläche mit dunkler Schrift, weil gelbe Schrift auf Weiß nicht lesbar ist */
 @media(max-width:560px){.lbl{display:none}}
 #l{padding-bottom:20px}
@@ -232,6 +237,50 @@ const NOTFALL = [
     me: ['/me bringt den Patienten in die Schocklagerung (Beine hochlagern)', '/me überprüft die Vitalwerte des Patienten', '/me verabreicht Sauerstoff über eine Venturi-Maske (6-8 l/min)', '/me legt einen venösen Zugang und schließt eine Vollkristalloid-Infusion (Kochsalzlösung) zum Volumenersatz an']},
 ];
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
+// Änderungsprotokoll (Knopf „Änderungsprotokoll“ in den Einstellungen): alle Änderungen an dieser Seite, neueste zuerst. Ein neuer Tag ist ein neuer Block ganz oben, jeder Eintrag ein Text. Die Liste steht fest im Quelltext, nicht in akten.json.
+const CHANGELOG = [
+  {d: '27.10.2026', items: [
+    'Änderungsprotokoll: Knopf in den Einstellungen rechts neben „Einführung zu wiederholen“. Das Fenster zeigt alle Änderungen, neueste zuerst.',
+    'EKG-Fenster: Umrandung der Box entfernt. Der dunkle Hintergrund der Notfall-Protokolle bleibt.',
+    'EKG-Fenster: dunklen Hintergrund der Box entfernt.',
+    'Notfall-Fenster: die grauen Beschriftungen „Beschreibung“ und „/me-Befehle“ entfernt.',
+    'Notfall-Knopf (Warnschild) in jeder Akte, rechts neben dem EKG-Symbol. Das Fenster „Notfall-Protokolle“ zeigt drei Protokolle mit Trennlinien und kopierbaren /me-Zeilen.',
+    'Einstellungen: Knopf „Einführung zu wiederholen“ direkt über „Alle Akten zurücksetzen“. Die Einleitung hat einen vierten Schritt zum Notfall-Knopf.',
+    'Leitfaden: Punkte 18, 20, 21 und 22 zu Einleitung, Kopieren, Notfall-Knopf und „Einführung zu wiederholen“ ergänzt.',
+    'Akten „Verbrennung 2. Grades“ und „Steckschuss“: Originalfassungen übernommen.',
+    'Akten „Verbrennung 1. Grades“ und „Verstauchung“: Originalfassungen übernommen.',
+    '/me-Zeilen werden nur im Zuschauermodus kopiert. Im Bearbeitungsmodus kopiert ein Klick nichts.',
+    'Hauptbox („Durchführung“) mit ▲ und ▼ zwischen den zusätzlichen /me-Boxen verschieben.',
+    'Akte aus einer Datei importieren: Vor dem Ersetzen fragt die Seite nach, weil Änderungen durch die Datei ersetzt werden.',
+    'Akte „Prellung“: Originalfassung übernommen.',
+    'Einleitung beim ersten Besuch: Willkommensseite und drei markierte Schritte.',
+    'Kennzeichnung der Akten: „Original“, „bearbeitet“ oder „selbst erstellt“ neben dem Titel.',
+    '„Fehler melden“: Knopf mit Käfer-Symbol neben dem Einstellungsknopf.',
+    'Akten-Karten: Abstand (Eng, Mittel, Weit) und Ecken (Rund oder Eckig) einstellbar.',
+    'Titel der Unterkategorien stehen direkt über ihren Akten und wandern beim Scrollen mit.',
+    'Titel der /me-Boxen mit dem Stift ändern, auch den Titel der Hauptbox.',
+  ]},
+  {d: '26.10.2026', items: [
+    'Ältere Browserstände (Stand 3 bis 6) werden beim ersten Öffnen auf Stand 7 gebracht. Akten stehen dann in der richtigen Gruppe.',
+    'Hauptbox entfernen und wieder hinzufügen.',
+    '„Alle Akten zurücksetzen“ mit Rückfrage. Navigation nach dem Zurücksetzen geprüft und korrigiert.',
+    'EKG-Standardbox „Überwachung des EKGs“ in der Akte „Narkose richtig einleiten“. Sie ist die Quelle des EKG-Fensters.',
+    'Akte „Prellung“: Abschnitte überarbeitet.',
+    'Originalfassungen „Streifschuss, Stichwunde, Bisswunde“ und „Steckschuss“ übernommen.',
+    'EKG-Symbol neben jedem Akten-Titel mit EKG-Fenster. Normalwerte sind gelb hervorgehoben.',
+    '/me-Zeilen und /me-Boxen per Klick kopieren, in beiden Modi.',
+    'Durchführung in acht Akten überarbeitet: Schädel-Hirn-Trauma, Hüftersatz, Amputation, Herzinfarkt, Schlaganfall, Trommelfellriss, Gehirntumor – Wach-OP, Korrosion - Pocket Dimension (SCP-106).',
+    '/me-Boxen ein- und ausklappen, mit dem Pfeil in der Kopfzeile. Einstellung „/me-Boxen beim Öffnen“.',
+    'Akte „Narkose richtig einleiten“: Hauptbox heißt „Narkose Starten“, Abschnitte und Boxen überarbeitet.',
+    'Zeilen mit Shift + Enter über mehrere Zeilen schreiben. Strg+B und Strg+U für Fett und Unterstreichung.',
+    'Trennlinien in /me-Boxen: „+ Trennlinie“ oder die Zeile „---“. Sie lassen sich mit ▲ und ▼ verschieben und mit ✕ entfernen.',
+    'Neue Akte „Starke innere Blutung (Intraoperativ)“ in „Intraoperative Komplikationen & Notfälle“. Lokalanästhesie sowie Regional-, Plexus- und Spinalanästhesie wandern in „OP-Grundlagen & Narkose“.',
+    '14 Unterkategorien aus akten.json: Behandlungen (4), Operationen (6), Medikamente (4). Ältere Browserstände übernehmen sie einmal.',
+    'Unterkategorien im Browser: anlegen, umbenennen, löschen, Akten verschieben, Reihenfolge der Akten.',
+    '13 Akten inhaltlich überarbeitet und 4 umbenannt: „Narkose einleiten“ zu „Narkose richtig einleiten“, „Korrosion durch SCP-106 (Pocket Dimension)“ zu „Korrosion - Pocket Dimension (SCP-106)“, „Gehirntumor (Wach-OP)“ zu „Gehirntumor – Wach-OP“, „Verätzungen“ zu „Behandlung von Verätzungen“.',
+    'Ausgangsstand: 55 Akten in akten.json.',
+  ]},
+];
 const KEY = 'medic-handbuch-v2';
 const SETKEY = 'medic-handbuch-einstellungen-v2';   // v2: die neuen Standardwerte gelten einmal für alle
 const MAT_DEFAULT = '/me nimmt die benötigten Gegenstände aus dem Verbandskasten';   // Material-Zeile neuer Akten
@@ -934,8 +983,8 @@ function abstandRow(){   // Schieberegler für den Abstand in den Akten-Karten: 
 function resetRow(){
   return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall">Alle Akten zurücksetzen</button><p class="shint">Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.</p></div>`;
 }
-function introRow(){   // Einleitung noch einmal ansehen: ohne Beschreibung, direkt über dem Zurücksetzen (act „introrepeat“)
-  return `<div class="srow"><button data-act="introrepeat">Einführung zu wiederholen</button></div>`;
+function introRow(){   // Einleitung noch einmal ansehen (act „introrepeat“) und rechts daneben das Änderungsprotokoll (act „changelog“): ohne Beschreibung, direkt über dem Zurücksetzen
+  return `<div class="srow knopfreihe"><button data-act="introrepeat">Einführung zu wiederholen</button><button data-act="changelog">Änderungsprotokoll</button></div>`;
 }
 function renderSettings(){
   $('#mbody').innerHTML =
@@ -1212,6 +1261,13 @@ function openNotfall(){   // Notfall-Fenster: drei Protokolle, durch eine deutli
   focusField('#modal [data-act="closemodal"]');
 }
 
+function openChangelog(){   // Änderungsprotokoll: alle Änderungen dieser Seite, neueste zuerst; nur zum Lesen, in beiden Modi
+  $('#mtitle').textContent = 'Änderungsprotokoll';
+  $('#mbody').innerHTML = '<p class="cl-intro">Alle Änderungen an dieser Seite seit dem Ausgangsstand, neueste zuerst.</p>' + CHANGELOG.map(g => `<section class="cl"><h4 class="cl-d">${esc(g.d)}</h4><ul class="cl-list">${g.items.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>`).join('');
+  $('#modal').hidden = false;
+  focusField('#modal [data-act="closemodal"]');
+}
+
 /* ===== Rückgängig und Wiederholen ===== */
 function undo(){
   if (editing) finishEdit();
@@ -1240,6 +1296,7 @@ function act(name, b){
   if (name === 'ekg') return openEkg();
   if (name === 'notfall') return openNotfall();
   if (name === 'introrepeat') { closeModal(); return introStart(); }   // Einstellungen zu, dann die Einleitung von vorn
+  if (name === 'changelog') return openChangelog();   // Änderungsprotokoll im Fenster, in beiden Modi
   if (name === 'import') return $('#imp').click();
   if (name === 'mode') return setMode(!EDIT);
   if (name === 'navtoggle') { SET.nav = SET.nav === 'open' ? 'closed' : 'open'; saveSet(); return applySet(); }
@@ -1867,6 +1924,7 @@ function runTests(){
     } finally { closeModal(); }
   });
   T('Das EKG-Fenster hat in seiner Box keinen eigenen Hintergrund', () => { try { openEkg(); const c = getComputedStyle($('#mbody .me.ekgbody')); ok(c.backgroundColor === 'rgba(0, 0, 0, 0)', 'Hintergrund: ' + c.backgroundColor); } finally { closeModal(); } });
+  T('Das EKG-Fenster hat in seiner Box keinen Rahmen', () => { try { openEkg(); const c = getComputedStyle($('#mbody .me.ekgbody')); ok(c.borderTopStyle === 'none' && c.borderTopWidth === '0px', 'Rahmen: ' + c.borderTopStyle + ' ' + c.borderTopWidth); } finally { closeModal(); } });
   TZ('Im Zuschauermodus kopiert im Notfall-Fenster eine Zeile ihre Handlung, die Fläche eines Protokolls alle seine Zeilen', () => {
     getSelection().removeAllRanges();
     const cb = navigator.clipboard; const aufrufe = []; cb.writeText = t => { aufrufe.push(t); return Promise.resolve(); };
@@ -1890,9 +1948,39 @@ function runTests(){
   T('Die Einstellungen haben Einführung zu wiederholen direkt über dem Zurücksetzen, ohne Beschreibung', () => {
     renderSettings();
     const zeilen = [...$('#mbody').querySelectorAll('.srow')], i = zeilen.findIndex(z => z.querySelector('button[data-act="introrepeat"]'));
-    ok(i >= 0 && zeilen[i].textContent.trim() === 'Einführung zu wiederholen', 'Knopf fehlt oder heißt anders');
+    ok(i >= 0 && zeilen[i].querySelector('button[data-act="introrepeat"]').textContent.trim() === 'Einführung zu wiederholen', 'Knopf fehlt oder heißt anders');
     ok(i >= 0 && zeilen[i].querySelectorAll('p').length === 0, 'Beschreibung steht da');
     ok(i >= 0 && zeilen[i + 1] && zeilen[i + 1].querySelector('button[data-act="resetall"]'), 'steht nicht direkt über dem Zurücksetzen');
+  });
+  T('Rechts neben Einführung zu wiederholen steht in derselben Zeile das Änderungsprotokoll', () => {
+    try {
+      openModal();
+      const zeile = $('#mbody button[data-act="introrepeat"]').closest('.srow');
+      const knoepfe = [...zeile.querySelectorAll('button')];
+      ok(knoepfe.map(b => b.dataset.act).join(',') === 'introrepeat,changelog', 'Knöpfe: ' + knoepfe.map(b => b.dataset.act).join(','));
+      ok(knoepfe[1] && knoepfe[1].textContent.trim() === 'Änderungsprotokoll', 'Beschriftung: ' + (knoepfe[1] ? knoepfe[1].textContent.trim() : '-'));
+      const a = knoepfe[0].getBoundingClientRect(), b = knoepfe[1].getBoundingClientRect();
+      ok(Math.abs(a.top - b.top) < 2 && b.left >= a.right - 1, 'nicht nebeneinander: ' + JSON.stringify([a.left, a.right, b.left, a.top, b.top]));
+    } finally { closeModal(); }
+  });
+  T('Das Änderungsprotokoll: Titel, neuester Tag zuerst, jeder Eintrag einmal, nichts ist kopierbar', () => {
+    try {
+      openChangelog();
+      ok($('#mtitle').textContent === 'Änderungsprotokoll', 'Titel: ' + $('#mtitle').textContent);
+      const tage = [...$('#mbody').querySelectorAll('h4.cl-d')].map(h => h.textContent.trim());
+      const zahl = s => { const [t, m, j] = s.split('.').map(Number); return j * 10000 + m * 100 + t; };
+      ok(tage.length === CHANGELOG.length && tage.every((t, k) => k === 0 || zahl(tage[k - 1]) > zahl(t)), 'Tage: ' + tage.join(' | '));
+      const soll = CHANGELOG.reduce((n, g) => n + g.items.length, 0), ist = $('#mbody').querySelectorAll('li').length;
+      ok(ist === soll, 'Einträge: ' + ist + ' von ' + soll);
+      ok($('#mbody').querySelectorAll('.cp, .ml').length === 0, 'Einträge sind kopierbar');
+    } finally { closeModal(); }
+  });
+  T('Das Änderungsprotokoll öffnet sich auch im Bearbeitungsmodus', () => {
+    const vorher = EDIT; setMode(true);
+    try {
+      act('changelog', {dataset: {}});
+      ok(!$('#modal').hidden && $('#mtitle').textContent === 'Änderungsprotokoll', 'öffnet sich nicht');
+    } finally { closeModal(); setMode(vorher); }
   });
   T('Einführung zu wiederholen schließt die Einstellungen und startet die Einleitung von vorn', () => {
     const alt = localStorage.getItem(INTRO_KEY);
