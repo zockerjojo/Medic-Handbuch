@@ -208,17 +208,20 @@
         "h": "Behandlung",
         "mode": "number",
         "items": [
-          "Lege eine Schiene oder einen Gibsverband an"
+          "Lege eine Schiene oder einen Gibsverband an",
+          "Lege ein Kühlpack auf die Prellung",
+          "Hebe die Extremität leicht an und Stütze sie"
         ]
       }
     ],
     "me": [
-      "/me nimmt Kühlpack, elastische Binde, Brustkorsett und Schmerzmittel aus dem Verbandskasten",
-      "/me untersucht die verletzte Stelle auf Schwellung und Druckschmerz",
-      "/me legt ein Kühlpack auf die Prellung",
-      "/me kontrolliert bei Brustprellung Atmung und Atemgeräusche",
-      "/me legt einen festen Verband oder ein Brustkorsett an",
-      "Notiz: Bei Atemnot oder anhaltenden Brustschmerzen sofort weiter abklären"
+      "Es kann entwerde eine Schiene oder ein GIbsverband angelegt werden.",
+      "/me legt den Patieneten ein Gibsverband an",
+      "/me legt den Patienten eine Schiene an",
+      "Holen sie voher ein Kühlpack aus dem Schrank",
+      "/me nimmt ein Kühlpack aus dem Schrank",
+      "/me hällt das Kühlpack an die Prellung",
+      "/me verbindet das Kühlpack mit einem Verband um es an seiner Position zu halten"
     ]
   },
   {

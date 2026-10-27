@@ -438,26 +438,43 @@ function addLine(id, s, start){
   mergeNext = true;
   return 'i:' + s + ':' + n;
 }
+// Platz der Hauptbox: so viele zusätzliche Boxen stehen vor ihr (0 = ganz oben, wie bisher), nie mehr als es Boxen gibt
+function meAtOf(r){ return Math.min(Math.max(0, Math.floor(+(r && r.meAt)) || 0), boxesOf(r).length); }
+// Boxen und Platz der Hauptbox in einem Schritt speichern, damit ein Rückgängig beides zusammen zurücknimmt
+function setBoxes(id, boxes, at){
+  const m = S.made.find(r => r.id === id);
+  if (m) { m.boxes = boxes; m.meAt = at; }
+  else if (BASE[id]) { const o = S.ov[id] = S.ov[id] || {}; o.boxes = boxes; o.meAt = at; }
+  else return;
+  save();
+}
 function addBox(id){   // neue zusätzliche /me-Box mit Titel und einer Zeile; gibt den Pfad dieser Zeile zurück
-  const boxes = boxesOf(get(id)), k = newKey();
+  const r = get(id), boxes = boxesOf(r), k = newKey(), at = meAtOf(r);
   boxes.push({t: 'Zusätzliche Box', me: ['/me '], k});
-  patch(id, 'boxes', boxes); mergeNext = true;
+  setBoxes(id, boxes, at); mergeNext = true;   // die neue Box kommt ans Ende, die Hauptbox bleibt an ihrem Platz
   boxOv.set(id + '|' + k, true);   // eine neue Box ist offen, auch wenn die Grundeinstellung eingeklappt ist
   return 'x:' + (boxes.length - 1) + ':0';
 }
 function removeBox(id, bi){
-  const boxes = boxesOf(get(id));
+  const r = get(id), boxes = boxesOf(r), at = meAtOf(r);
   if (!boxes[bi]) return;
-  boxes.splice(bi, 1); patch(id, 'boxes', boxes);
+  boxes.splice(bi, 1);
+  setBoxes(id, boxes, bi < at ? at - 1 : at);   // liegt die entfernte Box über der Hauptbox, zählt die Hauptbox einen Platz weniger
 }
 // Die Hauptbox (Durchführung) lässt sich wie jede andere Box entfernen. Ihre Zeilen bleiben erhalten und kommen mit „wieder hinzufügen“ zurück.
 function removeMainBox(id){ patch(id, 'meOff', true); }
 function restoreMainBox(id){ clearField(id, 'meOff'); }
-function moveBox(id, bi, d){   // zusätzliche /me-Box nach oben (d = -1) oder unten (d = 1) tauschen; am Rand passiert nichts, wie bei den Abschnitten
-  const boxes = boxesOf(get(id)), j = bi + d;
-  if (!boxes[bi] || !boxes[j]) return;
-  [boxes[bi], boxes[j]] = [boxes[j], boxes[bi]];
-  patch(id, 'boxes', boxes);
+// ▲ und ▼ schieben eine Box um einen Platz in der sichtbaren Reihe. wer ist 'm' für die Hauptbox oder die Nummer einer zusätzlichen Box.
+// So wandern auch zusätzliche Boxen über oder unter die Hauptbox. Am Rand passiert nichts, wie bei den Abschnitten.
+function moveBox(id, wer, d){
+  const r = get(id);
+  if (!r) return;
+  const boxes = boxesOf(r), at = meAtOf(r), reihe = boxes.map((_, i) => i);
+  if (!r.meOff) reihe.splice(at, 0, 'm');   // eine entfernte Hauptbox ist nicht zu sehen, also zählt sie nicht mit
+  const p = reihe.indexOf(wer), q = p + d;
+  if (p < 0 || q < 0 || q >= reihe.length) return;
+  [reihe[p], reihe[q]] = [reihe[q], reihe[p]];
+  setBoxes(id, reihe.filter(x => x !== 'm').map(i => boxes[i]), r.meOff ? at : reihe.indexOf('m'));
 }
 function addDivider(id, s){   // Trennlinie als eigener Eintrag ans Ende der /me-Liste (Hauptbox oder zusätzliche Box), ohne Textfeld
   if (s === 'm') patch(id, 'me', get(id).me.concat(DIVIDER));
@@ -633,6 +650,7 @@ function akteExportObj(id){   // die Akte so, wie sie gerade angezeigt wird (mit
     me: r.me.slice(), boxes: boxesOf(r).map(b => ({t: b.t, me: b.me}))};   // ohne Kennung k, sie gehört nur zu dieser Ansicht
   if (r.meTitle) a.meTitle = r.meTitle;   // eigener Titel der Hauptbox
   if (r.meOff) a.meOff = true;   // Hauptbox entfernt: die Zeilen bleiben in der Datei, angezeigt wird die Box nicht
+  const at = meAtOf(r); if (at > 0) a.meAt = at;   // Platz der Hauptbox zwischen den zusätzlichen Boxen, nur wenn er nicht ganz oben ist
   return {format: 'medic-akte', version: 1, akte: a};
 }
 function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; ungültige Angaben werden abgelehnt
@@ -649,6 +667,7 @@ function akteImport(d){   // legt eine Akte aus einer Datei als eigene Akte an; 
     me: (Array.isArray(a.me) ? a.me : []).filter(t => typeof t === 'string'), boxes: cleanBoxes(a.boxes), table: null, widget: false};
   if (cleanText(a.meTitle)) rec.meTitle = cleanText(a.meTitle);
   if (a.meOff === true) rec.meOff = true;
+  if (Number.isInteger(a.meAt) && a.meAt > 0) rec.meAt = a.meAt;   // Platz der Hauptbox
   S.made.push(rec);
   placeAt(id, cat, null);   // ans Ende ihrer Kategorie, ohne Unterkategorie
   save();
@@ -720,6 +739,7 @@ function checkRecord(x){   // null = gültig, sonst der Grund
   if (x.me !== undefined && (!Array.isArray(x.me) || x.me.some(t => typeof t !== 'string'))) return 'me muss eine Liste von Texten sein';
   if (x.desc !== undefined && typeof x.desc !== 'string') return 'desc muss ein Text sein';
   if (x.meTitle !== undefined && typeof x.meTitle !== 'string') return 'meTitle muss ein Text sein';
+  if (x.meAt !== undefined && !(Number.isInteger(x.meAt) && x.meAt >= 0)) return 'meAt muss eine ganze Zahl ab 0 sein (so viele zusätzliche Boxen stehen vor der Hauptbox)';
   if (x.kw !== undefined && typeof x.kw !== 'string') return 'kw muss ein Text sein';
   if (x.widget !== undefined && typeof x.widget !== 'boolean') return 'widget muss true oder false sein';
   if (x.boxes !== undefined && (!Array.isArray(x.boxes) || !x.boxes.every(validBox))) return 'boxes muss eine Liste von /me-Boxen sein (jede Box hat Zeilen me und einen Titel t)';
@@ -734,6 +754,7 @@ function normalizeRecord(x){   // feste Form, die die Anzeige erwartet
     sections: (x.sections || []).map(s => { const o = {h: s.h.trim(), items: s.items.slice()}; if (own(MODES, s.mode)) o.mode = s.mode; return o; }),
     me: (x.me || []).slice(), boxes: (x.boxes || []).map(normBox), table: x.table || null, widget: x.widget === true};
   if (typeof x.meTitle === 'string' && x.meTitle.trim()) r.meTitle = x.meTitle.trim();   // eigener Titel der Hauptbox, z. B. aus akten.json
+  if (Number.isInteger(x.meAt) && x.meAt > 0) r.meAt = x.meAt;   // Platz der Hauptbox zwischen den zusätzlichen Boxen
   return r;
 }
 // Unterkategorie in akten.json: {"typ": "unterkategorie", "id": "b1", "cat": "b", "title": "…"}. Sie steht vor ihren Akten,
@@ -836,18 +857,21 @@ function card(r){
   const addRow = s => !can ? '' : `<button class="ad" data-act="add" data-id="${id}" data-s="${s}">+ /me hinzufügen</button> <button class="ad" data-act="add" data-id="${id}" data-s="${s}" data-start="Notiz: ">+ Notiz</button> <button class="ad" data-act="adddiv" data-id="${id}" data-s="${s}">+ Trennlinie</button>`;
   const mt = r.meTitle || ME_TITLE;
   const mOpen = boxOpen(r.id, 'm');
+  const mmove = boxesOf(r).length ? b('mainmove', '▲', 'Box nach oben', 'data-d="-1"') + b('mainmove', '▼', 'Box nach unten', 'data-d="1"') : '';   // Pfeile der Hauptbox, nur wenn es zusätzliche Boxen gibt
   const mainRm = can ? `<button class="danger xdel" data-act="rmmain" data-id="${id}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : '';   // wie bei den zusätzlichen Boxen
-  const mainBox = `<div class="me${mOpen ? '' : ' shut'}"><div class="mtop"><span class="ttl">${barw('m', mOpen)}<span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed)}</span></span>${mainRm}</div><div class="mbody">${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div></div>`;
+  const mainBox = `<div class="me${mOpen ? '' : ' shut'}"><div class="mtop"><span class="ttl">${barw('m', mOpen)}<span class="row" data-hold>${tx('mt', mt, hlEsc(mt))}${tools(ed + mmove)}</span></span>${mainRm}</div><div class="mbody">${r.me.map((m, i) => lineRow(m, 'm:' + i, 'm', i)).join('')}${addRow('m')}</div></div>`;
   // entfernte Hauptbox: nur der Knopf zum Wiederhinzufügen, und nur im Bearbeitungsmodus
   const me = ro ? '' : r.meOff ? (can ? `<div class="me-off"><button class="ad" data-act="addmain" data-id="${id}">+ ${esc(mt)} wieder hinzufügen</button></div>` : '') : mainBox;
-  const xboxes = ro ? '' : boxesOf(r).map((box, bi) => {
+  const xl = ro ? [] : boxesOf(r).map((box, bi) => {
     const bt = box.t || 'Zusätzliche Box', bOpen = boxOpen(r.id, box.k);
     const bmove = b('boxmove', '▲', 'Box nach oben', `data-b="${bi}" data-d="-1"`) + b('boxmove', '▼', 'Box nach unten', `data-b="${bi}" data-d="1"`);   // Reihenfolge der Boxen, wie bei den Abschnitten
     return `<div class="me xb${bOpen ? '' : ' shut'}"><div class="bhead"><span class="ttl">${barw(box.k, bOpen)}<span class="row" data-hold>${tx('xt:' + bi, bt, hlEsc(bt))}${tools(ed + bmove)}</span></span>${can ? `<button class="danger xdel" data-act="rmbox" data-id="${id}" data-b="${bi}" title="Box entfernen" aria-label="Box entfernen">Box entfernen</button>` : ''}</div><div class="mbody">${box.me.map((m, i) => lineRow(m, `x:${bi}:${i}`, 'x' + bi, i)).join('')}${addRow('x' + bi)}</div></div>`;
-  }).join('') + (can ? `<button class="ad" data-act="addbox" data-id="${id}">+ /me-Box hinzufügen</button>` : '');
+  });
+  const at = meAtOf(r);   // so viele zusätzliche Boxen stehen vor der Hauptbox
+  const boxen = xl.slice(0, at).concat(me ? [me] : [], xl.slice(at)).join('') + (can ? `<button class="ad" data-act="addbox" data-id="${id}">+ /me-Box hinzufügen</button>` : '');
   const addSec = can ? `<button class="ad" data-act="secform" data-id="${id}">+ Abschnitt hinzufügen</button>` : '';
   const sform = (can && sectionForm && sectionForm.id === r.id) ? secFormHTML(sectionForm, id) : '';
-  return `<article class="card${shut ? ' folded' : ''}${S.del[r.id] ? ' gone' : ''}" data-rec="${id}">${head}${ctools}${cat}${desc}${tbl}${secs}${addSec}${sform}${blood}${me}${xboxes}</article>`;
+  return `<article class="card${shut ? ' folded' : ''}${S.del[r.id] ? ' gone' : ''}" data-rec="${id}">${head}${ctools}${cat}${desc}${tbl}${secs}${addSec}${sform}${blood}${boxen}</article>`;
 }
 function trashCard(r){
   const id = esc(r.id), mine = S.made.some(x => x.id === r.id);
@@ -1169,7 +1193,7 @@ function redo(){
   render(); toast('Wiederholt');
 }
 
-const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'subdel']);   // nur im Bearbeitungsmodus
+const EDIT_ONLY = new Set(['edit', 'trash', 'restore', 'purge', 'reset', 'recmove', 'move', 'secmove', 'remove', 'add', 'adddiv', 'delsec', 'addbox', 'rmbox', 'rmmain', 'addmain', 'boxmove', 'mainmove', 'newform', 'secform', 'secsave', 'create', 'import', 'importakte', 'undo', 'redo', 'subnew', 'subedit', 'subcancel', 'subok', 'subdel']);   // nur im Bearbeitungsmodus
 function act(name, b){
   if (EDIT_ONLY.has(name) && !EDIT) return;   // Zuschauermodus: nichts ändern, nichts hinzufügen
   const d = b.dataset, id = d.id;
@@ -1208,6 +1232,7 @@ function act(name, b){
   else if (name === 'rmmain') removeMainBox(id);
   else if (name === 'addmain') restoreMainBox(id);
   else if (name === 'boxmove') moveBox(id, +d.b, +d.d);
+  else if (name === 'mainmove') moveBox(id, 'm', +d.d);
   else if (name === 'delsec') delSection(id, +d.s);
   else if (name === 'recmove') moveRec(id, +d.d);
   else if (['subnew', 'subedit', 'subcancel', 'subok', 'subdel'].includes(name)) subAct(name, d);
@@ -1318,6 +1343,7 @@ function cleanMade(x, seen){
     me: Array.isArray(x.me) ? x.me.filter(t => typeof t === 'string') : [], boxes: cleanBoxes(x.boxes), table: null, widget: false};
   const mt = cleanText(x.meTitle); if (mt) out.meTitle = mt;   // eigener Titel der Hauptbox
   if (x.meOff === true) out.meOff = true;   // Hauptbox entfernt
+  if (Number.isInteger(x.meAt) && x.meAt > 0) out.meAt = x.meAt;   // Platz der Hauptbox
   return out;
 }
 function cleanOv(x){
@@ -1326,6 +1352,7 @@ function cleanOv(x){
   const t = cleanText(x.title); if (t) o.title = t;
   const mt = cleanText(x.meTitle); if (mt) o.meTitle = mt;
   if (x.meOff === true) o.meOff = true;
+  if (Number.isInteger(x.meAt) && x.meAt > 0) o.meAt = x.meAt;
   if (typeof x.desc === 'string') o.desc = x.desc;
   if (Array.isArray(x.me)) o.me = x.me.filter(v => typeof v === 'string');
   if (Array.isArray(x.boxes)) o.boxes = cleanBoxes(x.boxes);
@@ -1623,8 +1650,8 @@ function runTests(){
   T('Unter der /me-Box steht kein Hinweistext, kopierbare Zeilen bleiben', () => { reset0(); const c = card(get(id())); ok(!c.includes('Zeile mit /me anklicken zum Kopieren'), 'Hinweis steht noch da'); ok(c.includes('class="ml cp"'), 'keine kopierbare Zeile'); });
   T('Papierkorb hat ein Symbol und eine Trennlinie davor', () => { render(); const h = $('#n').innerHTML, s = h.lastIndexOf('class="sep"'); ok(h.includes('class="ic"'), 'Symbol fehlt'); ok(s > h.indexOf('Medikamente') && s < h.indexOf('Papierkorb'), 'Trennlinie an falscher Stelle'); });
   T('KI-Hinweis steht unten rechts und blockiert keine Klicks', () => { const w = $('#wm'); ok(w && w.textContent.includes('Mit KI erstellt'), 'Hinweis fehlt'); ok(getComputedStyle(w).pointerEvents === 'none', 'Hinweis fängt Klicks ab'); });
-  // Ausnahmen: die Narkose-Akte und die beiden Akten aus den Originaldateien haben keine Material-Zeile
-  T('Jede bearbeitbare Akte beginnt mit einer Material-Zeile', () => { const ohne = SEED.filter(r => !RO[r.cat] && !['Narkose richtig einleiten', 'Streifschuss, Stichwunde, Bisswunde', 'Steckschuss'].includes(r.title) && !/^\/me nimmt /.test((r.me || [])[0] || '')).map(r => r.title); ok(!ohne.length, 'ohne Material-Zeile: ' + ohne.join(', ')); });
+  // Ausnahmen: die Narkose-Akte und die Originalakten Streifschuss, Steckschuss und Prellung haben vorn keine Material-Zeile
+  T('Jede bearbeitbare Akte beginnt mit einer Material-Zeile', () => { const ohne = SEED.filter(r => !RO[r.cat] && !['Narkose richtig einleiten', 'Streifschuss, Stichwunde, Bisswunde', 'Steckschuss', 'Prellung'].includes(r.title) && !/^\/me nimmt /.test((r.me || [])[0] || '')).map(r => r.title); ok(!ohne.length, 'ohne Material-Zeile: ' + ohne.join(', ')); });
   T('Suchtreffer werden markiert', () => { reset0(); const r = E(); const w = (r.sections[0].items[0].split(' ')[0] || '').replace(/[^\p{L}]/gu, ''); query = w; const c = card(get(r.id)); query = ''; ok(w && c.includes('<mark>'), 'keine Markierung für ' + w); });
   T('Treffer im Text bleiben als HTML sicher', () => { query = 'b'; const out = hlEsc('<i>b</i>'); query = ''; ok(out === '&lt;i&gt;<mark>b</mark>&lt;/i&gt;', out); });
   T('Zusätzliche /me-Box anlegen, befüllen, entfernen', () => { reset0(); const i = id(), path = addBox(i); ok(get(i).boxes.length === 1 && path === 'x:0:0', 'nicht angelegt'); setText(i, path, '/me Test-Box'); ok(get(i).boxes[0].me[0] === '/me Test-Box', 'Zeile nicht gespeichert'); const c = card(get(i)); ok(c.includes('Zusätzliche Box') && c.includes('data-s="x0"'), 'nicht angezeigt'); removeBox(i, 0); ok(get(i).boxes.length === 0, 'nicht entfernt'); });
@@ -1781,7 +1808,7 @@ function runTests(){
   T('Trennlinie in einer zusätzlichen Box', () => { reset0(); const i = id(); addBox(i); addDivider(i, 'x0'); const me = get(i).boxes[0].me; ok(me[me.length - 1] === '---' && card(get(i)).includes('class="ml tl"'), 'nicht eingefügt'); removeLine(i, 'x0', me.length - 1); ok(get(i).boxes[0].me.length === 1, 'nicht entfernt'); });
   T('Trennlinien sind nicht kopierbar und haben keine Textstelle', () => { reset0(); const i = id(); addDivider(i, 'm'); const c = card(get(i)); ok(c.includes('class="ml tl"'), 'keine Trennlinie'); ok(!c.includes('class="ml cp" data-raw="---"'), 'Trennlinie ist kopierbar'); ok(!c.includes('data-path="m:' + (get(i).me.length - 1) + '"'), 'Trennlinie hat eine Textstelle'); });
   T('Trennlinie ist ein Rückgängig-Schritt', () => { reset0(); const i = id(), n = get(i).me.length; addDivider(i, 'm'); ok(get(i).me.length === n + 1, 'nicht eingefügt'); undo(); ok(get(i).me.length === n, 'nicht zurückgenommen'); });
-  T('Zusätzliche /me-Boxen lassen sich nach oben und unten verschieben', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'A'); addBox(i); setText(i, 'xt:1', 'B'); addBox(i); setText(i, 'xt:2', 'C'); const t = () => boxesOf(get(i)).map(x => x.t).join(','); ok(t() === 'A,B,C', 'Ausgangslage: ' + t()); moveBox(i, 2, -1); ok(t() === 'A,C,B', 'nicht nach oben: ' + t()); moveBox(i, 0, -1); ok(t() === 'A,C,B', 'oberste Box über den Rand verschoben: ' + t()); moveBox(i, 0, 1); ok(t() === 'C,A,B', 'nicht nach unten: ' + t()); });
+  T('Zusätzliche /me-Boxen lassen sich nach oben und unten verschieben', () => { reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'A'); addBox(i); setText(i, 'xt:1', 'B'); addBox(i); setText(i, 'xt:2', 'C'); const t = () => boxesOf(get(i)).map(x => x.t).join(','); ok(t() === 'A,B,C', 'Ausgangslage: ' + t()); moveBox(i, 2, -1); ok(t() === 'A,C,B', 'nicht nach oben: ' + t()); moveBox(i, 2, 1); ok(t() === 'A,C,B', 'unterste Box über den Rand verschoben: ' + t()); moveBox(i, 0, 1); ok(t() === 'C,A,B', 'nicht nach unten: ' + t()); });
   T('/me-Boxen klappen einzeln ein und aus, auch im Zuschauermodus', () => { reset0(); const i = id(); addBox(i); const k = boxesOf(get(i))[0].k; ok(card(get(i)).includes('class="me xb"'), 'neue Box nicht offen'); act('boxopen', {dataset: {id: i, bk: k}}); ok(card(get(i)).includes('class="me xb shut"'), 'Box nicht eingeklappt'); act('boxopen', {dataset: {id: i, bk: k}}); ok(!card(get(i)).includes('shut'), 'Box nicht wieder offen'); act('boxopen', {dataset: {id: i, bk: 'm'}}); ok(card(get(i)).includes('class="me shut"'), 'Hauptbox nicht eingeklappt'); act('boxopen', {dataset: {id: i, bk: 'm'}}); ok(card(get(i)).includes('class="me"') && !card(get(i)).includes('shut'), 'Hauptbox nicht wieder offen'); });
   T('Die Grundeinstellung /me-Boxen eingeklappt gilt für alle Boxen und lässt sich einzeln ändern', () => { reset0(); const i = id(); addBox(i); setOpt('me', 'closed'); const c = card(get(i)); ok(c.includes('class="me shut"') && c.includes('class="me xb shut"'), 'Grundeinstellung nicht gültig'); act('boxopen', {dataset: {id: i, bk: boxesOf(get(i))[0].k}}); ok(card(get(i)).includes('class="me xb"'), 'einzelne Box nicht offen'); setOpt('me', 'open'); ok(!card(get(i)).includes('shut'), 'Grundeinstellung ausgeklappt nicht gültig'); });
   T('Die Einstellung /me-Boxen wird gespeichert und geladen', () => { setOpt('me', 'closed'); SET = {theme: 'dark', cols: 2, abstand: 1, ecken: 'rund', sec: 'open', me: 'open', nav: 'open'}; loadSet(); ok(SET.me === 'closed', 'nicht geladen'); setOpt('me', 'open'); ok(SET.me === 'open', 'nicht zurückgestellt'); });
@@ -1796,7 +1823,7 @@ function runTests(){
   T('Zuschauermodus ist der Standard', () => ok(startedInView, 'beim Start war der Bearbeitungsmodus an'));
   T('Im Zuschauermodus gibt es keine Bearbeiten-Schaltflächen', () => {
     setMode(false); reset0(); const c = card(get(id())); setMode(true);
-    ok(!/data-act="(edit|add|adddiv|move|remove|trash|recmove|secmove|delsec|addbox|rmbox|boxmove|secform|reset)"/.test(c), 'Bearbeiten-Schaltfläche sichtbar');
+    ok(!/data-act="(edit|add|adddiv|move|remove|trash|recmove|secmove|delsec|addbox|rmbox|boxmove|mainmove|secform|reset)"/.test(c), 'Bearbeiten-Schaltfläche sichtbar');
     ok(!c.includes('class="smode"') && !c.includes('+ Abschnitt hinzufügen'), 'Darstellung oder Abschnitt hinzufügen sichtbar');
     ok(c.includes('data-act="exportrec"') && c.includes('data-act="fav"') && c.includes('data-act="fold"'), 'Export, Kopieren, Favorit oder Einklappen fehlt');
   });
@@ -1872,6 +1899,76 @@ function runTests(){
     const res = akteImport(o);
     ok(res.id && get(res.id).meOff === true, 'nach dem Import nicht entfernt');
     reset0();
+  });
+  // Reihenfolge der Boxen, wie sie angezeigt wird: x = zusätzliche Box, m = Hauptbox (fehlt, wenn sie entfernt ist)
+  const reihenfolge = rid => [...card(get(rid)).matchAll(/<div class="me( xb)?(?: shut)?"><div class="(?:mtop|bhead)">/g)].map(m => m[1] ? 'x' : 'm').join('');
+  T('Die Hauptbox steht standardmäßig vor den zusätzlichen Boxen, wie bisher', () => { reset0(); const i = id(); addBox(i); addBox(i); ok(reihenfolge(i) === 'mxx', 'Reihenfolge ' + reihenfolge(i)); reset0(); });
+  T('Die Hauptbox lässt sich zwischen die zusätzlichen Boxen schieben, bis ganz nach unten', () => {
+    reset0(); const i = id(); addBox(i); addBox(i);
+    moveBox(i, 'm', 1); ok(reihenfolge(i) === 'xmx' && get(i).meAt === 1, 'eine Stelle nach unten: ' + reihenfolge(i));
+    moveBox(i, 'm', 1); ok(reihenfolge(i) === 'xxm' && get(i).meAt === 2, 'ganz nach unten: ' + reihenfolge(i));
+    moveBox(i, 'm', 1); ok(reihenfolge(i) === 'xxm', 'am unteren Rand passiert etwas');
+    moveBox(i, 'm', -1); ok(reihenfolge(i) === 'xmx', 'eine Stelle nach oben: ' + reihenfolge(i));
+    moveBox(i, 'm', -1); moveBox(i, 'm', -1); ok(reihenfolge(i) === 'mxx' && get(i).meAt === 0, 'ganz nach oben: ' + reihenfolge(i));
+    reset0();
+  });
+  T('Eine zusätzliche Box kann über die Hauptbox wandern, und die Reihenfolge der Boxen bleibt', () => {
+    reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'A'); addBox(i); setText(i, 'xt:1', 'B');
+    moveBox(i, 0, -1); ok(reihenfolge(i) === 'xmx' && get(i).boxes.map(x => x.t).join(',') === 'A,B', 'A nicht über die Hauptbox: ' + reihenfolge(i));
+    moveBox(i, 1, -1); ok(reihenfolge(i) === 'xxm' && get(i).boxes.map(x => x.t).join(',') === 'A,B', 'B nicht über die Hauptbox: ' + reihenfolge(i));
+    moveBox(i, 0, 1); ok(reihenfolge(i) === 'xxm' && get(i).boxes.map(x => x.t).join(',') === 'B,A', 'A und B nicht getauscht: ' + reihenfolge(i));
+    reset0();
+  });
+  T('Die Hauptbox verschieben ist ein Rückgängig-Schritt', () => {
+    reset0(); const i = id(); addBox(i); setText(i, 'xt:0', 'A'); addBox(i); setText(i, 'xt:1', 'B');
+    const vorher = reihenfolge(i); moveBox(i, 'm', 1); ok(reihenfolge(i) !== vorher, 'nicht verschoben');
+    undo(); ok(reihenfolge(i) === vorher, 'nicht zurückgenommen: ' + reihenfolge(i));
+    reset0();
+  });
+  T('Der Platz der Hauptbox bleibt beim Export und Import erhalten', () => {
+    reset0(); const i = id(); addBox(i); addBox(i); moveBox(i, 'm', 1);
+    const o = JSON.parse(JSON.stringify(akteExportObj(i)));
+    ok(o.akte.meAt === 1, 'Platz fehlt im Export');
+    const gesamt = sanitize(JSON.parse(exportText()));   // die Sicherung des ganzen Handbuchs behält den Platz auch
+    ok(gesamt.data.ov[i] && gesamt.data.ov[i].meAt === 1, 'Platz fehlt in der Sicherung');
+    const res = akteImport(o);
+    ok(res.id && reihenfolge(res.id) === 'xmx', 'nach dem Import: ' + (res.id && reihenfolge(res.id)));
+    reset0();
+  });
+  T('Die Hauptbox ganz oben steht nicht extra in der Datei', () => { reset0(); const i = id(); addBox(i); ok(akteExportObj(i).akte.meAt === undefined, 'Platz steht im Export'); reset0(); });
+  T('Die Pfeile der Hauptbox gibt es nur mit zusätzlichen Boxen und im Bearbeitungsmodus', () => {
+    reset0(); const i = id();
+    ok(!card(get(i)).includes('data-act="mainmove"'), 'Pfeile ohne zusätzliche Box');
+    addBox(i); ok(card(get(i)).includes('data-act="mainmove"'), 'keine Pfeile');
+    setMode(false); const v = card(get(i)); setMode(true);
+    ok(!v.includes('data-act="mainmove"'), 'Pfeile im Zuschauermodus'); reset0();
+  });
+  T('Eine entfernte Hauptbox zählt beim Verschieben der anderen Boxen nicht mit', () => {
+    reset0(); const i = id(); addBox(i); addBox(i); removeMainBox(i); const vorher = get(i).meAt;
+    moveBox(i, 1, -1);
+    ok(get(i).meAt === vorher, 'Platz geändert');
+    ok(reihenfolge(i) === 'xx', 'Reihenfolge: ' + reihenfolge(i));
+    reset0();
+  });
+  T('Eine Box über der Hauptbox entfernen: die Hauptbox bleibt zwischen ihren Nachbarn', () => {
+    reset0(); const i = id(); addBox(i); addBox(i); addBox(i); moveBox(i, 'm', 1); moveBox(i, 'm', 1);
+    ok(reihenfolge(i) === 'xxmx', 'Ausgangslage: ' + reihenfolge(i));
+    removeBox(i, 0);
+    ok(reihenfolge(i) === 'xmx' && get(i).meAt === 1, 'nach dem Entfernen: ' + reihenfolge(i));
+    reset0();
+  });
+  T('Ein ungültiger Platz der Hauptbox wird auf den nächsten passenden gesetzt', () => {
+    reset0(); const i = id(); addBox(i); addBox(i);
+    patch(i, 'meAt', 99); ok(reihenfolge(i) === 'xxm', 'zu weit unten: ' + reihenfolge(i));
+    patch(i, 'meAt', -4); ok(reihenfolge(i) === 'mxx', 'zu weit oben: ' + reihenfolge(i));
+    reset0();
+  });
+  T('In akten.json wird der Platz der Hauptbox geprüft und übernommen', () => {
+    ok(checkRecord({id: 'pl1', cat: 'b', title: 'Platz', meAt: 1}) === null, 'gültiger Platz abgelehnt');
+    ok(checkRecord({id: 'pl2', cat: 'b', title: 'Platz', meAt: -1}) !== null, 'negativer Platz angenommen');
+    ok(checkRecord({id: 'pl3', cat: 'b', title: 'Platz', meAt: '1'}) !== null, 'Text als Platz angenommen');
+    ok(normalizeRecord({id: 'pl4', cat: 'b', title: 'Platz', meAt: 2}).meAt === 2, 'Platz nicht übernommen');
+    ok(normalizeRecord({id: 'pl5', cat: 'b', title: 'Platz'}).meAt === undefined, 'ungewollter Platz');
   });
   T('Unterkategorie-Titel stehen über ihren Akten, nicht am Suchfeld, und bei der Suche gibt es keine', () => {
     const v0 = view; reset0(); syncData(); view = 'b'; render();
