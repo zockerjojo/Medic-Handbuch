@@ -64,6 +64,7 @@ button:hover{border-color:var(--a)}
 .cl-d{margin:16px 0 6px;font-size:17px;line-height:1.35;font-weight:700}   /* Datum eines Blocks im Änderungsprotokoll */
 .cl-list{margin:0 0 4px;padding-left:20px;list-style:disc}
 .cl-list li{margin:0 0 6px}
+.ekgtitel{margin:0 0 8px;font-size:18px;line-height:1.3;font-weight:700}   /* Überschrift des EKG-Fensters, vor der Box: steht fest im Quelltext, nicht kopierbar */
 .ekgh{margin:16px 0 6px;padding:5px 10px;border-radius:6px;font-size:17px;line-height:1.35;font-weight:700;color:var(--ekg-t);background:var(--ekg-bg)}   /* Normalwerte im EKG-Fenster: gelb hervorgehoben, nicht kopierbar. Hell: gelbe Fläche mit dunkler Schrift, weil gelbe Schrift auf Weiß nicht lesbar ist */
 @media(max-width:560px){.lbl{display:none}}
 #l{padding-bottom:20px}
@@ -239,6 +240,12 @@ const NOTFALL = [
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 // Änderungsprotokoll (Knopf „Änderungsprotokoll“ in den Einstellungen): alle Änderungen an dieser Seite, neueste zuerst. Ein neuer Tag ist ein neuer Block ganz oben, jeder Eintrag ein Text. Die Liste steht fest im Quelltext, nicht in akten.json.
 const CHANGELOG = [
+  {d: '28.10.2026', items: [
+    'EKG-Überwachung: neuer Text. Oben stehen die Überschrift „EKG- & Vitalwerte-Überwachung“ und der Hinweis, Puls, Blutdruck und SpO2 während der gesamten Behandlung regelmäßig zu kontrollieren und im RP abzufragen.',
+    'EKG-Überwachung: Fentanyl und Propofol sind nicht mehr die Standard-Reaktion bei hohem Puls oder Blutdruck. Stattdessen: Atropin bei niedrigem Puls, Beruhigung und Evaluation der Schmerzintensität bei hohem Puls, Kochsalzlösung bei niedrigem Blutdruck, Oberkörper leicht erhöht lagern bei hohem Blutdruck, Sauerstoffmaske bei niedriger Sättigung.',
+    'EKG-Überwachung: Normalwert der Sauerstoffsättigung 95–100 % (bisher 98–100 %). Die Box „Überwachung des EKGs“ in der Akte „Narkose richtig einleiten“ hat denselben Text.',
+    'Leitfaden: Punkt 4 und 10 beschreiben Überschrift, Hinweis und die Box in der Akte.',
+  ]},
   {d: '27.10.2026', items: [
     'Änderungsprotokoll: Knopf in den Einstellungen rechts neben „Einführung zu wiederholen“. Das Fenster zeigt alle Änderungen, neueste zuerst.',
     'EKG-Fenster: Umrandung der Box entfernt. Der dunkle Hintergrund der Notfall-Protokolle bleibt.',
@@ -1247,9 +1254,9 @@ function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar 
     : isNormal(m) ? `<h4 class="ekgh">${hlEsc(m)}</h4>` /* Normalwerte: gelb hervorgehoben, nicht kopierbar */
     : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('');
   $('#mtitle').textContent = 'EKG-Überwachung';
-  $('#mbody').innerHTML = lines.length
+  $('#mbody').innerHTML = '<h3 class="ekgtitel">EKG- &amp; Vitalwerte-Überwachung</h3>' + (lines.length   // Überschrift steht fest im Quelltext, vor der Box; ein Klick darauf kopiert nichts
     ? `<div class="me ekgbody">${rows}</div>`
-    : `<p class="c">Die Standard-EKG-Überwachung fehlt. Sie steht in der Akte „${esc(EKG.akte)}“ in der /me-Box „${esc(EKG.box)}“.</p>`;
+    : `<p class="c">Die Standard-EKG-Überwachung fehlt. Sie steht in der Akte „${esc(EKG.akte)}“ in der /me-Box „${esc(EKG.box)}“.</p>`);
   $('#modal').hidden = false;
   focusField('#modal [data-act="closemodal"]');
 }
@@ -1824,7 +1831,7 @@ function runTests(){
   T('Normalwerte im EKG-Fenster sind gelbe Überschriften, nicht kopierbar', () => {
     act('ekg', {dataset: {}});
     const hs = [...$('#mbody').querySelectorAll('h4.ekgh')].map(h => h.textContent);
-    ok(hs.length === 3 && ['Puls → Normalwert: 60–80 Schläge/min', 'Blutdruck → Normalwert: 120/80 mmHg', 'Sauerstoffsättigung (SpO2) → Normalwert: 98–100 %'].every(t => hs.includes(t)), 'Überschriften: ' + hs.join(' | '));
+    ok(hs.length === 3 && ['Puls → Normalwert: 60–80 Schläge/min', 'Blutdruck → Normalwert: 120/80 mmHg', 'Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %'].every(t => hs.includes(t)), 'Überschriften: ' + hs.join(' | '));
     ok(![...$('#mbody').querySelectorAll('.ml.cp')].some(x => x.textContent.includes('→ Normalwert:')), 'Normalwert-Überschrift ist kopierbar');
     act('closemodal', {dataset: {}});
   });
@@ -1832,7 +1839,7 @@ function runTests(){
     act('ekg', {dataset: {}});
     const cs = getComputedStyle($('#mbody').querySelector('h4.ekgh'));
     ok(cs.color === 'rgb(253, 224, 71)' || cs.backgroundColor === 'rgb(253, 224, 71)', 'nicht gelb: ' + cs.color + ' / ' + cs.backgroundColor);
-    ok(isNormal('Puls -> Normalwert: 60') && isNormal('Puls → Normalwert: 60') && !isNormal('Wenn Puls zu niedrig: /me verabreicht Atropin'), 'Erkennung des Pfeils');
+    ok(isNormal('Puls -> Normalwert: 60') && isNormal('Puls → Normalwert: 60') && !isNormal('Puls zu niedrig (< 60/min): /me verabreicht Atropin'), 'Erkennung des Pfeils');
     act('closemodal', {dataset: {}});
   });
   T('Das EKG-Fenster holt die Box aus akten.json, wenn die Akte im Browser sie nicht mehr hat', () => {
@@ -2176,10 +2183,28 @@ function runTests(){
     ok($('#l').querySelectorAll('h3.grph').length === 0, 'Titel auch bei der Suche');
     query = ''; view = v0; render();
   });
-  T('Die Narkose-Akte hat die EKG-Box mit dem Normalwert-Text', () => {
+  T('Die Narkose-Akte hat die EKG-Box mit Hinweis und neuem Text', () => {
     reset0(); const b = boxesOf(get('Narkose richtig einleiten')).find(x => x.t === EKG.box);
-    ok(b && b.me.length === 10 && b.me[1] === 'Wenn Puls zu niedrig: /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'EKG-Box weicht ab');
+    ok(b && b.me.length === 11 && b.me[0] === 'Hinweis: Die Vitalwerte (Puls, Blutdruck, SpO2) sind während der gesamten Behandlung regelmäßig zu kontrollieren und im RP abzufragen.' && b.me[2] === 'Puls zu niedrig (< 60/min): /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'EKG-Box weicht ab');
     ok(b.me.filter(x => x === DIVIDER).length === 2, 'Trennlinien fehlen');
+    ok(!b.me.some(x => /Fentanyl|Propofol/.test(x)), 'Fentanyl oder Propofol steht noch in der EKG-Box');
+  });
+  T('Das EKG-Fenster beginnt mit der Überschrift und enthält kein Fentanyl und Propofol', () => {
+    try {
+      act('ekg', {dataset: {}});
+      const h = $('#mbody h3.ekgtitel');
+      ok(h && h.textContent === 'EKG- & Vitalwerte-Überwachung', 'Überschrift: ' + (h && h.textContent));
+      ok(!/Fentanyl|Propofol/.test($('#mbody').textContent), 'Fentanyl oder Propofol im EKG-Fenster');
+      ok($('#mbody').textContent.includes('Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %'), 'SpO2-Normalwert fehlt');
+    } finally { act('closemodal', {dataset: {}}); }
+  });
+  TZ('Klick auf die Überschrift oder den Hinweis im EKG-Fenster kopiert nichts', () => {
+    reset0(); act('ekg', {dataset: {}}); getSelection().removeAllRanges();
+    const cb = navigator.clipboard; let kopiert = null;
+    cb.writeText = t => { kopiert = t; return Promise.resolve(); };
+    try { $('#mbody h3.ekgtitel').click(); $('#mbody .ml.nt').click(); }
+    finally { delete cb.writeText; act('closemodal', {dataset: {}}); }
+    ok(kopiert === null, 'kopiert: ' + kopiert);
   });
   T('Import behält den Abschnitt Behandlung', () => { reset0(); const res = akteImport({format: 'medic-akte', akte: {cat: 'b', title: 'Import mit Behandlung', sections: [{h: 'Behandlung', items: ['x']}, {h: 'Erkennung', items: ['y']}]}}); const hs = res.id ? get(res.id).sections.map(s => s.h) : []; reset0(); ok(hs.join('|') === 'Behandlung|Erkennung', 'Behandlung verloren: ' + hs.join(',')); });
   T('Umbenannte Operationen: Änderungen, Löschungen, Favoriten und Reihenfolge wandern mit', () => {
