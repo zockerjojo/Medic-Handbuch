@@ -867,16 +867,17 @@
       {
         "t": "Überwachung des EKGs",
         "me": [
+          "Hinweis: Die Vitalwerte (Puls, Blutdruck, SpO2) sind während der gesamten Behandlung regelmäßig zu kontrollieren und im RP abzufragen.",
           "Puls → Normalwert: 60–80 Schläge/min",
-          "Wenn Puls zu niedrig: /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
-          "Wenn Puls zu Hoch: /me verabreicht Fentanyl über den Zugang, um den Puls zu senken",
+          "Puls zu niedrig (< 60/min): /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
+          "Puls zu hoch (> 100/min / Aufregung oder Schmerz): /me beruhigt den Patienten und evaluiert die Schmerzintensität",
           "---",
           "Blutdruck → Normalwert: 120/80 mmHg",
-          "Wenn Blutdruck zu niedrig: /me verabreicht Kochsalzlösung über den Zugang, um den Blutdruck zu erhöhen",
-          "Wenn Blutdruck zu hoch: /me verabreicht Propofol über den Zugang, um den Blutdruck zu steigern",
+          "Blutdruck zu niedrig: /me verabreicht eine Vollkristalloid-Infusion (Kochsalzlösung) über den Zugang, um den Blutdruck zu stabilisieren",
+          "Blutdruck zu hoch: /me lagert den Oberkörper leicht erhöht und sorgt für körperliche Ruhe",
           "---",
-          "Sauerstoffsättigung (SpO2) → Normalwert: 98–100 %",
-          "Wenn Sauerstoffsättigung zu Niedrig: /me erhöht die Sauerstoffzufuhr, um die Sauerstoffsättigung auf Normalwert zu bringen"
+          "Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %",
+          "Sauerstoffsättigung zu niedrig (< 95 %): /me legt eine Sauerstoffmaske an und erhöht die Sauerstoffzufuhr"
         ]
       }
     ],
