@@ -867,17 +867,24 @@
       {
         "t": "Überwachung des EKGs",
         "me": [
-          "Hinweis: Die Vitalwerte (Puls, Blutdruck, SpO2) sind während der gesamten Behandlung regelmäßig zu kontrollieren und im RP abzufragen.",
+          "Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.",
+          "---",
           "Puls → Normalwert: 60–80 Schläge/min",
-          "Puls zu niedrig (< 60/min): /me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
-          "Puls zu hoch (> 100/min / Aufregung oder Schmerz): /me beruhigt den Patienten und evaluiert die Schmerzintensität",
+          "**Puls zu niedrig (< 60/min):**",
+          "/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen",
+          "**Puls zu hoch (> 100/min):**",
+          "Wacher Patient: /me beruhigt den Patienten und evaluiert die Schmerzintensität",
+          "In Narkose / OP: /me prüft die Narkosetiefe und verabreicht Schmerzmittel nach Stufenplan",
           "---",
           "Blutdruck → Normalwert: 120/80 mmHg",
-          "Blutdruck zu niedrig: /me verabreicht eine Vollkristalloid-Infusion (Kochsalzlösung) über den Zugang, um den Blutdruck zu stabilisieren",
-          "Blutdruck zu hoch: /me lagert den Oberkörper leicht erhöht und sorgt für körperliche Ruhe",
+          "**Blutdruck zu niedrig:**",
+          "/me verabreicht eine Vollkristalloid-Infusion (Kochsalzlösung) über den Zugang, um den Blutdruck zu stabilisieren",
+          "**Blutdruck zu hoch:**",
+          "/me lagert den Oberkörper leicht erhöht und sorgt für körperliche Ruhe",
           "---",
           "Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %",
-          "Sauerstoffsättigung zu niedrig (< 95 %): /me legt eine Sauerstoffmaske an und erhöht die Sauerstoffzufuhr"
+          "**Sauerstoffsättigung zu niedrig (< 95 %):**",
+          "/me legt eine Sauerstoffmaske an und erhöht die Sauerstoffzufuhr"
         ]
       }
     ],
