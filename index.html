@@ -222,15 +222,35 @@ const DEFAULT_FORM = ['Erkennung', 'Ablauf'];   // Standardabschnitte neuer Akte
 const ME_TITLE = 'Durchführung';   // Standardtitel der Hauptbox, im Browser umbenennbar (leer = wieder dieser Titel)
 const DIVIDER = '---';   // Trennlinie in einer /me-Liste: eine Zeile mit genau diesem Text, ohne Textstelle und ohne Kopieren
 const EKG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4.5l1.8-4.2 3.2 9.2 2.4-7.5 1.6 2.5H22"/></svg>';   // EKG-Symbol neben dem Titel jeder Akte
-const EKG = {akte: 'Narkose richtig einleiten', box: 'Überwachung des EKGs'};   // Quelle der Standard-EKG-Überwachung: die /me-Box mit diesem Titel in dieser Akte
+// EKG-Überwachung: fest im Quelltext wie die Notfall-Protokolle, nicht in akten.json. Zeile mit /me: kopierbar. Zeile ohne /me: Notiz. „→ Normalwert“: gelbe Überschrift. „---“: Trennlinie.
+const EKG_LINES = [
+  'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.',
+  '---',
+  'Puls → Normalwert: 60–80 Schläge/min',
+  '**Puls zu niedrig (< 60/min):**',
+  '/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen',
+  '**Puls zu hoch (> 100/min):**',
+  'Wacher Patient: /me beruhigt den Patienten und evaluiert die Schmerzintensität',
+  'In Narkose / OP: /me prüft die Narkosetiefe und verabreicht Schmerzmittel nach Stufenplan',
+  '---',
+  'Blutdruck → Normalwert: 120/80 mmHg',
+  '**Blutdruck zu niedrig:**',
+  '/me verabreicht eine Vollkristalloid-Infusion (Kochsalzlösung) über den Zugang, um den Blutdruck zu stabilisieren',
+  '**Blutdruck zu hoch:**',
+  '/me lagert den Oberkörper leicht erhöht und sorgt für körperliche Ruhe',
+  '---',
+  'Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %',
+  '**Sauerstoffsättigung zu niedrig (< 95 %):**',
+  '/me legt eine Sauerstoffmaske an und erhöht die Sauerstoffzufuhr'
+];
 const NOTFALL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';   // Warnschild (Gefahrenzeichen) des Notfall-Knopfs
 // Notfall-Protokolle: fest im Quelltext, nicht in akten.json. Ihre /me-Zeilen sind kopierbar wie in den Akten, nur im Zuschauermodus.
 const NOTFALL = [
   {t: '1. Schwere Blutung (Massive Blutung / Tourniquet)',
     beschr: ['Spritzende/massive Blutungen an Extremitäten', 'Greift, wenn einfacher Druck nicht ausreicht', 'Ziel: Sofortige Blutstillung & Schockvermeidung'],
-    me: ['/me übt Druck auf die Wunde aus', '/me legt das Tourniquet oberhalb der Wunde straff an und zieht es fest', '/me legt einen Druckverband über die Wunde']},
+    me: ['/me übt druck auf die Wunde aus', '/me legt Tornique an', '/me verbindet mit Sterilem verband', '/me legt zugang', 'Blut abnehmen und schauen welche Blutgruppe der Patient hat', '/me legt Blutkonsvere an (Blutgruppe)']},
   {t: '2. Reanimation (Kreislaufstillstand / CPR)',
-    beschr: ['Bewusstloser Patient ohne Puls & Atmung', 'Ziel: Aufrechterhaltung der Sauerstoffversorgung von Gehirn & Organen'],
+    beschr: ['Bewusstloser Patient, mit unregelmäßigen Herzschlag', 'Ziel: Aufrechterhaltung der Sauerstoffversorgung von Gehirn & Organen'],
     me: ['/me überprüft Bewusstsein, Atmung und Puls des Patienten', '/me kniet sich neben den Patienten und beginnt mit der Herzdruckmassage (30x drücken)', '/me setzt die Beutel-Masken-Beatmung auf und führt 2 Beatmungshübe durch', '/me bringt die Defibrillator-Pads auf dem Brustkorb an und startet die Analyse', '/me verabreicht 1 mg Adrenalin über den venösen Zugang']},
   {t: '3. Kreislaufkollaps (Synkope / Akuter Schock)',
     beschr: ['Plötzliche Bewusstlosigkeit oder Schocksymptome (Puls vorhanden)', 'Stark abgefallener Blutdruck / kalter Schweiß'],
@@ -239,6 +259,14 @@ const NOTFALL = [
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 // Änderungsprotokoll (Knopf „Änderungsprotokoll“ in den Einstellungen): alle Änderungen an dieser Seite, neueste zuerst. Ein neuer Tag ist ein neuer Block ganz oben, jeder Eintrag ein Text. Die Liste steht fest im Quelltext, nicht in akten.json.
 const CHANGELOG = [
+  {d: '29.10.2026', items: [
+    'Akte „Prellung“: Original aktualisiert nach der hochgeladenen Datei. Neu ist die letzte /me-Zeile „/me hebt die Extremität leicht an und Stütze sie“.',
+    'Akte „Narkose richtig einleiten“: Box „Überwachung des EKGs“ entfernt. Die EKG-Überwachung steht nicht mehr in der Akte, sondern ist über den EKG-Knopf in jeder Akte zu sehen.',
+    'EKG-Überwachung: Der Text steht fest im Quelltext, wie die Notfall-Protokolle, und nicht mehr in akten.json. Er hängt damit nicht mehr von Browserständen ab.',
+    'Browserstände der Akte „Narkose richtig einleiten“ verlieren beim Laden die alte EKG-Box. Die übrigen Änderungen dort bleiben.',
+    'Notfall-Protokoll „Schwere Blutung“: /me-Box neu. Zeilen ohne /me sind Beschreibungen und lassen sich nicht kopieren.',
+    'Notfall-Protokoll „Reanimation“: Stichpunkt geändert auf „Bewusstloser Patient, mit unregelmäßigen Herzschlag“.',
+  ]},
   {d: '28.10.2026', items: [
     'EKG-Überwachung: Untertitel „EKG- & Vitalwerte-Überwachung“ entfernt. Der Hinweis lautet jetzt: Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.',
     'EKG-Überwachung: Jede Beschreibung steht über ihrem Befehl, der als eigene kopierbare /me-Zeile erscheint. Bei Puls zu hoch unterscheidet das Fenster wacher Patient und In Narkose / OP. Trennlinien stehen nach dem Hinweis und zwischen den drei Abschnitten.',
@@ -372,6 +400,12 @@ function migrate(){
   if (!Array.isArray(S.subs)) S.subs = [];   // Unterkategorien, immer vorhanden
   if (!Array.isArray(S.subDel)) S.subDel = [];   // im Browser gelöschte Unterkategorien aus der Datei
   if (!S.subOf || typeof S.subOf !== 'object') S.subOf = {};
+  // Die EKG-Box steht nicht mehr in der Narkose-Akte. Eine Browser-Fassung, die sie noch hat, verliert sie hier; alle anderen Änderungen dieser Akte bleiben.
+  const narkoseOv = S.ov && S.ov['Narkose richtig einleiten'];
+  if (narkoseOv && Array.isArray(narkoseOv.boxes)) {
+    const ohneEkg = narkoseOv.boxes.filter(b => !(b && nf(b.t) === nf('Überwachung des EKGs')));
+    if (ohneEkg.length !== narkoseOv.boxes.length) { narkoseOv.boxes = ohneEkg; try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  }
   if (S.v >= 7) return;
   if (!(S.v >= 3)) {   // Stand 3: den Abschnitt „Behandlung“ entfernen, auch aus früher gespeicherten Änderungen
     const ohneBeh = secs => (Array.isArray(secs) ? secs.filter(s => s && s.h !== 'Behandlung') : secs);
@@ -1244,28 +1278,20 @@ function openBug(){   // Fenster „Fehler melden“: nur der Hinweis, wen man b
   focusField('#modal [data-act="closemodal"]');
 }
 const isNormal = m => /(?:→|->|⟶)\s*Normalwert/i.test(m);   // Normalwert-Zeile, mit Pfeil → oder ->
-const ekgBox = r => (r ? boxesOf(r).find(x => nf(x.t) === nf(EKG.box) && x.me.length > 0) : null);   // die Standard-Box einer Akte, Titel ohne Groß- und Kleinschreibung
-function ekgLines(){   // Zeilen der Standard-Box: immer aus akten.json, nie aus einer Browser-Fassung der Akte. So zeigt das EKG-Fenster immer den Stand der Datei, wie das Notfall-Fenster. null, wenn es die Box in akten.json nicht gibt
-  const b = ekgBox(BASE[EKG.akte]);
-  return b ? b.me : null;
-}
-function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar wie in den Akten, Trennlinien bleiben Trennlinien
-  const lines = ekgLines() || [];
-  const rows = lines.map(m => m === DIVIDER
+function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar, Notizen und Normalwerte nicht, Trennlinien bleiben Trennlinien. Der Text kommt immer aus EKG_LINES, nie aus dem Browser
+  const rows = EKG_LINES.map(m => m === DIVIDER
     ? '<div class="ml tl"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>'
     : isNormal(m) ? `<h4 class="ekgh">${hlEsc(m)}</h4>` /* Normalwerte: gelb hervorgehoben, nicht kopierbar */
     : `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('');
   $('#mtitle').textContent = 'EKG-Überwachung';
-  $('#mbody').innerHTML = (lines.length
-    ? `<div class="me ekgbody">${rows}</div>`
-    : `<p class="c">Die Standard-EKG-Überwachung fehlt. Sie steht in der Akte „${esc(EKG.akte)}“ in der /me-Box „${esc(EKG.box)}“.</p>`);
+  $('#mbody').innerHTML = `<div class="me ekgbody">${rows}</div>`;
   $('#modal').hidden = false;
   focusField('#modal [data-act="closemodal"]');
 }
 
-function openNotfall(){   // Notfall-Fenster: drei Protokolle, durch eine deutliche Trennlinie getrennt; die /me-Zeilen sind kopierbar wie in den Akten
+function openNotfall(){   // Notfall-Fenster: drei Protokolle, durch eine deutliche Trennlinie getrennt; die /me-Zeilen sind kopierbar wie in den Akten, Zeilen ohne /me sind Beschreibungen und kopieren nichts
   $('#mtitle').textContent = 'Notfall-Protokolle';
-  $('#mbody').innerHTML = NOTFALL.map(p => `<section class="nf"><h4 class="nf-t">${hlEsc(p.t)}</h4><ul class="nf-be">${p.beschr.map(z => `<li>${fmt(z)}</li>`).join('')}</ul><div class="me nfbody">${p.me.map(m => `<div class="ml cp" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('')}</div></section>`).join('<div class="ml tl nfsep"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>');
+  $('#mbody').innerHTML = NOTFALL.map(p => `<section class="nf"><h4 class="nf-t">${hlEsc(p.t)}</h4><ul class="nf-be">${p.beschr.map(z => `<li>${fmt(z)}</li>`).join('')}</ul><div class="me nfbody">${p.me.map(m => `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('')}</div></section>`).join('<div class="ml tl nfsep"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>');
   $('#modal').hidden = false;
   focusField('#modal [data-act="closemodal"]');
 }
@@ -1741,7 +1767,6 @@ function runTests(){
     ok($('#modal').hidden === true, 'nicht geschlossen');
   });
   T('EKG-Symbol sitzt direkt hinter dem Titel und öffnet die Standard-Überwachung', () => { reset0(); const i = id(), c = card(get(i)), tEnd = c.indexOf('</span>', c.indexOf('data-path="title"')); ok(tEnd > 0 && c.slice(tEnd + 7).startsWith('<button class="ekg" data-act="ekg"'), 'Symbol nicht direkt hinter dem Titel'); act('ekg', {dataset: {}}); ok($('#modal').hidden === false, 'Fenster nicht offen'); ok($('#mtitle').textContent === 'EKG-Überwachung', 'Titel falsch'); const cp = [...$('#mbody').querySelectorAll('.ml.cp')]; ok(cp.length >= 5 && cp.every(x => x.dataset.raw.includes('/me')), 'Zeilen nicht kopierbar'); ok($('#mbody').innerHTML.includes('verabreicht Atropin'), 'Inhalt fehlt'); act('closemodal', {dataset: {}}); ok($('#modal').hidden === true, 'nicht geschlossen'); act('settings', {dataset: {}}); ok($('#mtitle').textContent === 'Einstellungen', 'Titel der Einstellungen bleibt EKG'); act('closemodal', {dataset: {}}); });
-  T('Ohne EKG-Box zeigt das Fenster einen Hinweis', () => { const keep = EKG.box; EKG.box = 'gibt es nicht'; try { act('ekg', {dataset: {}}); ok($('#mbody').textContent.includes('fehlt'), 'Hinweis fehlt'); } finally { EKG.box = keep; act('closemodal', {dataset: {}}); } });
   T('Akten-Daten: fehlerhafte Einträge werden erkannt', () => {
     const p = parseData([{id: 'a', cat: 'b', title: 'A', sections: []}, {id: '', cat: 'b', title: 'x'}, {id: 'c', cat: 'zz', title: 'C'}, {id: 'a', cat: 'b', title: 'doppelt'}]);
     ok(p.records.length === 1 && p.problems.length === 3, 'Ergebnis: ' + p.records.length + ' gültig, ' + p.problems.length + ' Fehler');
@@ -1844,14 +1869,9 @@ function runTests(){
     ok(isNormal('Puls -> Normalwert: 60') && isNormal('Puls → Normalwert: 60') && !isNormal('Puls zu niedrig (< 60/min): /me verabreicht Atropin'), 'Erkennung des Pfeils');
     act('closemodal', {dataset: {}});
   });
-  T('Das EKG-Fenster holt die Box aus akten.json, wenn die Akte im Browser sie nicht mehr hat', () => {
-    reset0(); S.ov[EKG.akte] = {boxes: [{t: 'Eigene Box', me: ['/me tut etwas']}]};
-    try { act('ekg', {dataset: {}}); const n = $('#mbody').querySelectorAll('h4.ekgh').length; ok(n === 3, 'Normalwerte: ' + n); }
-    finally { reset0(); act('closemodal', {dataset: {}}); }
-  });
-  T('Das EKG-Fenster zeigt immer die Box aus akten.json, auch wenn die Akte im Browser eine alte Box hat', () => {
-    reset0(); S.ov[EKG.akte] = {boxes: [{t: EKG.box, me: ['/me alter Text aus dem Browser']}]};
-    try { act('ekg', {dataset: {}}); const t = $('#mbody').textContent; ok(!t.includes('alter Text aus dem Browser'), 'Browser-Fassung steht im Fenster'); ok(t.includes('Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.') && $('#mbody').querySelectorAll('h4.ekgh').length === 3, 'Fenster zeigt nicht die Box aus der Datei'); }
+  T('Das EKG-Fenster hängt nicht von der Narkose-Akte im Browser ab', () => {
+    reset0(); S.ov['Narkose richtig einleiten'] = {boxes: [{t: 'Eigene Box', me: ['/me tut etwas']}]};
+    try { act('ekg', {dataset: {}}); const t = $('#mbody').textContent; ok(!t.includes('tut etwas'), 'Browser-Fassung steht im Fenster'); ok(t.includes('Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.') && $('#mbody').querySelectorAll('h4.ekgh').length === 3, 'Fenster zeigt nicht den Text aus dem Quelltext'); }
     finally { reset0(); act('closemodal', {dataset: {}}); }
   });
   TZ('Klick auf den Hintergrund der EKG-Box kopiert alle /me-Zeilen, je Zeile nur die Handlung', () => {
@@ -1925,16 +1945,18 @@ function runTests(){
     } finally { if (alt === null) localStorage.removeItem(INTRO_KEY); else localStorage.setItem(INTRO_KEY, alt); }
   });
   T('Der Notfall-Knopf steht rechts neben dem EKG-Knopf in jeder Akte', () => { reset0(); const c = card(get(id())); ok(/<button class="ekg"[^>]*>[\s\S]*?<\/button><button class="notfall"/.test(c), 'nicht rechts neben dem EKG-Knopf'); });
-  T('Das Notfall-Fenster: drei Protokolle, Trennlinien dazwischen, zwölf kopierbare /me-Zeilen', () => {
+  T('Das Notfall-Fenster: drei Protokolle, Trennlinien dazwischen, vierzehn kopierbare /me-Zeilen, eine Beschreibung', () => {
     try {
       openNotfall();
       const mb = $('#mbody'), aufbau = [...mb.children].map(e => e.tagName + (e.classList.contains('tl') ? '-tl' : ''));
       ok($('#mtitle').textContent === 'Notfall-Protokolle', 'Titel: ' + $('#mtitle').textContent);
       ok(aufbau.join(',') === 'SECTION,DIV-tl,SECTION,DIV-tl,SECTION', 'Aufbau: ' + aufbau.join(','));
       ok(mb.querySelectorAll('h4.nf-t').length === 3, 'Protokolle: ' + mb.querySelectorAll('h4.nf-t').length);
-      ok(mb.querySelectorAll('.ml.cp').length === 12, 'kopierbare Zeilen: ' + mb.querySelectorAll('.ml.cp').length);
+      ok(mb.querySelectorAll('.ml.cp').length === 14, 'kopierbare Zeilen: ' + mb.querySelectorAll('.ml.cp').length);
       ok([...mb.querySelectorAll('.ml.cp')].every(x => x.dataset.raw.startsWith('/me ')), 'Zeile ohne /me am Anfang');
       ok(mb.textContent.includes('Sofortige Blutstillung & Schockvermeidung'), 'Text verändert');
+      ok(mb.querySelectorAll('.ml.nt').length === 1 && mb.querySelector('.ml.nt').textContent === 'Blut abnehmen und schauen welche Blutgruppe der Patient hat', 'Beschreibung falsch');
+      ok(mb.textContent.includes('Bewusstloser Patient, mit unregelmäßigen Herzschlag'), 'Stichpunkt der Reanimation fehlt');
     } finally { closeModal(); }
   });
   T('Das EKG-Fenster hat in seiner Box keinen eigenen Hintergrund', () => { try { openEkg(); const c = getComputedStyle($('#mbody .me.ekgbody')); ok(c.backgroundColor === 'rgba(0, 0, 0, 0)', 'Hintergrund: ' + c.backgroundColor); } finally { closeModal(); } });
@@ -1945,9 +1967,9 @@ function runTests(){
     try {
       openNotfall();
       $('#mbody .ml.cp').click();
-      ok(aufrufe.length === 1 && aufrufe[0] === '/me übt Druck auf die Wunde aus', 'Zeile kopiert: ' + aufrufe.join(' | '));
+      ok(aufrufe.length === 1 && aufrufe[0] === '/me übt druck auf die Wunde aus', 'Zeile kopiert: ' + aufrufe.join(' | '));
       $('#mbody .me.nfbody').click();
-      ok(aufrufe.length === 2 && aufrufe[1] === '/me übt Druck auf die Wunde aus\n/me legt das Tourniquet oberhalb der Wunde straff an und zieht es fest\n/me legt einen Druckverband über die Wunde', 'Fläche kopiert: ' + aufrufe[1]);
+      ok(aufrufe.length === 2 && aufrufe[1] === '/me übt druck auf die Wunde aus\n/me legt Tornique an\n/me verbindet mit Sterilem verband\n/me legt zugang\n/me legt Blutkonsvere an (Blutgruppe)', 'Fläche kopiert: ' + aufrufe[1]);
     } finally { delete cb.writeText; closeModal(); }
   });
   T('Im Bearbeitungsmodus kopiert im Notfall-Fenster ein Klick nichts', () => {
@@ -2190,11 +2212,17 @@ function runTests(){
     ok($('#l').querySelectorAll('h3.grph').length === 0, 'Titel auch bei der Suche');
     query = ''; view = v0; render();
   });
-  T('Die Narkose-Akte hat die EKG-Box mit Hinweis und neuem Text', () => {
-    reset0(); const b = boxesOf(get('Narkose richtig einleiten')).find(x => x.t === EKG.box);
-    ok(b && b.me.length === 18 && b.me[0] === 'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.' && b.me[4] === '/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'EKG-Box weicht ab: ' + (b && b.me.length));
-    ok(b.me.filter(x => x === DIVIDER).length === 3, 'Trennlinien fehlen');
-    ok(!b.me.some(x => /Fentanyl|Propofol/.test(x)), 'Fentanyl oder Propofol steht noch in der EKG-Box');
+  T('Die Narkose-Akte hat keine EKG-Box mehr, der EKG-Text steht im Quelltext', () => {
+    reset0(); const boxen = boxesOf(get('Narkose richtig einleiten')).map(x => x.t);
+    ok(!boxen.some(t => nf(t) === nf('Überwachung des EKGs')), 'EKG-Box noch in der Akte: ' + boxen.join(' | '));
+    ok(EKG_LINES.length === 18 && EKG_LINES[0] === 'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.' && EKG_LINES[4] === '/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'EKG-Text weicht ab: ' + EKG_LINES.length);
+    ok(EKG_LINES.filter(x => x === DIVIDER).length === 3, 'Trennlinien fehlen');
+    ok(!EKG_LINES.some(x => /Fentanyl|Propofol/.test(x)), 'Fentanyl oder Propofol steht im EKG-Text');
+  });
+  T('Eine alte EKG-Box in einer Browser-Fassung der Narkose-Akte verschwindet, die übrigen Boxen bleiben', () => {
+    reset0(); S.ov['Narkose richtig einleiten'] = {boxes: [{t: 'Narkose Benden', me: ['/me x']}, {t: 'Überwachung des EKGs', me: ['/me alt']}]};
+    try { migrate(); const b = S.ov['Narkose richtig einleiten'].boxes.map(x => x.t), akte = get('Narkose richtig einleiten').boxes.map(x => x.t); ok(b.join('|') === 'Narkose Benden', 'Browser-Fassung: ' + b.join(' | ')); ok(akte.join('|') === 'Narkose Benden', 'Akte zeigt: ' + akte.join(' | ')); }
+    finally { reset0(); }
   });
   T('Das EKG-Fenster beginnt mit dem Hinweis, ohne Überschrift, und enthält kein Fentanyl und Propofol', () => {
     try {
