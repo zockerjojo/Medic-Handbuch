@@ -349,15 +349,22 @@
       }
     ],
     "me": [
-      "/me nimmt Lidocain, Wundspülung, sterile Tücher, Nahtmaterial und Verbandmaterial aus dem Sterilset",
-      "/me spült die Wunde gründlich mit steriler Lösung",
-      "/me desinfiziert die Wunde und die umliegende Haut",
-      "/me betäubt den Wundrand mit Lidocain",
-      "/me verschließt die Wunde mit Einzelknopfnähten",
-      "/me legt einen sterilen Wundverband an",
-      "Notiz: Lidocain nach Körpergewicht dosieren, Höchstmenge beachten",
-      "Notiz: Tetanusschutz prüfen, bei Bedarf auffrischen"
-    ]
+      "/me legt einen sterilen Druckverband an, um die starke Blutung zu stoppen"
+    ],
+    "boxes": [
+      {
+        "t": "Durchführung bei einer Großen Wunde",
+        "me": [
+          "/me spült die Platzwunde gründlich mit NaCl-Lösung",
+          "/me desinfiziert das umliegende Gewebe",
+          "/me zieht das Lidocain in eine Spritze auf und injiziert es lokal an den Wundrändern",
+          "Warte drauf bis die Btäubung wirkt",
+          "/me setzt den Nadelhalter an und verschließt die Platzwunde sorgfältig mit Einzelknopfnähten",
+          "/me trägt eine dünne Schicht Wundsalbe auf und legt einen sterilen Verband an"
+        ]
+      }
+    ],
+    "meTitle": "Wenn Wunde Stark Blutet"
   },
   {
     "id": "Streifschuss, Stichwunde, Bisswunde",
@@ -445,28 +452,29 @@
         "mode": "bullet",
         "items": [
           "Starke Schmerzen, Schwellung und Druckempfindlichkeit",
-          "Fehlstellung des Gliedes"
+          "Fehlstellung oder Bewegungseinschränkung des Gliedes",
+          "Hör- oder spürbares Knochenreiben (Krepitation)"
         ]
       },
       {
         "h": "Ablauf",
         "mode": "number",
         "items": [
-          "Ruhigstellen mit Schiene oder Gipsverband",
-          "Kühlpack auflegen und Glied hochlagern",
-          "Schmerzmittel geben",
-          "Kontrolle per Röntgen",
-          "Später Physiotherapie"
+          "Schmerzen lindern und Schmerzmittel verabreichen",
+          "Vorsichtig schienen, um die Fraktur ruhigzustellen",
+          "Kühlen und die verletzte Extremität hochlagern",
+          "Durchblutung, Motorik und Sensibilität (DMS) kontrollieren",
+          "Röntgenkontrolle zur Diagnosesicherung einleiten"
         ]
       }
     ],
     "me": [
-      "/me nimmt Schiene, Gipsbinde, Kühlpack und Schmerzmittel aus dem Verbandskasten",
-      "/me legt vorsichtig eine Schiene oder einen Gipsverband an",
-      "/me platziert ein Kühlpack auf der verletzten Stelle",
-      "/me hebt die Extremität leicht an und stützt sie",
-      "Notiz: Gesplitterter oder verschobener Bruch: siehe [[Gesplitterter Bruch]]",
-      "/me prüft Durchblutung und Gefühl unterhalb der Bruchstelle"
+      "/me richtet die Extremität vorsichtig gerade",
+      "/me legt den Patienten eine Schiene an, um den Bruch ruhigzustellen",
+      "Nimm voher ein Kühlpack aus dem Schrank",
+      "/me nimmt ein Kühlpack aus dem Schrank",
+      "/me hällt das Kühlpack auf der verletzten Stelle, um Schwellungen zu reduzieren",
+      "/me wickelt das Kühlpack mit einem Verband um die Verletze Stelle, um es an seiner Position zu halten"
     ]
   },
   {
@@ -877,19 +885,19 @@
       {
         "h": "Wann",
         "items": [
-          "Nur eine Stelle (Handrücken, Wunde, Muttermal): Injektion, Creme, Gel oder Spray"
+          "Zur gezielten Schmerzausschaltung an umschriebenen Hautstellen (z. B. Handrücken, Wunden, Muttermale) vor kleineren chirurgischen Eingriffen oder dem Vernähen."
         ]
       },
       {
         "h": "Medikamente",
         "items": [
-          "Lidocain, Prilocain, Bupivacain"
+          "Lidocain, Prilocain, Bupivacain."
         ]
       },
       {
         "h": "Nebenwirkungen",
         "items": [
-          "Übelkeit, Schwindel, niedriger Blutdruck; Dosis nach Körpergewicht"
+          "Übelkeit, Schwindel, Blutdruckabfall; Dosierung erfolgt streng nach Körpergewicht."
         ]
       }
     ],
@@ -901,7 +909,21 @@
       "/me wartet ein paar Minuten, bis die Stelle taub ist",
       "/me prüft die Betäubung mit einer leichten Berührung",
       "Notiz: Bei Übelkeit, Schwindel oder niedrigem Blutdruck Patienten hinlegen und Vitalwerte prüfen"
-    ]
+    ],
+    "boxes": [
+      {
+        "t": "Durchführung",
+        "me": [
+          "/me holt das Lokalanästhetikum (Lidocain), Spritzen, Kanülen und Desinfektionsmittel aus dem Schrank",
+          "/me desinfiziert die betroffene Hautstelle und lässt das Desinfektionsmittel kurz einwirken",
+          "/me zieht das Lokalanästhetikum in die Spritze auf und entlüftet diese",
+          "/me injiziert das Lokalanästhetikum langsam in das Gewebe / an den Wundrand",
+          "Warte ein paar Minuten, bis die lokale Taubheit eintritt",
+          "/me fasst die Haut neben der Wunde vorsichtig an, um zu überprüfen ob die Betäubung wirkt"
+        ]
+      }
+    ],
+    "meOff": true
   },
   {
     "id": "Regional-, Plexus- und Spinalanästhesie",
