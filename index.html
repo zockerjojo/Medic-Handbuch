@@ -225,19 +225,18 @@ const EKG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 // EKG-Überwachung: fest im Quelltext wie die Notfall-Protokolle, nicht in akten.json. Zeile mit /me: kopierbar. Zeile ohne /me: Notiz. „→ Normalwert“: gelbe Überschrift. „---“: Trennlinie.
 const EKG_LINES = [
   'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.',
-  '---',
   'Puls → Normalwert: 60–80 Schläge/min',
   '**Puls zu niedrig (< 60/min):**',
-  '/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen',
+  '/me verabreicht Atropin oder Adrenalin über den Zugang, um den Puls zu erhöhen',
   '**Puls zu hoch (> 100/min):**',
-  'Wacher Patient: /me beruhigt den Patienten und evaluiert die Schmerzintensität',
-  'In Narkose / OP: /me prüft die Narkosetiefe und verabreicht Schmerzmittel nach Stufenplan',
+  'Wacher Patient: /me verabreicht ein leichtes Schmerzmittel und beruhigt den Patienten',
+  'In Narkose / OP: /me vertieft die Narkose und verabreicht einen Betablocker, um den Puls zu senken',
   '---',
   'Blutdruck → Normalwert: 120/80 mmHg',
   '**Blutdruck zu niedrig:**',
-  '/me verabreicht eine Vollkristalloid-Infusion (Kochsalzlösung) über den Zugang, um den Blutdruck zu stabilisieren',
+  '/me verabreicht eine Kochsalzlösung und Adrenalin über den Zugang, um den Kreislauf zu stabilisieren',
   '**Blutdruck zu hoch:**',
-  '/me lagert den Oberkörper leicht erhöht und sorgt für körperliche Ruhe',
+  '/me lagert den Oberkörper erhöht und verabreicht einen Blutdrucksenker über den Zugang',
   '---',
   'Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %',
   '**Sauerstoffsättigung zu niedrig (< 95 %):**',
@@ -259,6 +258,10 @@ const NOTFALL = [
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 // Änderungsprotokoll (Knopf „Änderungsprotokoll“ in den Einstellungen): alle Änderungen an dieser Seite, neueste zuerst. Ein neuer Tag ist ein neuer Block ganz oben, jeder Eintrag ein Text. Die Liste steht fest im Quelltext, nicht in akten.json.
 const CHANGELOG = [
+  {d: '31.10.2026', items: [
+    'EKG-Überwachung: Text nach der neuen Vorlage übernommen. Bei niedrigem Puls Atropin oder Adrenalin. Bei hohem Puls beim wachen Patienten ein leichtes Schmerzmittel, in Narkose / OP ein Betablocker. Bei niedrigem Blutdruck Kochsalzlösung und Adrenalin. Bei hohem Blutdruck den Oberkörper erhöht lagern und einen Blutdrucksenker geben.',
+    'EKG-Überwachung: Zwei Trennlinien, zwischen Puls, Blutdruck und Sauerstoffsättigung. Nach dem Hinweis steht keine Trennlinie mehr.',
+  ]},
   {d: '29.10.2026', items: [
     'Akte „Prellung“: Original aktualisiert nach der hochgeladenen Datei. Neu ist die letzte /me-Zeile „/me hebt die Extremität leicht an und Stütze sie“.',
     'Akte „Narkose richtig einleiten“: Box „Überwachung des EKGs“ entfernt. Die EKG-Überwachung steht nicht mehr in der Akte, sondern ist über den EKG-Knopf in jeder Akte zu sehen.',
@@ -1882,7 +1885,7 @@ function runTests(){
     finally { delete cb.writeText; act('closemodal', {dataset: {}}); }
     const z = (kopiert || '').split('\n');
     ok(z.length === 6 && z.every(x => x.startsWith('/me ')), 'Kopiert: ' + kopiert);
-    ok(z[0] === '/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'erste Zeile: ' + z[0]);
+    ok(z[0] === '/me verabreicht Atropin oder Adrenalin über den Zugang, um den Puls zu erhöhen', 'erste Zeile: ' + z[0]);
   });
   TZ('Klick auf den Hintergrund einer offenen /me-Box in der Liste kopiert deren /me-Zeilen', () => {
     reset0(); render(); getSelection().removeAllRanges();
@@ -2215,8 +2218,8 @@ function runTests(){
   T('Die Narkose-Akte hat keine EKG-Box mehr, der EKG-Text steht im Quelltext', () => {
     reset0(); const boxen = boxesOf(get('Narkose richtig einleiten')).map(x => x.t);
     ok(!boxen.some(t => nf(t) === nf('Überwachung des EKGs')), 'EKG-Box noch in der Akte: ' + boxen.join(' | '));
-    ok(EKG_LINES.length === 18 && EKG_LINES[0] === 'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.' && EKG_LINES[4] === '/me verabreicht Atropin über den Zugang, um den Puls zu erhöhen', 'EKG-Text weicht ab: ' + EKG_LINES.length);
-    ok(EKG_LINES.filter(x => x === DIVIDER).length === 3, 'Trennlinien fehlen');
+    ok(EKG_LINES.length === 17 && EKG_LINES[0] === 'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.' && EKG_LINES[3] === '/me verabreicht Atropin oder Adrenalin über den Zugang, um den Puls zu erhöhen', 'EKG-Text weicht ab: ' + EKG_LINES.length);
+    ok(EKG_LINES.filter(x => x === DIVIDER).length === 2, 'Trennlinien fehlen');
     ok(!EKG_LINES.some(x => /Fentanyl|Propofol/.test(x)), 'Fentanyl oder Propofol steht im EKG-Text');
   });
   T('Eine alte EKG-Box in einer Browser-Fassung der Narkose-Akte verschwindet, die übrigen Boxen bleiben', () => {
