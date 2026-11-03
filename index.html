@@ -140,6 +140,7 @@ select{padding:7px;border-radius:4px;background:var(--p);color:var(--t);border:1
 .bo{color:var(--t)}
 .okt{color:var(--ok)}
 .warn{color:var(--r);font-size:13px;margin:14px 4px 0;line-height:1.4}
+.sr-fenster{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 14px;font-size:14px;color:var(--m)}   /* Treffer in den Fenstern (EKG-Überwachung, Notfall-Protokolle) über der Trefferliste */
 .sep{height:1px;flex:none;background:var(--cardb);margin:14px 8px}   /* flex:none: in der Seitenleiste darf die Linie bei langen Listen nicht auf 0 px schrumpfen */
 .lk{color:var(--a)}
 .ic{display:inline-block;width:24px;text-align:center}
@@ -196,7 +197,7 @@ body:not(.edit) .only-edit{display:none!important}
 .errbox h3{margin:0 0 8px;font:700 22px Georgia,serif}
 .errbox p{margin:8px 0}
 .errbox ul{margin:8px 0;padding-left:20px;color:var(--m);font-size:14px}
-</style></head><body>
+</style><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#121a24"><link rel="apple-touch-icon" href="icon-180.png"></head><body>
 <nav id="n"><h1 class="brand"><svg class="cross" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:var(--r)" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg><span>Medic Handbuch</span></h1></nav>
 <main>
 <div id="sb"><button class="ibtn" id="navbtn" data-act="navtoggle" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden">☰</button><input id="q" type="search" placeholder="Suchen: Verletzung, Medikament, Maßnahme …" autofocus><button class="btn only-edit" data-act="newform">+<span class="lbl"> Neue Akte</span></button><button class="ibtn only-edit" id="undo" data-act="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig" disabled>↶</button><button class="ibtn only-edit" id="redo" data-act="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen" disabled>↷</button><button class="ibtn" id="bug" data-act="bug" title="Fehler melden" aria-label="Fehler melden"><svg class="bugic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><ellipse cx="12" cy="13.5" rx="5" ry="6.5"/><path d="M12 8v12.5M7 10 3.5 8M7 14H3M7.5 18 4 20.5M17 10l3.5-2M17 14h4M16.5 18 20 20.5"/></svg></button><button class="ibtn" id="gear" data-act="settings" title="Einstellungen" aria-label="Einstellungen">⚙</button><button class="mbtn" id="modebtn" data-act="mode" aria-pressed="false" title="Bearbeitungsmodus einschalten">✎<span class="lbl"> Bearbeiten</span></button><div id="f"></div></div>
@@ -222,42 +223,27 @@ const DEFAULT_FORM = ['Erkennung', 'Ablauf'];   // Standardabschnitte neuer Akte
 const ME_TITLE = 'Durchführung';   // Standardtitel der Hauptbox, im Browser umbenennbar (leer = wieder dieser Titel)
 const DIVIDER = '---';   // Trennlinie in einer /me-Liste: eine Zeile mit genau diesem Text, ohne Textstelle und ohne Kopieren
 const EKG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4.5l1.8-4.2 3.2 9.2 2.4-7.5 1.6 2.5H22"/></svg>';   // EKG-Symbol neben dem Titel jeder Akte
-// EKG-Überwachung: fest im Quelltext wie die Notfall-Protokolle, nicht in akten.json. Zeile mit /me: kopierbar. Zeile ohne /me: Notiz. „→ Normalwert“: gelbe Überschrift. „---“: Trennlinie.
-const EKG_LINES = [
-  'Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.',
-  'Puls → Normalwert: 60–80 Schläge/min',
-  '**Puls zu niedrig (< 60/min):**',
-  '/me verabreicht Atropin oder Adrenalin über den Zugang, um den Puls zu erhöhen',
-  '**Puls zu hoch (> 100/min):**',
-  'Wacher Patient: /me verabreicht ein leichtes Schmerzmittel und beruhigt den Patienten',
-  'In Narkose / OP: /me vertieft die Narkose und verabreicht einen Betablocker, um den Puls zu senken',
-  '---',
-  'Blutdruck → Normalwert: 120/80 mmHg',
-  '**Blutdruck zu niedrig:**',
-  '/me verabreicht eine Kochsalzlösung und Adrenalin über den Zugang, um den Kreislauf zu stabilisieren',
-  '**Blutdruck zu hoch:**',
-  '/me lagert den Oberkörper erhöht und verabreicht einen Blutdrucksenker über den Zugang',
-  '---',
-  'Sauerstoffsättigung (SpO2) → Normalwert: 95–100 %',
-  '**Sauerstoffsättigung zu niedrig (< 95 %):**',
-  '/me legt eine Sauerstoffmaske an und erhöht die Sauerstoffzufuhr'
-];
+// EKG-Überwachung: Texte stehen in inhalt.json (Schlüssel „ekg“) und werden beim Start geladen. Zeile mit /me: kopierbar. Zeile ohne /me: Notiz. „→ Normalwert“: gelbe Überschrift. „---“: Trennlinie.
+let EKG_LINES = [];   // wird beim Start aus inhalt.json geladen (loadInhalt)
 const NOTFALL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';   // Warnschild (Gefahrenzeichen) des Notfall-Knopfs
-// Notfall-Protokolle: fest im Quelltext, nicht in akten.json. Ihre /me-Zeilen sind kopierbar wie in den Akten, nur im Zuschauermodus.
-const NOTFALL = [
-  {t: '1. Schwere Blutung (Massive Blutung / Tourniquet)',
-    beschr: ['Spritzende/massive Blutungen an Extremitäten', 'Greift, wenn einfacher Druck nicht ausreicht', 'Ziel: Sofortige Blutstillung & Schockvermeidung'],
-    me: ['/me übt druck auf die Wunde aus', '/me legt Tornique an', '/me verbindet mit Sterilem verband', '/me legt zugang', 'Blut abnehmen und schauen welche Blutgruppe der Patient hat', '/me legt Blutkonsvere an (Blutgruppe)']},
-  {t: '2. Reanimation (Kreislaufstillstand / CPR)',
-    beschr: ['Bewusstloser Patient, mit unregelmäßigen Herzschlag', 'Ziel: Aufrechterhaltung der Sauerstoffversorgung von Gehirn & Organen'],
-    me: ['/me überprüft Bewusstsein, Atmung und Puls des Patienten', '/me kniet sich neben den Patienten und beginnt mit der Herzdruckmassage (30x drücken)', '/me setzt die Beutel-Masken-Beatmung auf und führt 2 Beatmungshübe durch', '/me bringt die Defibrillator-Pads auf dem Brustkorb an und startet die Analyse', '/me verabreicht 1 mg Adrenalin über den venösen Zugang']},
-  {t: '3. Kreislaufkollaps (Synkope / Akuter Schock)',
-    beschr: ['Plötzliche Bewusstlosigkeit oder Schocksymptome (Puls vorhanden)', 'Stark abgefallener Blutdruck / kalter Schweiß'],
-    me: ['/me bringt den Patienten in die Schocklagerung (Beine hochlagern)', '/me überprüft die Vitalwerte des Patienten', '/me verabreicht Sauerstoff über eine Venturi-Maske (6-8 l/min)', '/me legt einen venösen Zugang und schließt eine Vollkristalloid-Infusion (Kochsalzlösung) zum Volumenersatz an']},
-];
+// Notfall-Protokolle: Texte stehen in inhalt.json (Schlüssel „notfall“) und werden beim Start geladen. Ihre /me-Zeilen sind kopierbar wie in den Akten, nur im Zuschauermodus.
+let NOTFALL = [];   // wird beim Start aus inhalt.json geladen (loadInhalt)
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 // Änderungsprotokoll (Knopf „Änderungsprotokoll“ in den Einstellungen): alle Änderungen an dieser Seite, neueste zuerst. Ein neuer Tag ist ein neuer Block ganz oben, jeder Eintrag ein Text. Die Liste steht fest im Quelltext, nicht in akten.json.
 const CHANGELOG = [
+  {d: '03.11.2026', items: [
+    'Suche: Tippfehler, Umlaute und ß werden erkannt. „Betaeubung“ und „Btäubung“ finden „Betäubung“. EKG-Überwachung und Notfall-Protokolle erscheinen als eigener Treffer, wenn sie den Suchbegriff enthalten.',
+    'Die Taste / setzt den Cursor in die Suche, solange nicht gerade in einem Feld geschrieben wird.',
+    'Rückfragen (Endgültig löschen, Verwerfen, Zurücksetzen, Löschen, Ersetzen) erscheinen im Fenster der Seite statt als Meldung des Browsers. Abbrechen ändert nichts.',
+    'Einstellungen: Stand dieser Seite und letzte Sicherung. Der Knopf „Sicherung speichern“ merkt sich den Zeitpunkt. Ohne Sicherung oder mit einer älteren als 14 Tagen erscheint eine Erinnerung.',
+    'Offline nutzen: Nach dem ersten Besuch mit Internet öffnet sich die Seite auch ohne Netz. Die neue Fassung kommt beim nächsten Besuch mit Internet.',
+    'EKG-Überwachung und Notfall-Protokolle stehen in der Datei inhalt.json. Die Texte sind unverändert.',
+    'Anrede: Die Seite spricht durchgehend mit „du“.'
+  ]},
+  {d: '02.11.2026', items: [
+    'Akte „Verbrennung 2. Grades“: Original aus der hochgeladenen Datei ersetzt.',
+    'Akte „Verbrennung 2. Grades“: Rechtschreibung und Grammatik korrigiert. Der medizinische Inhalt bleibt unverändert.'
+  ]},
   {d: '31.10.2026', items: [
     'EKG-Überwachung: Text nach der neuen Vorlage übernommen. Bei niedrigem Puls Atropin oder Adrenalin. Bei hohem Puls beim wachen Patienten ein leichtes Schmerzmittel, in Narkose / OP ein Betablocker. Bei niedrigem Blutdruck Kochsalzlösung und Adrenalin. Bei hohem Blutdruck den Oberkörper erhöht lagern und einen Blutdrucksenker geben.',
     'EKG-Überwachung: Zwei Trennlinien, zwischen Puls, Blutdruck und Sauerstoffsättigung. Nach dem Hinweis steht keine Trennlinie mehr.',
@@ -273,7 +259,7 @@ const CHANGELOG = [
   ]},
   {d: '28.10.2026', items: [
     'EKG-Überwachung: Untertitel „EKG- & Vitalwerte-Überwachung“ entfernt. Der Hinweis lautet jetzt: Die Vitalwerte (Puls, Blutdruck, SpO2) sind regelmäßig zu prüfen.',
-    'EKG-Überwachung: Jede Beschreibung steht über ihrem Befehl, der als eigene kopierbare /me-Zeile erscheint. Bei Puls zu hoch unterscheidet das Fenster wacher Patient und In Narkose / OP. Trennlinien stehen nach dem Hinweis und zwischen den drei Abschnitten.',
+    'EKG-Überwachung: Jede Beschreibung steht über ihrem Befehl, der als eigene kopierbare /me-Zeile erscheint. Bei Puls zu hoch unterscheidet das Fenster zwischen wachem Patient und Patient in Narkose / OP. Trennlinien stehen nach dem Hinweis und zwischen den drei Abschnitten.',
     'EKG-Fenster: zeigt immer die Box aus akten.json, auch wenn die Akte im Browser gespeichert ist. Wie das Notfall-Fenster ist es damit immer gleich dem Stand der Datei.',
     'EKG-Überwachung: neuer Text. Oben stehen die Überschrift „EKG- & Vitalwerte-Überwachung“ und der Hinweis, Puls, Blutdruck und SpO2 während der gesamten Behandlung regelmäßig zu kontrollieren und im RP abzufragen.',
     'EKG-Überwachung: Fentanyl und Propofol sind nicht mehr die Standard-Reaktion bei hohem Puls oder Blutdruck. Stattdessen: Atropin bei niedrigem Puls, Beruhigung und Evaluation der Schmerzintensität bei hohem Puls, Kochsalzlösung bei niedrigem Blutdruck, Oberkörper leicht erhöht lagern bei hohem Blutdruck, Sauerstoffmaske bei niedriger Sättigung.',
@@ -323,6 +309,7 @@ const CHANGELOG = [
   ]},
 ];
 const KEY = 'medic-handbuch-v2';
+const SICHERUNG_KEY = 'medic-handbuch-letzte-sicherung';   // Zeitpunkt der letzten Sicherung (Knopf „Sicherung speichern“ oder „Exportieren“), für die Erinnerung in den Einstellungen
 const SETKEY = 'medic-handbuch-einstellungen-v2';   // v2: die neuen Standardwerte gelten einmal für alle
 const MAT_DEFAULT = '/me nimmt die benötigten Gegenstände aus dem Verbandskasten';   // Material-Zeile neuer Akten
 const BRAND = '<h1 class="brand"><svg class="cross" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:var(--r)" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg><span>Medic Handbuch</span></h1>';   // Titel mit rotem Kreuz
@@ -710,7 +697,7 @@ function subAct(name, d){   // Unterkategorien: anlegen, umbenennen, löschen
   else if (name === 'subedit') { const s = S.subs.find(x => x.id === id); subForm = s ? {cat: s.cat, id, val: s.t} : null; }
   else if (name === 'subcancel') subForm = null;
   else if (name === 'subok') subCommit();
-  else if (name === 'subdel') { const s = S.subs.find(x => x.id === id); if (s && confirm('Unterkategorie „' + s.t + '“ löschen? Ihre Akten bleiben erhalten und stehen danach ohne Unterkategorie.')) subDelete(id); }
+  else if (name === 'subdel') { const s = S.subs.find(x => x.id === id); if (s) frage('Unterkategorie „' + s.t + '“ löschen? Deine Akten bleiben erhalten und stehen danach ohne Unterkategorie.', () => subDelete(id), 'Löschen'); }
 }
 const trash = id => { S.del[id] = 1; save(); };
 const restore = id => { delete S.del[id]; save(); };
@@ -841,6 +828,34 @@ function fmtWrap(el, pair){   // Auswahl einrahmen; ohne Auswahl stehen die Zeic
   el.dispatchEvent(new Event('input', {bubbles: true}));
 }
 const haystack = r => nf([r.title, r.desc, r.kw, ...r.sections.map(s => s.h + ' ' + s.items.join(' ')), r.table ? r.table.r.map(x => x.join(' ')).join(' ') : '', (r.meOff ? '' : r.me.join(' ')), boxesOf(r).map(b => b.t + ' ' + b.me.join(' ')).join(' ')].join(' '));
+
+/* ===== Suche: Tippfehler, Umlaute und ß zählen gleich. EKG-Überwachung und Notfall-Protokolle erscheinen als eigener Treffer ===== */
+const nf2 = s => nf(s).replace(/ß/g, 'ss').replace(/ae/g, 'a').replace(/oe/g, 'o').replace(/ue/g, 'u');   // Betäubung, Betaeubung und Betaubung ergeben dasselbe
+function lev(a, b){   // Anzahl der Buchstaben, die man ändern, einfügen oder weglassen muss, um a in b zu verwandeln
+  let zeile = Array.from({length: b.length + 1}, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const neu = [i];
+    for (let j = 1; j <= b.length; j++) neu[j] = Math.min(zeile[j] + 1, neu[j - 1] + 1, zeile[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    zeile = neu;
+  }
+  return zeile[b.length];
+}
+// Ein Suchwort passt, wenn es im Text vorkommt oder einem Wortanfang des Textes ähnelt: bei 5 bis 8 Buchstaben ein Fehler erlaubt, ab 9 Buchstaben zwei. Kürzere Wörter müssen genau stimmen.
+function passt(text, q){
+  const woerter = text.split(/[^a-z0-9]+/).filter(Boolean);
+  return q.every(x => {
+    if (text.includes(x)) return true;
+    const k = x.length >= 9 ? 2 : x.length >= 5 ? 1 : 0;
+    return k > 0 && woerter.some(w => w.length >= x.length - k && lev(x, w.slice(0, x.length + k)) <= k);
+  });
+}
+// Treffer in den Fenstern: die EKG-Überwachung und die Notfall-Protokolle stehen nicht in den Akten, deshalb als eigene Knöpfe über der Trefferliste
+function fensterTreffer(q){
+  const treffer = [];
+  if (EKG_LINES.length && passt(nf2(['EKG-Überwachung', ...EKG_LINES].join(' ')), q)) treffer.push({act: 'ekg', t: 'EKG-Überwachung'});
+  if (NOTFALL.some(p => passt(nf2(['Notfall-Protokolle', p.t, ...p.beschr, ...p.me].join(' ')), q))) treffer.push({act: 'notfall', t: 'Notfall-Protokolle'});
+  return treffer;
+}
 
 /* ===== Akten-Daten aus akten.json: prüfen und in die feste Form bringen ===== */
 let DATA_PROBLEMS = [];
@@ -1030,6 +1045,19 @@ function abstandRow(){   // Schieberegler für den Abstand in den Akten-Karten: 
 function resetRow(){
   return `<div class="srow"><p class="slabel">Zurücksetzen</p><button class="danger" data-act="resetall">Alle Akten zurücksetzen</button><p class="shint">Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.</p></div>`;
 }
+// Stand und Sicherung: das Datum des letzten Eintrags im Änderungsprotokoll und der Zeitpunkt der letzten Sicherung. Ohne Sicherung oder mit einer älteren als 14 Tagen gibt es eine Erinnerung.
+function datumDE(d){ const z = n => String(n).padStart(2, '0'); return z(d.getDate()) + '.' + z(d.getMonth() + 1) + '.' + d.getFullYear(); }
+function standRow(){
+  let roh = null, letzte = null;
+  try { roh = store.getItem(SICHERUNG_KEY); } catch (e) {}   // ohne Browserspeicher ist keine Sicherung bekannt
+  if (roh) { const d = new Date(roh); if (!isNaN(d.getTime())) letzte = d; }
+  const tage = letzte ? Math.max(0, Math.floor((Date.now() - letzte.getTime()) / 86400000)) : null;
+  const wann = tage === 0 ? ' (heute)' : tage === 1 ? ' (gestern)' : ` (vor ${tage} Tagen)`;
+  const hinweis = tage !== null && tage <= 14
+    ? `<p class="shint">Letzte Sicherung: ${datumDE(letzte)}${wann}.</p>`
+    : `<p class="warn">${letzte ? `Die letzte Sicherung ist vom ${datumDE(letzte)} (vor ${tage} Tagen). ` : 'Es gibt noch keine Sicherung. '}Deine Änderungen liegen nur in diesem Browser. Bitte eine neue Sicherung speichern.</p>`;
+  return `<div class="srow"><p class="slabel">Stand und Sicherung</p><p class="shint">Stand dieser Seite: ${esc(CHANGELOG[0].d)}.</p>${hinweis}<div class="knopfreihe"><button data-act="export">Sicherung speichern</button></div></div>`;
+}
 function introRow(){   // Einleitung noch einmal ansehen (act „introrepeat“) und rechts daneben das Änderungsprotokoll (act „changelog“): ohne Beschreibung, direkt über dem Zurücksetzen
   return `<div class="srow knopfreihe"><button data-act="introrepeat">Einführung zu wiederholen</button><button data-act="changelog">Änderungsprotokoll</button></div>`;
 }
@@ -1041,6 +1069,7 @@ function renderSettings(){
     segRow('Ecken der Akten', 'Rund wie bisher oder eckig, für ein schlichteres Aussehen.', 'ecken', [['rund', 'Rund'], ['eckig', 'Eckig']]) +
     segRow('Abschnitte beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne Abschnitte kannst du jederzeit umschalten.', 'sec', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
+    standRow() +
     introRow() +
     resetRow();
 }
@@ -1066,8 +1095,8 @@ function render(){
   if (!S) return;   // vor dem Laden der Daten nichts zeichnen
   renderNav();
   const t = query.trim();
-  let list, empty = 'Hier gibt es noch keine Akten.';
-  if (t) { const q = nf(t).split(/\s+/); list = live().filter(r => q.every(x => haystack(r).includes(x))); empty = 'Nichts gefunden. Versuch einen kürzeren Suchbegriff.'; }
+  let list, empty = 'Hier gibt es noch keine Akten.', fenster = [];
+  if (t) { const q = nf2(t).split(/\s+/).filter(Boolean); list = live().filter(r => passt(nf2(haystack(r)), q)); empty = 'Nichts gefunden. Versuch einen kürzeren Suchbegriff.'; fenster = fensterTreffer(q); }
   else if (view === 'trash') { list = trashed(); empty = 'Der Papierkorb ist leer.'; }
   else if (view === 'fav') { list = live().filter(r => S.fav.includes(r.id)); empty = 'Noch keine Favoriten. Mit ☆ merkst du dir eine Akte.'; }
   else if (view === 'a') { const L = live(); list = [...new Set(L.map(r => r.cat))].flatMap(k => sidebarOrder(k, L.filter(r => r.cat === k))); }   // Alle: je Kategorie in der Reihenfolge der Seitenleiste
@@ -1083,7 +1112,8 @@ function render(){
     groups[groups.length - 1].cards += (view === 'trash' && !t) ? trashCard(r) : card(r);
   });
   const html = groups.map(g => `<section class="grp">${g.s ? `<h3 class="grph">${esc(g.s.t)}</h3>` : ''}<div class="grpc">${g.cards}</div></section>`).join('');
-  $('#l').innerHTML = list.length ? html : `<p class="empty">${empty}</p>`;
+  const fensterHtml = fenster.length ? `<div class="sr-fenster"><span>Auch in den Fenstern:</span>${fenster.map(f => `<button class="mbtn" data-act="${f.act}">${esc(f.t)}</button>`).join('')}</div>` : '';
+  $('#l').innerHTML = fensterHtml + (list.length ? html : `<p class="empty">${empty}</p>`);
   if (pending) {
     const p = pending; pending = null;
     if (p.path) { const el = [...document.querySelectorAll('.tx')].find(x => x.dataset.rec === p.id && x.dataset.path === p.path); if (el) startEdit(el); }
@@ -1203,14 +1233,14 @@ function setOpt(k, v){
   saveSet(); applySet(); renderSettings(); render();
 }
 function openModal(){ $('#mtitle').textContent = 'Einstellungen'; renderSettings(); $('#modal').hidden = false; focusField('#modal [data-act="closemodal"]'); }
-function closeModal(){ $('#modal').hidden = true; }
+function closeModal(){ confirmAktion = null; $('#modal').hidden = true; }
 
 /* ===== Einleitung beim ersten Besuch: eine Willkommensseite und drei markierte Stellen, jederzeit überspringbar ===== */
 const INTRO_KEY = 'medic-handbuch-einleitung';   // nur ein Vermerk im Browser: nicht Teil der Akten, nicht im Export
 const INTRO = [
-  {t: 'Willkommen im Medic Handbuch', x: 'In vier kurzen Schritten zeigen wir Ihnen die wichtigsten Stellen der Seite. Die Einleitung können Sie jederzeit mit „Überspringen“ beenden.', el: null},
-  {t: 'Die Kategorien', x: 'Die Kategorien stehen links, auf dem Handy oben. Mit einem Klick auf „Behandlungen“ kommen Sie zu allen Behandlungen.', el: () => $('#n')},
-  {t: 'Der Bearbeitungsmodus', x: 'Der Knopf oben rechts mit dem Stift ✎ schaltet den Bearbeitungsmodus ein. Auf dem Computer steht daneben das Wort „Bearbeiten“. Dann können Sie Texte ändern, Zeilen und Boxen hinzufügen und die Akten ordnen. Ohne ihn lässt sich nichts ändern oder hinzufügen.', el: () => $('#modebtn')},
+  {t: 'Willkommen im Medic Handbuch', x: 'In vier kurzen Schritten zeigen wir dir die wichtigsten Stellen der Seite. Die Einleitung kannst du jederzeit mit „Überspringen“ beenden.', el: null},
+  {t: 'Die Kategorien', x: 'Die Kategorien stehen links, auf dem Handy oben. Mit einem Klick auf „Behandlungen“ kommst du zu allen Behandlungen.', el: () => $('#n')},
+  {t: 'Der Bearbeitungsmodus', x: 'Der Knopf oben rechts mit dem Stift ✎ schaltet den Bearbeitungsmodus ein. Auf dem Computer steht daneben das Wort „Bearbeiten“. Dann kannst du Texte ändern, Zeilen und Boxen hinzufügen und die Akten ordnen. Ohne ihn lässt sich nichts ändern oder hinzufügen.', el: () => $('#modebtn')},
   {t: 'Die EKG-Übersicht', x: 'Neben jedem Akten-Titel steht ein EKG-Zeichen. Ein Klick darauf öffnet die Übersicht mit Puls, Blutdruck und Sauerstoffsättigung. Die Normalwerte sind gelb markiert. Im Zuschauermodus kopiert ein Klick auf eine /me-Zeile ihre Handlung.', el: () => $('#l .ekg'), scroll: true},
   {t: 'Der Notfall-Knopf', x: 'Neben dem EKG-Zeichen steht bei jeder Akte ein Warnschild. Ein Klick darauf öffnet sofort die drei Notfall-Protokolle für lebensbedrohliche Situationen: schwere Blutung, Reanimation und Kreislaufkollaps. So ist das Wichtigste auch in einer Notlage mit einem Klick erreichbar. Die /me-Zeilen dort lassen sich im Zuschauermodus anklicken und kopieren.', el: () => $('#l .notfall'), scroll: true}
 ];
@@ -1277,12 +1307,12 @@ function introEnde(){   // überspringen oder fertig: danach erscheint die Einle
 }
 function openBug(){   // Fenster „Fehler melden“: nur der Hinweis, wen man bei Fehlern oder Verbesserungsvorschlägen anspricht
   $('#mtitle').textContent = 'Fehler melden';
-  $('#mbody').innerHTML = `<p>Sollten Sie einen Fehler gefunden haben oder einen Verbesserungsvorschlag, sprechen Sie entweder <b style="white-space:nowrap">„Dr. Joel Müller“</b> darauf an oder schreiben Sie <b>„zockerjojo“</b> in Discord an.</p>`;
+  $('#mbody').innerHTML = `<p>Solltest du einen Fehler gefunden haben oder einen Verbesserungsvorschlag, sprich entweder <b style="white-space:nowrap">„Dr. Joel Müller“</b> darauf an oder schreib <b>„zockerjojo“</b> in Discord an.</p>`;
   $('#modal').hidden = false;
   focusField('#modal [data-act="closemodal"]');
 }
 const isNormal = m => /(?:→|->|⟶)\s*Normalwert/i.test(m);   // Normalwert-Zeile, mit Pfeil → oder ->
-function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar, Notizen und Normalwerte nicht, Trennlinien bleiben Trennlinien. Der Text kommt immer aus EKG_LINES, nie aus dem Browser
+function openEkg(){ if (inhaltFehlt('EKG-Überwachung')) return;   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar, Notizen und Normalwerte nicht, Trennlinien bleiben Trennlinien. Der Text kommt immer aus EKG_LINES, nie aus dem Browser
   const rows = EKG_LINES.map(m => m === DIVIDER
     ? '<div class="ml tl"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>'
     : isNormal(m) ? `<h4 class="ekgh">${hlEsc(m)}</h4>` /* Normalwerte: gelb hervorgehoben, nicht kopierbar */
@@ -1293,7 +1323,7 @@ function openEkg(){   // EKG-Überwachung im Fenster: /me-Zeilen sind kopierbar,
   focusField('#modal [data-act="closemodal"]');
 }
 
-function openNotfall(){   // Notfall-Fenster: drei Protokolle, durch eine deutliche Trennlinie getrennt; die /me-Zeilen sind kopierbar wie in den Akten, Zeilen ohne /me sind Beschreibungen und kopieren nichts
+function openNotfall(){ if (inhaltFehlt('Notfall-Protokolle')) return;   // Notfall-Fenster: drei Protokolle, durch eine deutliche Trennlinie getrennt; die /me-Zeilen sind kopierbar wie in den Akten, Zeilen ohne /me sind Beschreibungen und kopieren nichts
   $('#mtitle').textContent = 'Notfall-Protokolle';
   $('#mbody').innerHTML = NOTFALL.map(p => `<section class="nf"><h4 class="nf-t">${hlEsc(p.t)}</h4><ul class="nf-be">${p.beschr.map(z => `<li>${fmt(z)}</li>`).join('')}</ul><div class="me nfbody">${p.me.map(m => `<div class="ml ${m.includes('/me') ? 'cp' : 'nt'}" data-raw="${esc(m)}"><span class="row">${fmt(m)}</span></div>`).join('')}</div></section>`).join('<div class="ml tl nfsep"><span class="row"><span class="tl-line" role="separator" aria-label="Trennlinie"></span></span></div>');
   $('#modal').hidden = false;
@@ -1352,6 +1382,7 @@ function act(name, b){
   if (name === 'settings') return openModal();
   if (name === 'bug') return openBug();
   if (name === 'closemodal') return closeModal();
+  if (name === 'confirmok') { const f = confirmAktion; confirmAktion = null; closeModal(); if (f) f(); }   // „Ja“ in der Rückfrage im Fenster; danach zeichnet act die Ansicht neu
   if (name === 'set') return setOpt(d.k, d.v);
   if (name === 'view') { view = d.v; query = ''; $('#q').value = ''; folded.clear(); secOv.clear(); boxOv.clear(); sectionForm = null; subForm = null; if (C[d.v]) opened.add(d.v); }
   else if (name === 'fav') fav(id);
@@ -1371,9 +1402,9 @@ function act(name, b){
   else if (['subnew', 'subedit', 'subcancel', 'subok', 'subdel'].includes(name)) subAct(name, d);
   else if (name === 'trash') trash(id);
   else if (name === 'restore') restore(id);
-  else if (name === 'purge') { if (confirm('Akte endgültig löschen? Das lässt sich nicht rückgängig machen.')) purge(id); }
-  else if (name === 'reset') { if (confirm('Eigene Änderungen an dieser Akte verwerfen?')) reset(id); }
-  else if (name === 'resetall') { if (confirm('Alle mitgelieferten Akten auf den Originalzustand zurücksetzen?\n\nDeine Änderungen an diesen Akten gehen verloren (Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien). Mitgelieferte Akten im Papierkorb kommen zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben erhalten. Rückgängig machen lässt sich das mit Strg+Z im Bearbeitungsmodus.')) { resetStandard(); closeModal(); toast('Mitgelieferte Akten sind wieder im Originalzustand'); } }
+  else if (name === 'purge') { frage('Akte endgültig löschen? Das lässt sich nicht rückgängig machen.', () => purge(id), 'Endgültig löschen'); }
+  else if (name === 'reset') { frage('Eigene Änderungen an dieser Akte verwerfen?', () => reset(id), 'Verwerfen'); }
+  else if (name === 'resetall') { frage('Alle mitgelieferten Akten auf den Originalzustand zurücksetzen?\n\nDeine Änderungen an diesen Akten gehen verloren (Texte, Abschnitte, /me-Boxen, Reihenfolge, Unterkategorien). Mitgelieferte Akten im Papierkorb kommen zurück. Eigene Akten, eigene Unterkategorien und Favoriten bleiben erhalten. Rückgängig machen lässt sich das mit Strg+Z im Bearbeitungsmodus.', () => { resetStandard(); toast('Mitgelieferte Akten sind wieder im Originalzustand'); }, 'Zurücksetzen'); }
   else if (name === 'newform') formState = formState ? null : {cat: (C[view] && !RO[view]) ? view : 'b', title: '', desc: '', text: [], sub: '', newSub: ''};
   else if (name === 'closeform') formState = null;
   else if (name === 'secform') sectionForm = (sectionForm && sectionForm.id === id) ? null : {id, name: '', text: '', mode: 'bullet', errors: null};
@@ -1413,6 +1444,8 @@ function exportText(){
   return JSON.stringify(Object.assign({format: 'medic-handbuch', version: 2}, dat), null, 2);
 }
 function exportData(){
+  try { store.setItem(SICHERUNG_KEY, new Date().toISOString()); } catch (e) {}   // merkt sich den Zeitpunkt für die Erinnerung in den Einstellungen
+  if (!$('#modal').hidden && $('#mtitle').textContent === 'Einstellungen') renderSettings();   // die Erinnerung in den offenen Einstellungen gleich aktualisieren
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([exportText()], {type: 'application/json'}));
   a.download = 'medic-handbuch-aenderungen.json';
@@ -1543,10 +1576,11 @@ function importFile(file){
     try { d = JSON.parse(rd.result); } catch (e) {}
     if (d && d.format === 'medic-akte') return importAkteDaten(d);   // eine einzelne Akte, auch über „Importieren“
     if (!looksLikeExport(d)) return toast('Das ist keine Export-Datei dieses Handbuchs');
-    if (!confirm('Deine Änderungen werden durch die Datei ersetzt. Favoriten bleiben, wenn die Datei keine enthält. Fortfahren?')) return;
-    const res = importedState(d);
-    S = res.data; secOv.clear(); boxOv.clear(); subForm = null; save(); render();
-    toast(res.skipped ? 'Importiert, ' + res.skipped + ' ungültige Einträge übersprungen' : 'Importiert');
+    frage('Deine Änderungen werden durch die Datei ersetzt. Favoriten bleiben, wenn die Datei keine enthält. Fortfahren?', () => {
+      const res = importedState(d);
+      S = res.data; secOv.clear(); boxOv.clear(); subForm = null; save(); render();
+      toast(res.skipped ? 'Importiert, ' + res.skipped + ' ungültige Einträge übersprungen' : 'Importiert');
+    }, 'Ersetzen');
   };
   rd.onerror = () => toast('Die Datei konnte nicht gelesen werden');
   rd.readAsText(file);
@@ -1596,6 +1630,7 @@ document.addEventListener('keydown', e => {
   }
   if (fmtKey(e) && e.target.matches && e.target.matches('textarea[data-sf="text"]')) { e.preventDefault(); return fmtWrap(e.target, fmtKey(e)); }   // Strg+B und Strg+U auch im Feld für neue Abschnitte
   const typing = e.target.matches && e.target.matches('input,textarea,select,[contenteditable="true"]');
+  if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); $('#q').focus(); $('#q').select(); return; }   // „/“ springt in die Suche, außer wenn gerade in einem Feld geschrieben wird
   if ((e.ctrlKey || e.metaKey) && !typing && EDIT) {
     const k = e.key.toLowerCase();
     if (k === 'z' && !e.shiftKey) { e.preventDefault(); return undo(); }
@@ -1627,9 +1662,48 @@ document.addEventListener('change', e => {
 /* ===== Start: akten.json laden, prüfen, dann anzeigen ===== */
 // Pfad zur Datei, relativ zur Seite berechnet: funktioniert auch in einem Unterordner (z. B. GitHub Pages unter /repo/)
 const DATA_URL = new URL('./akten.json', document.baseURI).href;
+// Inhalt, der nicht in den Akten steht: EKG-Überwachung und Notfall-Protokolle. Eigene Datei, damit die Texte geändert werden können, ohne index.html anzufassen.
+const INHALT_URL = new URL('./inhalt.json', document.baseURI).href;
+let INHALT_FEHLER = '';
+async function loadInhalt(){
+  try {
+    const r = await fetch(INHALT_URL, {cache: 'no-cache'});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const gueltig = d && Array.isArray(d.ekg) && d.ekg.every(z => typeof z === 'string')
+      && Array.isArray(d.notfall) && d.notfall.every(p => p && typeof p.t === 'string' && Array.isArray(p.beschr) && Array.isArray(p.me));
+    if (!gueltig) throw new Error('Format');
+    EKG_LINES = d.ekg; NOTFALL = d.notfall; INHALT_FEHLER = '';
+  } catch (e) {
+    EKG_LINES = []; NOTFALL = [];
+    INHALT_FEHLER = 'Die Datei inhalt.json fehlt oder ist nicht lesbar. Ohne sie gibt es keine EKG-Überwachung und keine Notfall-Protokolle. Lade die Datei zusammen mit index.html und akten.json hoch.';
+  }
+}
+// Fehlt inhalt.json, zeigt das Fenster einen Hinweis statt eines leeren Fensters
+function inhaltFehlt(titel){
+  if (!INHALT_FEHLER) return false;
+  $('#mtitle').textContent = titel;
+  $('#mbody').innerHTML = `<p class="warn">${esc(INHALT_FEHLER)}</p>`;
+  $('#modal').hidden = false;
+  focusField('#modal [data-act="closemodal"]');
+  return true;
+}
+/* ===== Bestätigungen im Fenster der Seite, statt der Meldung des Browsers ===== */
+let confirmAktion = null;   // die Aktion, die nach „Ja“ ausgeführt wird
+// Rückfrage im Fenster: Abbrechen oder Escape schließt es und tut nichts. Der Text darf mehrere Absätze haben (getrennt durch eine Leerzeile).
+function frage(text, onOk, ok = 'Ja, weiter'){
+  $('#mtitle').textContent = 'Bitte bestätigen';
+  $('#mbody').innerHTML = text.split('\n\n').map(a => `<p>${esc(a)}</p>`).join('') + `<div class="knopfreihe"><button class="mbtn" data-act="closemodal">Abbrechen</button><button class="btn" data-act="confirmok">${esc(ok)}</button></div>`;
+  confirmAktion = onOk;
+  $('#modal').hidden = false;
+  focusField('#modal [data-act="closemodal"]');
+}
+
 async function boot(){
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => {});   // Offline-Nutzung: Seite, Akten und Texte werden auf dem Gerät gespeichert
   loadSet(); applySet();
   $('#l').innerHTML = '<p class="empty">Akten werden geladen …</p>';
+  await loadInhalt();
   let text;
   try {
     const r = await fetch(DATA_URL, {cache: 'no-cache'});
@@ -1716,6 +1790,68 @@ function runTests(){
   T('Akte einklappen blendet nur diese Akte ein und aus', () => { reset0(); const i = id(); act('fold', {dataset: {id: i}}); ok(folded.has(i) && card(get(i)).includes('folded')); act('fold', {dataset: {id: i}}); ok(!folded.has(i)); });
   T('Kategoriewechsel klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); act('view', {dataset: {v: 'b'}}); ok(folded.size === 0); });
   T('Suche klappt alle Akten wieder auf', () => { reset0(); folded.add(id()); setQuery('x'); ok(folded.size === 0); setQuery(''); });
+  T('Suche findet Tippfehler, Umlaute und ß', () => {
+    const treffer = (text, suche) => passt(nf2(text), nf2(suche).split(/\s+/).filter(Boolean));
+    ok(treffer('Betäubung', 'Betäubung') && treffer('Betäubung', 'Betaeubung') && treffer('Betäubung', 'Betaubung'), 'Umlaut-Schreibweisen nicht gefunden');
+    ok(treffer('Betäubung', 'Btäubung') && treffer('Betäubung', 'Betaubng'), 'ein fehlender oder vertauschter Buchstabe nicht gefunden');
+    ok(treffer('Durchführung bei einer Großen Wunde', 'grossen wunde'), 'ß und ss werden nicht gleich behandelt');
+    ok(treffer('Lidocain', 'Lidokain'), 'k statt c nicht gefunden');
+    ok(!treffer('Betäubung', 'Herzinfarkt') && !treffer('Betäubung', 'Betäubungx Hilfe'), 'unpassende Wörter gefunden');
+    ok(treffer('Lokalanästhesie Betäubung', 'Lokalanaesthesie Betaeubung'), 'mehrere Wörter mit Umlauten nicht gefunden');
+  });
+  T('Abstand zwischen zwei Wörtern (lev)', () => ok(lev('kitten', 'sitting') === 3 && lev('abc', 'abc') === 0 && lev('', 'ab') === 2 && lev('ab', '') === 2, 'Abstand falsch'));
+  T('Die Suche zeigt EKG-Überwachung und Notfall-Protokolle, wenn sie den Begriff enthalten', () => {
+    const alt = query;
+    try {
+      setQuery('Atropin');
+      ok($('#l .sr-fenster button[data-act="ekg"]'), 'EKG-Treffer fehlt bei Atropin');
+      ok(!$('#l .sr-fenster button[data-act="notfall"]'), 'Notfall-Treffer bei Atropin');
+      setQuery('Venturi');
+      ok($('#l .sr-fenster button[data-act="notfall"]') && !$('#l .sr-fenster button[data-act="ekg"]'), 'Notfall-Treffer fehlt bei Venturi');
+      setQuery('xqzjvwk');
+      ok(!$('#l .sr-fenster'), 'Fensterhinweis bei unsinnigem Suchbegriff');
+    } finally { setQuery(alt); }
+  });
+  T('Die Taste / springt in die Suche', () => {
+    closeModal(); setQuery(''); $('#q').blur();
+    document.dispatchEvent(new KeyboardEvent('keydown', {key: '/'}));
+    ok(document.activeElement === $('#q'), 'Suche nicht fokussiert');
+    $('#q').blur();
+  });
+  T('Rückfrage im Fenster: Abbrechen tut nichts, Ja führt die Aktion aus', () => {
+    closeModal(); let gelaufen = 0;
+    frage('Probe?', () => { gelaufen++; }, 'Ja');
+    ok(!$('#modal').hidden && $('#mtitle').textContent === 'Bitte bestätigen', 'Rückfrage nicht im Fenster');
+    ok($('#mbody [data-act="confirmok"]') && $('#mbody [data-act="confirmok"]').textContent === 'Ja', 'Ja-Knopf fehlt');
+    act('closemodal', {dataset: {}});
+    ok(gelaufen === 0 && $('#modal').hidden, 'Abbrechen hat die Aktion ausgeführt');
+    frage('Probe?', () => { gelaufen++; }, 'Ja');
+    act('confirmok', {dataset: {}});
+    ok(gelaufen === 1 && $('#modal').hidden, 'Ja hat die Aktion nicht ausgeführt oder das Fenster bleibt offen');
+    act('confirmok', {dataset: {}});
+    ok(gelaufen === 1, 'Aktion doppelt ausgeführt');
+  });
+  T('Einstellungen: Stand der Seite und Erinnerung an die Sicherung', () => {
+    const alt = store.getItem(SICHERUNG_KEY);
+    try {
+      store.removeItem(SICHERUNG_KEY); renderSettings();
+      const ohne = $('#mbody').textContent;
+      ok(ohne.includes('Stand dieser Seite: ' + CHANGELOG[0].d), 'Stand fehlt');
+      ok(ohne.includes('Es gibt noch keine Sicherung'), 'Erinnerung ohne Sicherung fehlt');
+      ok($('#mbody button[data-act="export"]'), 'Knopf „Sicherung speichern“ fehlt');
+      store.setItem(SICHERUNG_KEY, new Date().toISOString()); renderSettings();
+      const frisch = $('#mbody').textContent;
+      ok(frisch.includes('Letzte Sicherung:') && frisch.includes('(heute)') && !frisch.includes('Es gibt noch keine Sicherung'), 'frische Sicherung falsch angezeigt');
+      store.setItem(SICHERUNG_KEY, new Date(Date.now() - 30 * 86400000).toISOString()); renderSettings();
+      const alt30 = $('#mbody').textContent;
+      ok(alt30.includes('Die letzte Sicherung ist vom') && alt30.includes('vor 30 Tagen'), 'alte Sicherung wird nicht angemahnt');
+    } finally { if (alt === null) store.removeItem(SICHERUNG_KEY); else store.setItem(SICHERUNG_KEY, alt); }
+  });
+  T('Fehlt inhalt.json, zeigt das Fenster einen Hinweis statt eines leeren Fensters', () => {
+    const alt = INHALT_FEHLER;
+    try { INHALT_FEHLER = 'Probe-Hinweis'; act('ekg', {dataset: {}}); ok(!$('#modal').hidden && $('#mbody').textContent.includes('Probe-Hinweis'), 'kein Hinweis im Fenster'); }
+    finally { INHALT_FEHLER = alt; closeModal(); }
+  });
   T('Keine schwebenden Hover-Menüs, Werkzeuge stehen fest in der Karte', () => { reset0(); const c = card(get(id())); ok(!c.includes('class="hv"') && !c.includes('class="ct"'), 'schwebendes Menü noch da'); ok(c.includes('class="tools"') && c.includes('class="ctools"'), 'feste Werkzeuge fehlen'); ok([...document.querySelectorAll('#l article.card .tools, #l article.card .tb')].every(e => getComputedStyle(e).position === 'static'), 'Werkzeug ist absolut positioniert'); });
   T('Werkzeuge liegen innerhalb ihrer Karte', () => { reset0(); view = 'a'; query = ''; render(); const schlecht = []; [...document.querySelectorAll('#l article.card')].slice(0, 6).forEach(a => { const cr = a.getBoundingClientRect(); a.querySelectorAll('.tb').forEach(t => { const br = t.getBoundingClientRect(); if (br.width > 0 && (br.left < cr.left - 1 || br.right > cr.right + 1)) schlecht.push(a.dataset.rec); }); }); ok(schlecht.length === 0, 'Werkzeuge ragen aus der Karte: ' + schlecht.join(', ')); });
   T('Export-Datei wird erkannt, fremde Datei nicht', () => { ok(looksLikeExport(JSON.parse(exportText()))); ok(!looksLikeExport({foo: 1})); ok(!looksLikeExport([1, 2])); });
@@ -1819,38 +1955,37 @@ function runTests(){
     undo(); ok(get(i).sections[0].items[0] === 'Eigene Änderung' && own(S.del, j), 'Rückgängig stellt den Stand nicht wieder her');
   });
   T('Zurücksetzen fragt nach, Abbrechen ändert nichts', () => {
-    reset0(); const i = id(), orig = BASE[i].sections[0].items[0], keep = window.confirm; setText(i, 'i:0:0', 'Bleibt?');
-    window.confirm = () => false;
-    try { act('resetall', {dataset: {}}); } finally { window.confirm = keep; }
+    reset0(); const i = id(), orig = BASE[i].sections[0].items[0]; setText(i, 'i:0:0', 'Bleibt?');
+    act('resetall', {dataset: {}});
+    ok(!$('#modal').hidden && $('#mtitle').textContent === 'Bitte bestätigen', 'keine Rückfrage im Fenster');
+    act('closemodal', {dataset: {}});
     ok(get(i).sections[0].items[0] === 'Bleibt?', 'Abbrechen hat zurückgesetzt');
-    window.confirm = () => true;
-    try { act('resetall', {dataset: {}}); } finally { window.confirm = keep; }
-    ok(get(i).sections[0].items[0] === orig, 'Bestätigen hat nicht zurückgesetzt');
+    act('resetall', {dataset: {}}); act('confirmok', {dataset: {}});
+    ok(get(i).sections[0].items[0] === orig && $('#modal').hidden, 'Bestätigen hat nicht zurückgesetzt oder das Fenster bleibt offen');
   });
   T('Zurücksetzen funktioniert im Zuschauermodus und im Bearbeitungsmodus', () => {
-    reset0(); const i = id(), orig = BASE[i].sections[0].items[0], keep = window.confirm;
-    window.confirm = () => true;
+    reset0(); const i = id(), orig = BASE[i].sections[0].items[0];
+    const bestaetigt = () => { act('resetall', {dataset: {}}); act('confirmok', {dataset: {}}); };
     try {
       setText(i, 'i:0:0', 'Zuschauer'); setMode(false);
       act('settings', {dataset: {}}); const zu = $('#mbody').innerHTML; act('closemodal', {dataset: {}});
       ok(zu.includes('data-act="resetall"') && !zu.includes('data-act="resetall" disabled'), 'Knopf im Zuschauermodus gesperrt');
       ok(zu.includes('Setzt alle Akten auf das Original zurück. Außer die selbst erstellten Akten.'), 'Beschreibung des Knopfs stimmt nicht');
-      act('resetall', {dataset: {}});
+      bestaetigt();
       ok(get(i).sections[0].items[0] === orig, 'im Zuschauermodus nicht zurückgesetzt');
-      setMode(true); setText(i, 'i:0:0', 'Bearbeiten'); act('resetall', {dataset: {}});
+      setMode(true); setText(i, 'i:0:0', 'Bearbeiten'); bestaetigt();
       ok(get(i).sections[0].items[0] === orig, 'im Bearbeitungsmodus nicht zurückgesetzt');
-    } finally { window.confirm = keep; setMode(true); }
+    } finally { setMode(true); }
   });
   T('Zurücksetzen im Zuschauermodus lässt sich im Bearbeitungsmodus rückgängig machen', () => {
-    reset0(); const i = id(), orig = BASE[i].sections[0].items[0], keep = window.confirm;
-    window.confirm = () => true;
+    reset0(); const i = id(), orig = BASE[i].sections[0].items[0];
     try {
       setText(i, 'i:0:0', 'Vor dem Zurücksetzen'); setMode(false);
-      act('resetall', {dataset: {}});
+      act('resetall', {dataset: {}}); act('confirmok', {dataset: {}});
       ok(get(i).sections[0].items[0] === orig, 'nicht zurückgesetzt');
       setMode(true); undo();
       ok(get(i).sections[0].items[0] === 'Vor dem Zurücksetzen', 'Rückgängig stellt den Stand vor dem Zurücksetzen nicht wieder her');
-    } finally { window.confirm = keep; setMode(true); }
+    } finally { setMode(true); }
   });
   T('Trennlinien der Seitenleiste schrumpfen nicht, auch wenn eine Kategorie offen ist', () => {
     opened.add('b'); render();

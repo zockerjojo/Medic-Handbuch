@@ -291,7 +291,7 @@
         "mode": "bullet",
         "items": [
           "Tieferer Hautschaden mit sichtbaren Blasen, Rötung, Schmerz und Schwellung",
-          "2a: Geschlossene Blasen, heilt meist spontan",
+          "2a: Geschlossene Blasen heilen meist spontan",
           "2b: Offene Blasen, tiefer Schaden, lokal behandelbar"
         ]
       },
@@ -308,9 +308,9 @@
       }
     ],
     "me": [
-      "/me betäubt die Verbrennung mit dem Lokalanästhetikum Lidocain",
+      "/me betäubt die Verbrennung mit dem Lokalanästhetikum (Lidocain)",
       "Warte, bis die Betäubung wirkt",
-      "/me entfernt abgestorbenes Gewebe",
+      "/me entfernt abgestorbenes Gewebe aus der Brandverletzung",
       "/me transplantiert die Haut und näht sie auf",
       "/me verbindet die Verbrennung mit einer Mullbinde"
     ]
