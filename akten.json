@@ -1793,7 +1793,7 @@
     "cat": "o",
     "title": "Verbrennung 3./4. Grades",
     "desc": "Tiefe Verbrennung, die alle Hautschichten zerstört, bei Grad 4 auch Unterhaut, Muskeln oder Knochen. Die Haut wirkt weiß, braun oder schwarz und ledrig. Im Zentrum fehlt oft das Schmerzempfinden. Die Wunde heilt nicht von selbst, deshalb ist eine Operation nötig.",
-    "kw": "brand verbrennung haut transplantat nekrose hautlappen",
+    "kw": "brand verbrennung haut transplantat nekrose hautlappen sepsis iruxol amputation",
     "sections": [
       {
         "h": "Erkennung",
@@ -1804,26 +1804,67 @@
         ]
       },
       {
-        "h": "Ablauf",
+        "h": "Verbrennung 3. Grades",
+        "mode": "text",
+        "items": [
+          "Hier sind Oberhaut und Lederhaut komplett zerstört, die Schmerzsensoren in der Haut sind ebenfalls zerstört, was dazu führt, dass der Patient an den Stellen bei Berührung keinen richtigen Schmerz empfindet. Brandwunden des dritten Verbrennungsgrades sind deshalb oft unauffällig. Bei diesem Verbrennungsgrad ist eine Operation zur Entfernung der verbrannten Hautschichten und ebenfalls eine Hauttransplantation notwendig, da die Verbrennungen des dritten Verbrennungsgrades keinen spontanen Heilungsprozess durchlaufen werden. Eine Sepsis wird dadurch ebenso vermieden."
+        ]
+      },
+      {
+        "h": "Ablauf 3. Grades",
         "mode": "number",
         "items": [
-          "Vitalwerte überwachen, Flüssigkeitsgabe nach Anordnung",
-          "Narkose einleiten, Wunde großzügig desinfizieren",
-          "Abgestorbenes Gewebe bis auf gesunde Schicht abtragen, Blutung stillen (Druck oder Koagulation)",
-          "Spalthaut oder Vollhaut vom Spenderbereich entnehmen und auf die Wunde auflegen",
-          "Transplantat fixieren, Spender- und Empfangsstelle steril verbinden",
-          "Nachsorge: Vitalwerte, Durchblutung des Transplantats und Infektionszeichen kontrollieren"
+          "Patienten unter Narkose versetzen",
+          "Vollelektrolytlösung als Infusion anlegen",
+          "Mit einer Bürste die verkohlten Hautstellen abschaben",
+          "Durchblutung der Haut mittels Laser-Doppler-Imager überprüfen",
+          "Mit einem sterilen Skalpell Einschnitte um die Hautschichten setzen",
+          "Die verbrannten Hautschichten jeweils entfernen",
+          "Vollhaut aus einem nicht betroffenen Bereich entnehmen (Hauttransplantat)",
+          "Die Vollhaut an den Bereichen, wo die verbrannten Hautschichten entfernt wurden, ansetzen und nähen",
+          "Brandsalbe und Clostridium-histolyticum-Filtrat als Salbe (Iruxol) auftragen",
+          "Blutschnelltest durchführen, um zu sehen, ob eine Sepsis vorliegt (und diese ggf. behandeln)",
+          "Narkose beenden"
+        ]
+      },
+      {
+        "h": "Verbrennung 4. Grades",
+        "mode": "text",
+        "items": [
+          "Bei diesem Verbrennungsgrad sind nicht nur die tiefsten Hautschichten, sondern auch die Muskeln, Sehnen, Knochen und Gelenke darunter geschädigt. Die Haut ist verkohlt und auch schwarz verfärbt. Patienten mit Verbrennungen des vierten Grades empfinden keinen Schmerz, da ebenfalls die Nervenfasern in der Haut zerstört sind. Hier muss man die geschädigten Gliedmaßen amputieren und nach der Amputation schnellstmöglich überprüfen, ob eine Sepsis vorliegt."
+        ]
+      },
+      {
+        "h": "Ablauf 4. Grades",
+        "mode": "text",
+        "items": [
+          "Siehe Akte „Amputation“."
         ]
       }
     ],
     "me": [
-      "/me nimmt Narkosemittel, Wundspülung, Skalpell, Transplantat-Besteck, Blutstiller und sterile Abdeckungen aus dem OP-Set",
-      "/me desinfiziert die Brandwunde und legt sterile Abdeckungen an",
-      "/me entfernt vorsichtig abgestorbenes Gewebe",
-      "/me entnimmt Hautlappen vom Spenderbereich",
-      "/me fixiert das Transplantat und verbindet die Wunde steril",
-      "/me überwacht die Vitalwerte des Patienten",
-      "Notiz: Bei großen Flächen Flüssigkeitsbedarf nach ärztlicher Anordnung festlegen"
+      "/me nimmt Narkosemittel, Vollelektrolytlösung, Bürste, steriles Skalpell, Transplantat-Besteck, Brandsalbe, Iruxol, Blutschnelltest, Laser-Doppler-Imager und sterile Abdeckungen aus dem OP-Set",
+      "/me versetzt den Patienten unter Narkose",
+      "/me legt eine Vollelektrolytlösung als Infusion an",
+      "/me schabt die verkohlten Hautstellen mit einer Bürste ab",
+      "/me überprüft die Durchblutung der Haut mit dem Laser-Doppler-Imager",
+      "/me setzt mit einem sterilen Skalpell Einschnitte um die Hautschichten",
+      "/me entfernt die verbrannten Hautschichten",
+      "/me entnimmt Vollhaut aus einem nicht betroffenen Bereich (Hauttransplantat)",
+      "/me setzt die Vollhaut an den Stellen an, an denen die verbrannten Hautschichten entfernt wurden, und näht sie fest",
+      "/me trägt Brandsalbe und Clostridium-histolyticum-Filtrat als Salbe (Iruxol) auf",
+      "/me führt einen Blutschnelltest durch, um zu sehen, ob eine Sepsis vorliegt",
+      "Notiz: Liegt eine Sepsis vor, wird sie behandelt.",
+      "/me beendet die Narkose"
+    ],
+    "meTitle": "Durchführung bei 3. Grades",
+    "boxes": [
+      {
+        "t": "Durchführung bei 4. Grades",
+        "me": [
+          "Notiz: Der Ablauf entspricht dem der Amputation, siehe Akte „Amputation“."
+        ]
+      }
     ]
   },
   {

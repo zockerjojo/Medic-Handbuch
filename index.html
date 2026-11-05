@@ -125,6 +125,8 @@ h4{margin:14px 0 4px;color:var(--a);font-size:15px}
 .ml.tl{padding:8px 6px;cursor:default}.ml.tl:hover{background:none}
 .ml.tl .row{align-items:center}
 .tl-line{flex:1 1 auto;min-width:0;height:1px;background:var(--m);opacity:.5}
+.danke-hr{border:0;height:1px;background:var(--m);opacity:.5;margin:22px 0 14px}
+.danke{margin:0 0 8px;color:var(--m);line-height:1.5}
 .ad{margin:6px 0 2px;padding:4px 12px;border-radius:14px;border-color:var(--a);color:var(--a)}
 .form{max-width:760px;display:grid;gap:10px;padding:16px;margin:0 0 24px;background:var(--p);border:1px solid var(--l);border-radius:8px}
 .form h3{margin:0;font:700 20px Georgia,serif}
@@ -231,6 +233,10 @@ let NOTFALL = [];   // wird beim Start aus inhalt.json geladen (loadInhalt)
 const BG = {'AB+': '0- 0+ B- B+ A- A+ AB- AB+', 'AB-': '0- B- A- AB-', 'A+': '0- 0+ A- A+', 'A-': '0- A-', 'B+': '0- 0+ B- B+', 'B-': '0- B-', '0+': '0- 0+', '0-': '0-'};
 // Änderungsprotokoll (Knopf „Änderungsprotokoll“ in den Einstellungen): alle Änderungen an dieser Seite, neueste zuerst. Ein neuer Tag ist ein neuer Block ganz oben, jeder Eintrag ein Text. Die Liste steht fest im Quelltext, nicht in akten.json.
 const CHANGELOG = [
+  {d: '05.11.2026', items: [
+    'Akte „Verbrennung 3./4. Grades“: Texte überarbeitet. Zum dritten Grad stehen Beschreibung und Ablauf mit elf Schritten dabei, zum vierten Grad ein Verweis auf die Akte „Amputation“.',
+    'Einstellungen: ganz unten eine Trennlinie und ein Dank an Fortuna.'
+  ]},
   {d: '03.11.2026', items: [
     'Suche: Tippfehler, Umlaute und ß werden erkannt. „Betaeubung“ und „Btäubung“ finden „Betäubung“. EKG-Überwachung und Notfall-Protokolle erscheinen als eigener Treffer, wenn sie den Suchbegriff enthalten.',
     'Die Taste / setzt den Cursor in die Suche, solange nicht gerade in einem Feld geschrieben wird.',
@@ -1061,6 +1067,9 @@ function standRow(){
 function introRow(){   // Einleitung noch einmal ansehen (act „introrepeat“) und rechts daneben das Änderungsprotokoll (act „changelog“): ohne Beschreibung, direkt über dem Zurücksetzen
   return `<div class="srow knopfreihe"><button data-act="introrepeat">Einführung zu wiederholen</button><button data-act="changelog">Änderungsprotokoll</button></div>`;
 }
+function footerRow(){   // ganz unten in den Einstellungen: Trennlinie und Dank an Fortuna
+  return '<hr class="danke-hr"><p class="danke">Danke an Fortuna, dass sie die Behandlungsmethoden bereitgestellt hat ❤️</p>';
+}
 function renderSettings(){
   $('#mbody').innerHTML =
     colsRow() +
@@ -1071,7 +1080,8 @@ function renderSettings(){
     segRow('/me-Boxen beim Öffnen', 'Gilt, sobald eine Akte geöffnet wird. Einzelne /me-Boxen klappst du mit dem Pfeil in ihrer Kopfzeile um.', 'me', [['open', 'Ausgeklappt'], ['closed', 'Eingeklappt']]) +
     standRow() +
     introRow() +
-    resetRow();
+    resetRow() +
+    footerRow();
 }
 function secFormHTML(sf, id){
   const err = k => (sf.errors && sf.errors[k]) ? `<p class="err">${esc(sf.errors[k])}</p>` : '';
